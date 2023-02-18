@@ -1,5 +1,7 @@
 package ru.kozlovss.workingcontacts.dto
 
+import ru.kozlovss.workingcontacts.enumeration.EventType
+
 data class Event(
     val id: Long,
     val authorId: Long,
@@ -10,7 +12,7 @@ data class Event(
     val dateTime: String,
     val published: String,
     val coords: Coordinates?,
-    val type: String,
+    val type: EventType,
     val likeOwnerIds: List<Long> = emptyList(),
     val likedByMe: Boolean,
     val speakerIds: List<Long> = emptyList(),
@@ -21,7 +23,3 @@ data class Event(
     val ownedByMe: Boolean,
     val users: UserPreview//todo доработать после ответа куратора
 )
-
-enum class EventType {
-    OFFLINE, ONLINE
-}
