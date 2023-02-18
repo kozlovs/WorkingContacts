@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.dto
+package ru.kozlovss.workingcontacts.data.dto
 
 data class Post(
     val id: Long,
@@ -14,5 +14,5 @@ data class Post(
     val likedByMe: Boolean,
     val attachment: Attachment?,
     val ownedByMe: Boolean,
-    val users: UserPreview//todo доработать после ответа куратора
+    val users: Map<Long, UserPreview>
 )

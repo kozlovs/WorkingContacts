@@ -1,11 +1,11 @@
-package ru.kozlovss.workingcontacts.db
+package ru.kozlovss.workingcontacts.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import ru.kozlovss.workingcontacts.dao.EventDao
-import ru.kozlovss.workingcontacts.dao.PostDao
-import ru.kozlovss.workingcontacts.entity.EventEntity
-import ru.kozlovss.workingcontacts.entity.PostEntity
+import ru.kozlovss.workingcontacts.data.dao.EventDao
+import ru.kozlovss.workingcontacts.data.dao.PostDao
+import ru.kozlovss.workingcontacts.data.entity.EventEntity
+import ru.kozlovss.workingcontacts.data.entity.PostEntity
 
 @Database(
     entities = [PostEntity::class, EventEntity::class],

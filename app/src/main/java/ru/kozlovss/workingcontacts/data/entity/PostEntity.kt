@@ -1,9 +1,12 @@
-package ru.kozlovss.workingcontacts.entity
+package ru.kozlovss.workingcontacts.data.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.kozlovss.workingcontacts.dto.*
+import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.dto.Coordinates
+import ru.kozlovss.workingcontacts.data.dto.Post
+import ru.kozlovss.workingcontacts.data.dto.UserPreview
 
 @Entity
 data class PostEntity(
@@ -22,7 +25,7 @@ data class PostEntity(
     @Embedded
     val attachment: Attachment?,
     val ownedByMe: Boolean,
-    val users: UserPreview//todo доработать после ответа куратора
+    val users: Map<Long, UserPreview>
 ) {
     fun toDto() = with(this) {
         Post(
@@ -66,4 +69,4 @@ data class PostEntity(
 }
 
 fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
-fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
+fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity.Companion::fromDto)

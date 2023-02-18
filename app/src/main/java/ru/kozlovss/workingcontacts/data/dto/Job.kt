@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.dto
+package ru.kozlovss.workingcontacts.data.dto
 
 data class Job(
     val id: Long,

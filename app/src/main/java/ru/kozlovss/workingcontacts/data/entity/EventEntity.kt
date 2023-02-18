@@ -1,13 +1,13 @@
-package ru.kozlovss.workingcontacts.entity
+package ru.kozlovss.workingcontacts.data.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.kozlovss.workingcontacts.dto.Attachment
-import ru.kozlovss.workingcontacts.dto.Coordinates
-import ru.kozlovss.workingcontacts.dto.Event
-import ru.kozlovss.workingcontacts.dto.UserPreview
-import ru.kozlovss.workingcontacts.enumeration.EventType
+import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.dto.Coordinates
+import ru.kozlovss.workingcontacts.data.dto.Event
+import ru.kozlovss.workingcontacts.data.dto.UserPreview
+import ru.kozlovss.workingcontacts.data.enumeration.EventType
 
 @Entity
 data class EventEntity(
@@ -31,7 +31,7 @@ data class EventEntity(
     val attachment: Attachment?,
     val link: String?,
     val ownedByMe: Boolean,
-    val users: UserPreview//todo доработать после ответа куратора
+    val users: Map<Long, UserPreview>
 ) {
     fun toDto() = with(this) {
         Event(
@@ -85,4 +85,4 @@ data class EventEntity(
 }
 
 fun List<EventEntity>.toDto(): List<Event> = map(EventEntity::toDto)
-fun List<Event>.toEntity(): List<EventEntity> = map(EventEntity::fromDto)
+fun List<Event>.toEntity(): List<EventEntity> = map(EventEntity.Companion::fromDto)

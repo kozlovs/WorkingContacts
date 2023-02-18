@@ -1,6 +1,6 @@
-package ru.kozlovss.workingcontacts.dto
+package ru.kozlovss.workingcontacts.data.dto
 
-import ru.kozlovss.workingcontacts.enumeration.EventType
+import ru.kozlovss.workingcontacts.data.enumeration.EventType
 
 data class Event(
     val id: Long,
@@ -21,5 +21,5 @@ data class Event(
     val attachment: Attachment?,
     val link: String?,
     val ownedByMe: Boolean,
-    val users: UserPreview//todo доработать после ответа куратора
+    val users: Map<Long, UserPreview>
 )
