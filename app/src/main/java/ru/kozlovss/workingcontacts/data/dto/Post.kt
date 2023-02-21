@@ -3,8 +3,10 @@ package ru.kozlovss.workingcontacts.data.dto
 data class Post(
     val id: Long,
     val authorId: Long,
+    val author: String,
     val authorAvatar: String?,
     val authorJob: String?,
+    val content: String,
     val published: String,
     val coords: Coordinates?,
     val link: String?,
@@ -16,3 +18,14 @@ data class Post(
     val ownedByMe: Boolean,
     val users: Map<Long, UserPreview>
 )
+
+data class PostRequest(
+    val id: Long,
+    val content: String,
+    val coords: Coordinates?,
+    val link: String?,
+    val attachment: Attachment?,
+    val ownedByMe: Boolean,
+    val mentionIds: List<Long>?,
+)
+

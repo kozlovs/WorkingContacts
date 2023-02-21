@@ -23,3 +23,15 @@ data class Event(
     val ownedByMe: Boolean,
     val users: Map<Long, UserPreview>
 )
+
+data class EventRequest(
+    val id: Long,
+    val content: String,
+    val dateTime: String,
+    val published: String,
+    val coords: Coordinates?,
+    val type: EventType?,
+    val attachment: Attachment?,
+    val link: String?,
+    val speakerIds: List<Long>?,
+)
