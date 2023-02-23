@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation
+package ru.kozlovss.workingcontacts.presentation.activity
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
