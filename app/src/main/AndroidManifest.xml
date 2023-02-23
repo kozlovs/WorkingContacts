@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -10,13 +11,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:name=".application.App"
+        android:usesCleartextTraffic="${usesCleartextTraffic}"
         android:theme="@style/Theme.WorkingContacts"
         tools:targetApi="31">
         <activity
             android:name=".presentation.MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.WorkingContacts">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

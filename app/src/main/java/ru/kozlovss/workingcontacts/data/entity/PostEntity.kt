@@ -13,26 +13,31 @@ data class PostEntity(
     @PrimaryKey
     val id: Long,
     val authorId: Long,
-    val authorAvatar: String?,
+    val author: String,
+    val authorAvatar: String? = null,
     val authorJob: String?,
+    val content: String,
     val published: String,
-    val coords: Coordinates?,
-    val link: String?,
+    @Embedded
+    val coords: Coordinates? = null,
+    val link: String? = null,
     val likeOwnerIds: List<Long> = emptyList(),
     val mentionIds: List<Long> = emptyList(),
     val mentionedMe: Boolean,
     val likedByMe: Boolean,
     @Embedded
-    val attachment: Attachment?,
+    val attachment: Attachment? = null,
     val ownedByMe: Boolean,
-    val users: Map<Long, UserPreview>
+    val users: Map<Long, UserPreview> = emptyMap()
 ) {
     fun toDto() = with(this) {
         Post(
             id,
             authorId,
+            author,
             authorAvatar,
             authorJob,
+            content,
             published,
             coords,
             link,
@@ -51,8 +56,10 @@ data class PostEntity(
             PostEntity(
                 id,
                 authorId,
+                author,
                 authorAvatar,
                 authorJob,
+                content,
                 published,
                 coords,
                 link,

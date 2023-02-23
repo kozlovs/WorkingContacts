@@ -20,6 +20,7 @@ data class EventEntity(
     val content: String,
     val dateTime: String,
     val published: String,
+    @Embedded
     val coords: Coordinates?,
     val type: EventType,
     val likeOwnerIds: List<Long> = emptyList(),
@@ -31,7 +32,7 @@ data class EventEntity(
     val attachment: Attachment?,
     val link: String?,
     val ownedByMe: Boolean,
-    val users: Map<Long, UserPreview>
+    val users: Map<Long, UserPreview> = emptyMap()
 ) {
     fun toDto() = with(this) {
         Event(

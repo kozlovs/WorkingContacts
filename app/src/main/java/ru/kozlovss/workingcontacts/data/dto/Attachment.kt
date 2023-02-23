@@ -4,5 +4,5 @@ import ru.kozlovss.workingcontacts.data.enumeration.AttachmentType
 
 data class Attachment(
     val url: String,
-    val type: AttachmentType
+    val attachmentType: AttachmentType
 )

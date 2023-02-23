@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
-    id 'com.google.gms.google-services'
     id 'com.google.dagger.hilt.android'
 }
 
@@ -24,6 +23,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders.usesCleartextTraffic = false
+            buildConfigField "String", "BASE_URL", '"https://netomedia.ru/"'
+        }
+        debug {
+            manifestPlaceholders.usesCleartextTraffic = true
+            buildConfigField "String", "BASE_URL", '"http://netomedia.ru/"'
         }
     }
     compileOptions {
@@ -50,13 +55,11 @@ dependencies {
     def gson_version = "2.9.1"
     def lifecycle_version = "2.5.1"
     def room_version = "2.5.0"
-    def play_services_base_version = "18.1.0"
     def swipe_refresh_version = "1.1.0"
     def glide_version = "4.14.2"
     def retrofit_version = "2.9.0"
     def okhttp_logging_version = "4.10.0"
     def coroutines_version = "1.6.4"
-    def image_picker_version = "2.1"
     def paging_version = "3.1.1"
     def junit_version = "4.13.2"
     def ext_junit_version = "1.1.5"
@@ -82,7 +85,6 @@ dependencies {
     implementation "androidx.room:room-paging:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    implementation "com.google.android.gms:play-services-base:$play_services_base_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh_version"
 
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -94,8 +96,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
-
-    implementation "com.github.dhaval2404:imagepicker:$image_picker_version"
 
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
