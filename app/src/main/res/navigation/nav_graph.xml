@@ -20,4 +20,14 @@
         android:name="ru.kozlovss.workingcontacts.presentation.mywall.MyWallFragment"
         android:label="fragment_my_wall"
         tools:layout="@layout/fragment_my_wall" />
+    <fragment
+        android:id="@+id/authorizationFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.auth.authorization.AuthorizationFragment"
+        android:label="fragment_authorization"
+        tools:layout="@layout/fragment_authorization" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.auth.registration.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
 </navigation>
