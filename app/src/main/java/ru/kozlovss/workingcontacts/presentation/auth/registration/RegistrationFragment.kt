@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.registration
+package ru.kozlovss.workingcontacts.presentation.auth.registration
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

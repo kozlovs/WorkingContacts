@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.kozlovss.workingcontacts.BuildConfig
+import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -29,19 +30,19 @@ class ApiModule {
     @Singleton
     fun provideOkHttp(
         logging: HttpLoggingInterceptor,
-        //appAuth: AppAuth
+        appAuth: AppAuth
     ): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(logging)
-//        .addInterceptor { chain ->
-//            appAuth.authStateFlow.value.token?.let { token ->
-//                val request = chain.request().newBuilder()
-//                    .addHeader("Authorization", token)
-//                    .build()
-//                return@addInterceptor chain.proceed(request)
-//            }
-//            chain.proceed(chain.request())
-//        }
+        .addInterceptor { chain ->
+            appAuth.authStateFlow.value.token?.let { token ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", token)
+                    .build()
+                return@addInterceptor chain.proceed(request)
+            }
+            chain.proceed(chain.request())
+        }
         .build()
 
     @Provides

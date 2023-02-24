@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.authorization
+package ru.kozlovss.workingcontacts.presentation.auth.authorization
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
