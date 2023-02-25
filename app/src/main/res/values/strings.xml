@@ -14,5 +14,6 @@
     <string name="sign_in_head_card">Sign In</string>
     <string name="authorization_button">Authorization</string>
     <string name="register_button">Register</string>
-
+    <string name="photo_error">Pock photo error</string>
+    <string name="share_button">Share</string>
 </resources>

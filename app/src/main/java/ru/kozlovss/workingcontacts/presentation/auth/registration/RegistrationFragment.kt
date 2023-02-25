@@ -1,60 +1,111 @@
 package ru.kozlovss.workingcontacts.presentation.auth.registration
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toFile
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import ru.kozlovss.workingcontacts.R
+import ru.kozlovss.workingcontacts.databinding.FragmentRegistrationBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RegistrationFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RegistrationFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentRegistrationBinding
+    private val viewModel: UserViewModel by activityViewModels()
+
+//    private val imageLauncher =
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+//            when (it.resultCode) {
+//                ImagePicker.RESULT_ERROR -> {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        getString(R.string.photo_error),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//                Activity.RESULT_OK -> {
+//                    val uri = it.data?.data
+//                    viewModel.saveAvatar(uri, uri?.toFile())
+//                }
+//            }
+//        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registration, container, false)
+    ): View {
+        binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+
+        setListeners()
+        subscribe()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegistrationFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegistrationFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun setListeners() = with(binding) {
+        registerButton.setOnClickListener {
+            if (isPasswordsDifferent()) {
+                DialogManager.differentPasswordsDialog(this@RegistrationFragment)
+                return@setOnClickListener
+            }
+            val name = name.text.toString()
+            val login = login.text.toString()
+            val password = password.text.toString()
+
+            viewModel.register(login, password, name)
+        }
+
+//        takePhoto.setOnClickListener {
+//            ImagePicker.Builder(this@RegistrationFragment)
+//                .cameraOnly()
+//                .maxResultSize(2048, 2048)
+//                .createIntent(imageLauncher::launch)
+//        }
+//
+//        gallery.setOnClickListener {
+//            ImagePicker.Builder(this@RegistrationFragment)
+//                .galleryOnly()
+//                .maxResultSize(2048, 2048)
+//                .createIntent(imageLauncher::launch)
+//        }
+//
+//        clear.setOnClickListener {
+//            viewModel.clearAvatar()
+//        }
+    }
+
+    private fun isPasswordsDifferent() = with(binding) {
+        password.text.toString() != rePassword.text.toString()
+    }
+
+    private fun subscribe() {
+        lifecycleScope.launchWhenCreated {
+            viewModel.token.collect {
+                it?.let {
+                    viewModel.saveTokenOfUser(it.id, it.token)
+                    findNavController().navigateUp()
                 }
             }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.avatar.collect {
+                with(binding) {
+                    if (it == null) {
+                        avatar.setImageResource(R.drawable.baseline_person_outline_24)
+                    } else {
+                        avatar.setImageURI(it.uri)
+                    }
+                }
+            }
+        }
     }
 }
