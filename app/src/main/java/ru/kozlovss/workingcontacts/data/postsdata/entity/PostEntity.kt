@@ -1,11 +1,11 @@
-package ru.kozlovss.workingcontacts.data.entity
+package ru.kozlovss.workingcontacts.data.postsdata.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.dto.Post
+import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.dto.UserPreview
 
 @Entity

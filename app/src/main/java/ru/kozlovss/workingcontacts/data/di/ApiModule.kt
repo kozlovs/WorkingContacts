@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.api
+package ru.kozlovss.workingcontacts.data.di
 
 import dagger.Module
 import dagger.Provides
@@ -10,6 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.kozlovss.workingcontacts.BuildConfig
+import ru.kozlovss.workingcontacts.data.api.*
+import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton

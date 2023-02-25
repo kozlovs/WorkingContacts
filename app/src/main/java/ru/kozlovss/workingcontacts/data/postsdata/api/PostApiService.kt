@@ -1,9 +1,9 @@
-package ru.kozlovss.workingcontacts.data.api
+package ru.kozlovss.workingcontacts.data.postsdata.api
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.kozlovss.workingcontacts.data.dto.Post
-import ru.kozlovss.workingcontacts.data.dto.PostRequest
+import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 
 interface PostApiService {
 

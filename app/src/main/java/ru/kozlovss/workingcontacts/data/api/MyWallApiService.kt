@@ -2,7 +2,7 @@ package ru.kozlovss.workingcontacts.data.api
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.kozlovss.workingcontacts.data.dto.Post
+import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 
 interface MyWallApiService {
 

@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.repository
+package ru.kozlovss.workingcontacts.data.di
 
 import dagger.Binds
 import dagger.Module

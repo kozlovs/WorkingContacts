@@ -1,7 +1,8 @@
-package ru.kozlovss.workingcontacts.data.dto
+package ru.kozlovss.workingcontacts.data.eventsdata.dto
 
-import ru.kozlovss.workingcontacts.data.enumeration.EventType
-
+import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.dto.Coordinates
+import ru.kozlovss.workingcontacts.data.dto.UserPreview
 data class Event(
     val id: Long,
     val authorId: Long,
@@ -22,16 +23,22 @@ data class Event(
     val link: String?,
     val ownedByMe: Boolean,
     val users: Map<Long, UserPreview>
-)
+) {
+    fun toRequest() = with(this) {
+        EventRequest(
+            id,
+            content,
+            dateTime,
+            published,
+            coords,
+            type,
+            attachment,
+            link,
+            speakerIds
+        )
+    }
 
-data class EventRequest(
-    val id: Long,
-    val content: String,
-    val dateTime: String,
-    val published: String,
-    val coords: Coordinates?,
-    val type: EventType?,
-    val attachment: Attachment?,
-    val link: String?,
-    val speakerIds: List<Long>?,
-)
+    enum class EventType {
+        OFFLINE, ONLINE
+    }
+}
