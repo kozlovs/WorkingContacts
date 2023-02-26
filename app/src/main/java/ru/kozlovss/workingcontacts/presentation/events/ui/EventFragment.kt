@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.events
+package ru.kozlovss.workingcontacts.presentation.events.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

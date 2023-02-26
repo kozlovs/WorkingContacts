@@ -116,10 +116,6 @@ class FeedFragment : Fragment() {
                 adapter.refresh()
             }
         }
-
-        viewModel.postsShowed.observe(viewLifecycleOwner) {
-            binding.list.smoothScrollToPosition(0)
-        }
     }
 
     private fun setListeners(binding: FragmentFeedBinding, adapter: PostsAdapter) {
