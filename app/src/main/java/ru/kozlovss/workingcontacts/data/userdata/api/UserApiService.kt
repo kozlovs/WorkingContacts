@@ -1,11 +1,11 @@
-package ru.kozlovss.workingcontacts.data.api
+package ru.kozlovss.workingcontacts.data.userdata.api
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
-import ru.kozlovss.workingcontacts.data.dto.AuthenticationRequest
-import ru.kozlovss.workingcontacts.data.dto.Token
+import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
+import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.data.dto.User
 
 interface UserApiService {

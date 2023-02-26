@@ -11,7 +11,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.kozlovss.workingcontacts.BuildConfig
 import ru.kozlovss.workingcontacts.data.api.*
+import ru.kozlovss.workingcontacts.data.eventsdata.api.EventApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
+import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -61,7 +63,7 @@ class ApiModule {
     @Singleton
     fun provideEventApiService(
         retrofit: Retrofit
-    ): PostApiService = retrofit.create()
+    ): EventApiService = retrofit.create()
 
     @Provides
     @Singleton

@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.db
+package ru.kozlovss.workingcontacts.data.postsdata.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -18,7 +18,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.entity.PostRemoteKeyEntity
     exportSchema = false
 )
 @TypeConverters(ListLongConverter::class, MapUsersPrevConverter::class)
-abstract class Db : RoomDatabase() {
+abstract class PostDb : RoomDatabase() {
     abstract fun postDao(): PostDao
 
     abstract fun postRemoteKeyDao(): PostRemoteKeyDao

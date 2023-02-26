@@ -7,7 +7,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
-import ru.kozlovss.workingcontacts.data.db.Db
+import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostRemoteKeyEntity
@@ -19,7 +19,7 @@ class PostRemoteMediator(
     private val apiService: PostApiService,
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
-    private val db: Db
+    private val postDb: PostDb
 ) : RemoteMediator<Int, PostEntity>() {
 
     override suspend fun load(
@@ -50,7 +50,7 @@ class PostRemoteMediator(
                 response.message(),
             )
 
-            db.withTransaction {
+            postDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
                         if (postRemoteKeyDao.isEmpty()) {

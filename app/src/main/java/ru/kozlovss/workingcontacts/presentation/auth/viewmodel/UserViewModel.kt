@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
-import ru.kozlovss.workingcontacts.data.dto.Token
-import ru.kozlovss.workingcontacts.data.repository.userrepository.UserRepository
+import ru.kozlovss.workingcontacts.data.userdata.dto.Token
+import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.auth.AuthState
 import java.io.File

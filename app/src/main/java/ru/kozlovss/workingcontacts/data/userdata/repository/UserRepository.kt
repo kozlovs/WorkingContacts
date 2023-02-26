@@ -1,7 +1,7 @@
-package ru.kozlovss.workingcontacts.data.repository.userrepository
+package ru.kozlovss.workingcontacts.data.userdata.repository
 
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
-import ru.kozlovss.workingcontacts.data.dto.Token
+import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
 interface UserRepository {
 

@@ -10,7 +10,7 @@ import ru.kozlovss.workingcontacts.BuildConfig.BASE_URL
 import ru.kozlovss.workingcontacts.data.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
-import ru.kozlovss.workingcontacts.data.db.Db
+import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Media
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
@@ -27,7 +27,7 @@ class PostRepositoryImpl @Inject constructor(
     private val apiService: PostApiService,
     private val mediaApiService: MediaApiService,
     postRemoteKeyDao: PostRemoteKeyDao,
-    db: Db
+    postDb: PostDb
 ) : PostRepository {
 
     @OptIn(ExperimentalPagingApi::class)
@@ -38,7 +38,7 @@ class PostRepositoryImpl @Inject constructor(
             apiService,
             postDao,
             postRemoteKeyDao,
-            db
+            postDb
         )
     ).flow.map { it.map(PostEntity::toDto) }
 
@@ -158,7 +158,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        fun getAvatarUrl(avatarURL: String) = "${BASE_URL}/avatars/$avatarURL"
+        fun getAvatarUrl(avatarURL: String?) = avatarURL?.let { "${BASE_URL}/avatars/$avatarURL" }
         fun getImageUrl(imageURL: String) = "${BASE_URL}/media/$imageURL"
     }
 }

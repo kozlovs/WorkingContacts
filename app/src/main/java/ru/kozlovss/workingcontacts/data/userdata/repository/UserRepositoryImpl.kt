@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.repository.userrepository
+package ru.kozlovss.workingcontacts.data.userdata.repository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -7,10 +7,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
-import ru.kozlovss.workingcontacts.data.api.UserApiService
-import ru.kozlovss.workingcontacts.data.dto.AuthenticationRequest
+import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
+import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
-import ru.kozlovss.workingcontacts.data.dto.Token
+import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError

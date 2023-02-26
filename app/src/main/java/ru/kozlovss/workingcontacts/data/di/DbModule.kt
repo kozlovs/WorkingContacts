@@ -7,7 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import ru.kozlovss.workingcontacts.data.db.Db
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
+import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
+import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import javax.inject.Singleton
@@ -17,20 +19,34 @@ import javax.inject.Singleton
 class DbModule {
     @Singleton
     @Provides
-    fun provideDb(
+    fun providePostDb(
         @ApplicationContext
         context: Context
-    ): Db = Room.databaseBuilder(context, Db::class.java, "app.db")
+    ): PostDb = Room.databaseBuilder(context, PostDb::class.java, "post.db")
         .fallbackToDestructiveMigration()
         .build()
 
     @Provides
     fun providePostDao(
-        db: Db
-    ): PostDao = db.postDao()
+        postDb: PostDb
+    ): PostDao = postDb.postDao()
 
     @Provides
     fun providePostRemoteKeyDao(
-        db: Db
-    ): PostRemoteKeyDao = db.postRemoteKeyDao()
+        postDb: PostDb
+    ): PostRemoteKeyDao = postDb.postRemoteKeyDao()
+
+    @Singleton
+    @Provides
+    fun provideEventDb(
+        @ApplicationContext
+        context: Context
+    ): EventDb = Room.databaseBuilder(context, EventDb::class.java, "event.db")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    fun provideEventDao(
+        eventDb: EventDb
+    ): EventDao = eventDb.eventDao()
 }

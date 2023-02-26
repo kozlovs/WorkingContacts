@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.dto
+package ru.kozlovss.workingcontacts.data.userdata.dto
 
 data class AuthenticationRequest(
     val login: String,

@@ -3,11 +3,6 @@ package ru.kozlovss.workingcontacts.domain.util
 import android.app.AlertDialog
 import android.content.Context
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.presentation.feed.FeedFragment
-import ru.kozlovss.workingcontacts.presentation.feed.NewPostFragment
-import ru.kozlovss.workingcontacts.presentation.feed.PostFragment
 
 object DialogManager {
 

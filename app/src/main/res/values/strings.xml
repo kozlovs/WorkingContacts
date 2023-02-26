@@ -16,4 +16,9 @@
     <string name="register_button">Register</string>
     <string name="photo_error">Pock photo error</string>
     <string name="share_button">Share</string>
+    <string name="menu_remove">Remove</string>
+    <string name="menu_edit">Edit</string>
+    <string name="chooser_share_post">Share post</string>
+    <string name="empty_posts">there are no posts</string>
+    <string name="retry_loading">retry</string>
 </resources>
