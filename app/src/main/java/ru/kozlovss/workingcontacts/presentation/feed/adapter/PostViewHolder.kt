@@ -29,7 +29,7 @@ class PostViewHolder(
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
 
             Glide.with(binding.avatar)
-                .load(PostRepositoryImpl.getAvatarUrl(post.authorAvatar))
+                .load(post.authorAvatar)
                 .transform(RoundedCorners(30))
                 .placeholder(R.drawable.baseline_update_24)
                 .error(R.drawable.baseline_error_outline_24)

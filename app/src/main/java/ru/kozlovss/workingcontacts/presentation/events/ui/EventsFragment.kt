@@ -1,60 +1,129 @@
 package ru.kozlovss.workingcontacts.presentation.events.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
+import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.databinding.FragmentEventsBinding
+import ru.kozlovss.workingcontacts.presentation.events.adapter.EventLoadingStateAdapter
+import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
+import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
+import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EventsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EventsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel: EventViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentEventsBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+
+        val adapter = EventsAdapter(object : OnInteractionListener {
+            override fun onLike(event: Event) {
+                if (viewModel.checkLogin(this@EventsFragment)) {
+                    viewModel.likeById(event.id)
+                }
+            }
+
+            override fun onShare(event: Event) {
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, event.content)
+                    type = "text/plain"
+                }
+                val shareIntent =
+                    Intent.createChooser(intent, getString(R.string.chooser_share_event))
+                startActivity(shareIntent)
+            }
+
+            override fun onRemove(event: Event) {
+                viewModel.removeById(event.id)
+            }
+
+            override fun onEdit(event: Event) {
+                viewModel.edit(event)
+            }
+
+            override fun onPlayVideo(event: Event) {
+//                if (event.video.isNullOrBlank()) return
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.video))
+//                startActivity(intent)
+            }
+
+            override fun onToEvent(event: Event) {
+//                findNavController().navigate(
+//                    R.id.action_eventsFragment_to_eventFragment,
+//                    Bundle().apply { id = event.id })
+            }
+
+            override fun onToImage(event: Event) {
+//                event.attachment?.let {
+//                    findNavController().navigate(
+//                        R.id.action_eventsFragment_to_imageFragment,
+//                        Bundle().apply { imageUrlArg = it.url }
+//                    )
+//                }
+            }
+        })
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = EventLoadingStateAdapter { adapter.retry() },
+            footer = EventLoadingStateAdapter { adapter.retry() }
+        )
+
+        subscribe(binding, adapter)
+        setListeners(binding, adapter)
+
+        return binding.root
+    }
+
+    private fun subscribe(binding: FragmentEventsBinding, adapter: EventsAdapter) {
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest(adapter::submitData)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest {
+                binding.swipeRefresh.isRefreshing =
+                    it.refresh is LoadState.Loading
+            }
+        }
+
+        viewModel.edited.observe(viewLifecycleOwner) { event ->
+            if (event.id == 0L) return@observe
+            findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.authState.collect {
+                adapter.refresh()
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_events, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EventsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EventsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun setListeners(binding: FragmentEventsBinding, adapter: EventsAdapter) {
+        binding.add.setOnClickListener {
+            if (viewModel.checkLogin(this)) {
+                findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment)
             }
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
     }
 }

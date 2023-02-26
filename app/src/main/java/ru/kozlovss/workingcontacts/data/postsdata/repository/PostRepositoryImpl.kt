@@ -158,7 +158,6 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        fun getAvatarUrl(avatarURL: String?) = avatarURL?.let { "${BASE_URL}/avatars/$avatarURL" }
         fun getImageUrl(imageURL: String) = "${BASE_URL}/media/$imageURL"
     }
 }

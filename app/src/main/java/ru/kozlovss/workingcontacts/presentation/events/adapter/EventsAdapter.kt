@@ -8,7 +8,7 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.CardEventBinding
 
-class EventAdapter(private val onInteractionListener: OnInteractionListener) :
+class EventsAdapter(private val onInteractionListener: OnInteractionListener) :
     PagingDataAdapter<Event, RecyclerView.ViewHolder>(EventDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {

@@ -29,7 +29,7 @@ class EventViewHolder(
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
 
             Glide.with(binding.avatar)
-                .load(EventRepositoryImpl.getAvatarUrl(event.authorAvatar))
+                .load(event.authorAvatar)
                 .transform(RoundedCorners(30))
                 .placeholder(R.drawable.baseline_update_24)
                 .error(R.drawable.baseline_error_outline_24)

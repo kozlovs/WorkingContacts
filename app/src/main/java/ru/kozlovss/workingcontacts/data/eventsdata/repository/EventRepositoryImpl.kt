@@ -158,7 +158,6 @@ class EventRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        fun getAvatarUrl(avatarURL: String?) = avatarURL?.let { "${BuildConfig.BASE_URL}/avatars/$avatarURL" }
         fun getImageUrl(imageURL: String) = "${BuildConfig.BASE_URL}/media/$imageURL"
     }
 }

@@ -19,6 +19,7 @@
     <string name="menu_remove">Remove</string>
     <string name="menu_edit">Edit</string>
     <string name="chooser_share_post">Share post</string>
+    <string name="chooser_share_event">Share event</string>
     <string name="empty_posts">there are no posts</string>
     <string name="retry_loading">retry</string>
 </resources>
