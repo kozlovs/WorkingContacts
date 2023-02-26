@@ -9,13 +9,13 @@ import retrofit2.Response
 import ru.kozlovss.workingcontacts.BuildConfig.BASE_URL
 import ru.kozlovss.workingcontacts.data.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Media
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
@@ -23,22 +23,22 @@ import java.io.IOException
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
-    private val postDao: PostDao,
+    private val dao: PostDao,
     private val apiService: PostApiService,
     private val mediaApiService: MediaApiService,
-    postRemoteKeyDao: PostRemoteKeyDao,
-    postDb: PostDb
+    remoteKeyDao: PostRemoteKeyDao,
+    db: PostDb
 ) : PostRepository {
 
     @OptIn(ExperimentalPagingApi::class)
     override val posts: Flow<PagingData<Post>> = Pager(
         config = PagingConfig(pageSize = 10, enablePlaceholders = false),
-        pagingSourceFactory = postDao::pagingSource,
+        pagingSourceFactory = dao::pagingSource,
         remoteMediator = PostRemoteMediator(
             apiService,
-            postDao,
-            postRemoteKeyDao,
-            postDb
+            dao,
+            remoteKeyDao,
+            db
         )
     ).flow.map { it.map(PostEntity::toDto) }
 
@@ -55,7 +55,7 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun likeById(id: Long) {
         val post = getById(id)
-        postDao.likeById(id)
+        dao.likeById(id)
         if (post.likedByMe) {
             makeRequestDislikeById(id)
         } else {
@@ -67,7 +67,7 @@ class PostRepositoryImpl @Inject constructor(
         try {
             val response = apiService.likePostById(id)
             val body = checkResponse(response)
-            postDao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -79,7 +79,7 @@ class PostRepositoryImpl @Inject constructor(
         try {
             val response = apiService.dislikePostById(id)
             val body = checkResponse(response)
-            postDao.insert(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -89,7 +89,7 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun removeById(id: Long) {
         try {
-            postDao.removeById(id)
+            dao.removeById(id)
             val response = apiService.deletePostById(id)
             checkResponse(response)
         } catch (e: IOException) {
@@ -101,11 +101,11 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun save(post: Post) {
         try {
-            val newPostId = postDao.insert(PostEntity.fromDto(post))
+            val newPostId = dao.insert(PostEntity.fromDto(post))
             val response = apiService.savePost(post.toRequest())
             val body = checkResponse(response)
-            postDao.removeById(newPostId)
-            postDao.save(PostEntity.fromDto(body))
+            dao.removeById(newPostId)
+            dao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -116,7 +116,7 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun saveWithAttachment(post: Post, photo: PhotoModel) {
         try {
             val media = upload(photo)
-            val newPostId = postDao.insert(PostEntity.fromDto(post))
+            val newPostId = dao.insert(PostEntity.fromDto(post))
             val response = apiService.savePost(
                 post.copy(
                     attachment = Attachment(
@@ -126,8 +126,8 @@ class PostRepositoryImpl @Inject constructor(
                 ).toRequest()
             )
             val body = checkResponse(response)
-            postDao.removeById(newPostId)
-            postDao.save(PostEntity.fromDto(body))
+            dao.removeById(newPostId)
+            dao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.postsdata.dao
+package ru.kozlovss.workingcontacts.data.eventsdata.dao.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

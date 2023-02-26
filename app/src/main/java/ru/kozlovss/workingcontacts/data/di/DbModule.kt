@@ -8,10 +8,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostDao
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostRemoteKeyDao
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -49,4 +50,9 @@ class DbModule {
     fun provideEventDao(
         eventDb: EventDb
     ): EventDao = eventDb.eventDao()
+
+    @Provides
+    fun provideEventRemoteKeyDao(
+        eventDb: EventDb
+    ): EventRemoteKeyDao = eventDb.eventRemoteKeyDao()
 }
