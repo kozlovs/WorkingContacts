@@ -6,9 +6,9 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
-import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostDao
+import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
-import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostRemoteKeyEntity
 import ru.kozlovss.workingcontacts.data.postsdata.entity.toEntity

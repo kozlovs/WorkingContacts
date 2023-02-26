@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
@@ -19,6 +20,7 @@ import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
 
+@AndroidEntryPoint
 class EventsFragment : Fragment() {
     private val viewModel: EventViewModel by activityViewModels()
 

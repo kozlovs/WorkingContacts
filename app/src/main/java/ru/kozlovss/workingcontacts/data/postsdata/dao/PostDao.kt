@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.eventsdata.dao.dao
+package ru.kozlovss.workingcontacts.data.postsdata.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

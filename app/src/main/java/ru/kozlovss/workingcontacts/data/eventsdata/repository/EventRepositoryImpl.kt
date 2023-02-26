@@ -54,9 +54,9 @@ class EventRepositoryImpl @Inject constructor(
     }
 
     override suspend fun likeById(id: Long) {
-        val post = getById(id)
+        val event = getById(id)
         dao.likeById(id)
-        if (post.likedByMe) {
+        if (event.likedByMe) {
             makeRequestDislikeById(id)
         } else {
             makeRequestLikeById(id)
@@ -99,12 +99,12 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun save(post: Event) {
+    override suspend fun save(event: Event) {
         try {
-            val newPostId = dao.insert(EventEntity.fromDto(post))
-            val response = apiService.saveEvent(post.toRequest())
+            val newEventId = dao.insert(EventEntity.fromDto(event))
+            val response = apiService.saveEvent(event.toRequest())
             val body = checkResponse(response)
-            dao.removeById(newPostId)
+            dao.removeById(newEventId)
             dao.save(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
@@ -113,12 +113,12 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(post: Event, photo: PhotoModel) {
+    override suspend fun saveWithAttachment(event: Event, photo: PhotoModel) {
         try {
             val media = upload(photo)
-            val newPostId = dao.insert(EventEntity.fromDto(post))
+            val newEventId = dao.insert(EventEntity.fromDto(event))
             val response = apiService.saveEvent(
-                post.copy(
+                event.copy(
                     attachment = Attachment(
                         media.url,
                         Attachment.AttachmentType.IMAGE
@@ -126,7 +126,7 @@ class EventRepositoryImpl @Inject constructor(
                 ).toRequest()
             )
             val body = checkResponse(response)
-            dao.removeById(newPostId)
+            dao.removeById(newEventId)
             dao.save(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()

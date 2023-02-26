@@ -12,13 +12,13 @@ class EventsAdapter(private val onInteractionListener: OnInteractionListener) :
     PagingDataAdapter<Event, RecyclerView.ViewHolder>(EventDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
-            is Event -> R.layout.card_post
+            is Event -> R.layout.card_event
             else -> error("unknown item type")
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): RecyclerView.ViewHolder =
         when (viewTipe) {
-            R.layout.card_post -> {
+            R.layout.card_event -> {
                 val binding =
                     CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 EventViewHolder(binding, onInteractionListener)

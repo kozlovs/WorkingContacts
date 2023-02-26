@@ -9,13 +9,13 @@ import retrofit2.Response
 import ru.kozlovss.workingcontacts.BuildConfig.BASE_URL
 import ru.kozlovss.workingcontacts.data.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
-import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostDao
+import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Media
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.eventsdata.dao.dao.PostRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
