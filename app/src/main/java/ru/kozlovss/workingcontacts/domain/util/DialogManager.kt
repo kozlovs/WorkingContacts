@@ -15,8 +15,8 @@ import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment
 
 object DialogManager {
 
-    fun errorDialog(context: Context, e: Exception) {
-        val builder = MaterialAlertDialogBuilder(context)
+    fun errorDialog(fragment: Fragment, e: Exception) {
+        val builder = MaterialAlertDialogBuilder(fragment.requireContext())
         val dialog = builder.create()
         dialog.setTitle("Error")
         val massage = makeErrorMessage(e)
@@ -67,6 +67,38 @@ object DialogManager {
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    fun addPhotoDialog(fragment: Fragment, isPhotoUploaded: Boolean = false) {
+        val builder = MaterialAlertDialogBuilder(fragment.requireContext())
+        val dialog = builder.create()
+        dialog.setTitle("Photo upload")
+        if (isPhotoUploaded) {
+            dialog.setMessage("Manage your photo")
+        } else {
+            dialog.setMessage("Add your photo")
+        }
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+            dialog.dismiss()
+        }
+        dialog.show()
+        //        takePhoto.setOnClickListener {
+//            ImagePicker.Builder(this@RegistrationFragment)
+//                .cameraOnly()
+//                .maxResultSize(2048, 2048)
+//                .createIntent(imageLauncher::launch)
+//        }
+//
+//        gallery.setOnClickListener {
+//            ImagePicker.Builder(this@RegistrationFragment)
+//                .galleryOnly()
+//                .maxResultSize(2048, 2048)
+//                .createIntent(imageLauncher::launch)
+//        }
+//
+//        clear.setOnClickListener {
+//            viewModel.clearAvatar()
+//        }//todo добавить механизм загрузки фото
     }
 
     private fun makeErrorMessage(e: Exception): String {

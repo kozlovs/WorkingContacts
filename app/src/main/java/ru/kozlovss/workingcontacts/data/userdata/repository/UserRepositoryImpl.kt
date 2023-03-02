@@ -28,11 +28,12 @@ class UserRepositoryImpl @Inject constructor(
         name: String,
         photoModel: PhotoModel?
     ): Token {
+        val mediaType = "text/plain".toMediaType()
         try {
-            val loginRequestBody = login.toRequestBody("text/plain".toMediaType())
-            val passwordRequestBody = password.toRequestBody("text/plain".toMediaType())
-            val nameRequestBody = name.toRequestBody("text/plain".toMediaType())
-            val media = photoModel?.let {
+            val loginRequestBody = login.toRequestBody(mediaType)
+            val passwordRequestBody = password.toRequestBody(mediaType)
+            val nameRequestBody = name.toRequestBody(mediaType)
+            val file = photoModel?.let {
                 MultipartBody.Part.createFormData(
                     "file",
                     it.file?.name,
@@ -44,7 +45,7 @@ class UserRepositoryImpl @Inject constructor(
                 loginRequestBody,
                 passwordRequestBody,
                 nameRequestBody,
-                media
+                file
             )
             return checkResponse(response)
         } catch (e: IOException) {

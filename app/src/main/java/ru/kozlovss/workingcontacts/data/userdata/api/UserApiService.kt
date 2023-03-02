@@ -20,9 +20,9 @@ interface UserApiService {
     @POST("users/registration")
     suspend fun signIn(
         @Part("login") login: RequestBody,
-        @Part("pass") pass: RequestBody,
+        @Part("password") password: RequestBody,
         @Part("name") name: RequestBody,
-        @Part media: MultipartBody.Part?
+        @Part file: MultipartBody.Part?
     ): Response<Token>
 
     @GET("users/{id}")

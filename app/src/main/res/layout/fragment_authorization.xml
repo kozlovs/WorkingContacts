@@ -64,7 +64,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/login"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="7777778"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -79,28 +80,19 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="7777778"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/registration_button"
+                android:id="@+id/log_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/registration_button"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/login_button" />
-
-            <Button
-                android:id="@+id/login_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/enter_button"
+                android:text="@string/log_in_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fields_layout" />

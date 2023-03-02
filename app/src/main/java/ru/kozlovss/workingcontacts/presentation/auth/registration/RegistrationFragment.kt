@@ -51,7 +51,7 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun setListeners() = with(binding) {
-        registerButton.setOnClickListener {
+        signInButton.setOnClickListener {
             if (isPasswordsDifferent()) {
                 DialogManager.differentPasswordsDialog(this@RegistrationFragment)
                 return@setOnClickListener
@@ -59,27 +59,17 @@ class RegistrationFragment : Fragment() {
             val name = name.text.toString()
             val login = login.text.toString()
             val password = password.text.toString()
+            try {
+                viewModel.register(login, password, name)
+            } catch (e: Exception) {
+                DialogManager.errorDialog(this@RegistrationFragment, e)
+            }
 
-            viewModel.register(login, password, name)
         }
 
-//        takePhoto.setOnClickListener {
-//            ImagePicker.Builder(this@RegistrationFragment)
-//                .cameraOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
-//        }
-//
-//        gallery.setOnClickListener {
-//            ImagePicker.Builder(this@RegistrationFragment)
-//                .galleryOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
-//        }
-//
-//        clear.setOnClickListener {
-//            viewModel.clearAvatar()
-//        }
+        avatar.setOnClickListener {
+            DialogManager.addPhotoDialog(this@RegistrationFragment, viewModel.avatar.value != null)
+        }
     }
 
     private fun isPasswordsDifferent() = with(binding) {
@@ -91,7 +81,7 @@ class RegistrationFragment : Fragment() {
             viewModel.token.collect {
                 it?.let {
                     viewModel.saveTokenOfUser(it.id, it.token)
-                    findNavController().navigateUp()
+                    findNavController().navigate(R.id.action_registrationFragment_to_feedFragment)
                 }
             }
         }

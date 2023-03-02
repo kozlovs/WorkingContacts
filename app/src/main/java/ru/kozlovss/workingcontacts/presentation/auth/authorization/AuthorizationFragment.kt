@@ -30,13 +30,10 @@ class AuthorizationFragment : Fragment() {
 
     private fun setListeners() {
         with(binding) {
-            loginButton.setOnClickListener {
+            logInButton.setOnClickListener {
                 val login = login.text.toString()
                 val password = password.text.toString()
                 viewModel.logIn(login, password)
-            }
-            registrationButton.setOnClickListener {
-                findNavController().navigate(R.id.action_authorizationFragment_to_registrationFragment)
             }
         }
     }
@@ -47,7 +44,7 @@ class AuthorizationFragment : Fragment() {
             viewModel.token.collect {
                 it?.let {
                     viewModel.saveTokenOfUser(it.id, it.token)
-                    findNavController().navigateUp()//todo на главный экран
+                    findNavController().navigate(R.id.action_authorizationFragment_to_feedFragment)
                 }
             }
         }
