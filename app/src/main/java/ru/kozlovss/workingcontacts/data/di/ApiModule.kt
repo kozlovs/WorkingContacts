@@ -102,6 +102,6 @@ class ApiModule {
     ): WallApiService = retrofit.create()
 
     companion object {
-        const val BASE_URL = "${BuildConfig.BASE_URL}/api/"
+        const val BASE_URL = "${BuildConfig.BASE_URL}api/"
     }
 }

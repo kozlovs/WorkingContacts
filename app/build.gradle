@@ -28,7 +28,7 @@ android {
         }
         debug {
             manifestPlaceholders.usesCleartextTraffic = true
-            buildConfigField "String", "BASE_URL", '"http://netomedia.ru/"'
+            buildConfigField "String", "BASE_URL", '"https://netomedia.ru/"'
         }
     }
     compileOptions {
