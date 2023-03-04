@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentAuthorizationBinding
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 
+@AndroidEntryPoint
 class AuthorizationFragment : Fragment() {
 
     private lateinit var binding: FragmentAuthorizationBinding

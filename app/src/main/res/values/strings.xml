@@ -25,4 +25,8 @@
     <string name="empty_posts">there are no posts</string>
     <string name="retry_loading">retry</string>
     <string name="post_text">Enter text</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="add_photo">Add photo</string>
+    <string name="add_audio">Add audio</string>
+    <string name="add_video">Add video</string>
 </resources>
