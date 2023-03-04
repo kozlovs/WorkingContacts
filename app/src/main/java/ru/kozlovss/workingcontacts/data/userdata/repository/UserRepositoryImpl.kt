@@ -1,6 +1,7 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -10,6 +11,7 @@ import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
 import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.error.ApiError
@@ -20,7 +22,13 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val apiService: UserApiService,
     private val appAuth: AppAuth
-): UserRepository {
+) : UserRepository {
+
+//    val me: Flow<User>
+//
+//    suspend fun getMyInfo() {
+//        apiService.getUserById(appAuth).body()
+//    }
 
     override suspend fun register(
         login: String,

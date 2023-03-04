@@ -7,9 +7,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import ru.kozlovss.workingcontacts.BuildConfig
-import ru.kozlovss.workingcontacts.data.api.MediaApiService
+import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.Media
+import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.eventsdata.api.EventApiService
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao

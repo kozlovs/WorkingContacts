@@ -10,10 +10,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.kozlovss.workingcontacts.BuildConfig
-import ru.kozlovss.workingcontacts.data.api.*
 import ru.kozlovss.workingcontacts.data.eventsdata.api.EventApiService
+import ru.kozlovss.workingcontacts.data.jobsdata.api.JobApiService
+import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
+import ru.kozlovss.workingcontacts.data.mywalldata.api.MyWallApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
+import ru.kozlovss.workingcontacts.data.walldata.api.WallApiService
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton

@@ -11,6 +11,9 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
+import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
+import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.mywalldata.db.MyWallDb
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import javax.inject.Singleton
@@ -55,4 +58,23 @@ class DbModule {
     fun provideEventRemoteKeyDao(
         eventDb: EventDb
     ): EventRemoteKeyDao = eventDb.eventRemoteKeyDao()
+
+    @Singleton
+    @Provides
+    fun provideMyWallDb(
+        @ApplicationContext
+        context: Context
+    ): MyWallDb = Room.databaseBuilder(context, MyWallDb::class.java, "my_wall.db")
+        .fallbackToDestructiveMigration()
+        .build()
+
+    @Provides
+    fun provideMyWallDao(
+        myWallDb: MyWallDb
+    ): MyWallDao = myWallDb.myWallDao()
+
+    @Provides
+    fun provideMyWallRemoteKeyDao(
+        myWallDb: MyWallDb
+    ): MyWallRemoteKeyDao = myWallDb.myWallRemoteKeyDao()
 }

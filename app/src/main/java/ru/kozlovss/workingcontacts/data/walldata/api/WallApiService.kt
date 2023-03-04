@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.api
+package ru.kozlovss.workingcontacts.data.walldata.api
 
 import retrofit2.Response
 import retrofit2.http.GET

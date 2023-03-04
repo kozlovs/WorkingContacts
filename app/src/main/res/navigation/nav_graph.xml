@@ -43,9 +43,19 @@
     </fragment>
     <fragment
         android:id="@+id/myWallFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.mywall.MyWallFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.mywall.ui.MyWallFragment"
         android:label="fragment_my_wall"
-        tools:layout="@layout/fragment_my_wall" />
+        tools:layout="@layout/fragment_my_wall" >
+        <action
+            android:id="@+id/action_myWallFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_myWallFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_myWallFragment_to_startFragment"
+            app:destination="@id/startFragment" />
+    </fragment>
     <fragment
         android:id="@+id/authorizationFragment"
         android:name="ru.kozlovss.workingcontacts.presentation.auth.authorization.AuthorizationFragment"
