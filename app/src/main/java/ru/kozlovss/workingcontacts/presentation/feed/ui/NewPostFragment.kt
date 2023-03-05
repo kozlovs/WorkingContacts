@@ -1,12 +1,18 @@
 package ru.kozlovss.workingcontacts.presentation.feed.ui
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -27,6 +33,15 @@ class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
     lateinit var post: Post
 
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            Log.d("MyLog", "Selected URI: $uri")
+        } else {
+            Log.d("MyLog", "No media selected")
+        }
+    }
 //    private val imageLauncher =
 //        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 //            when (it.resultCode) {
@@ -143,10 +158,19 @@ class NewPostFragment : Fragment() {
         }
 
         addPhoto.setOnClickListener {
+            if (isPhotoPickerAvailable()) {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
 //            ImagePicker.Builder(this@NewPostFragment)
 //                .galleryOnly()
 //                .maxResultSize(2048, 2048)
 //                .createIntent(imageLauncher::launch)
+        }
+
+        addVideo.setOnClickListener {
+            if (isPhotoPickerAvailable()) {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+            }
         }
 
         clear.setOnClickListener {

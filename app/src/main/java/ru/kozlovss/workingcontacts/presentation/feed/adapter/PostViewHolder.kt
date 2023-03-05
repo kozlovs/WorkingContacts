@@ -2,6 +2,7 @@ package ru.kozlovss.workingcontacts.presentation.feed.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
@@ -24,7 +25,12 @@ class PostViewHolder(
             author.text = post.author
             authorJob.text = post.authorJob
             published.text = post.published
-            link.text = post.link
+            if (post.link != null) {
+                link.visibility = View.VISIBLE
+                link.text = post.link
+            } else {
+                link.visibility = View.GONE
+            }
             content.text = post.content
             like.isChecked = post.likedByMe
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
