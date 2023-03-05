@@ -11,7 +11,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepositoryImpl
 import ru.kozlovss.workingcontacts.databinding.CardPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
@@ -23,14 +22,15 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             author.text = post.author
+            authorJob.text = post.authorJob
             published.text = post.published
+            link.text = post.link
             content.text = post.content
             like.isChecked = post.likedByMe
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
 
             Glide.with(binding.avatar)
                 .load(post.authorAvatar)
-                .transform(RoundedCorners(30))
                 .placeholder(R.drawable.baseline_update_24)
                 .error(R.drawable.baseline_error_outline_24)
                 .timeout(10_000)
@@ -38,14 +38,34 @@ class PostViewHolder(
 
             val attachment = post.attachment
             if (attachment != null) {
-                if (attachment.attachmentType == Attachment.AttachmentType.IMAGE) {
-                    image.visibility = View.VISIBLE
-                    Glide.with(image)
-                        .load(PostRepositoryImpl.getImageUrl(attachment.url))
-                        .placeholder(R.drawable.baseline_update_24)
-                        .error(R.drawable.baseline_error_outline_24)
-                        .timeout(10_000)
-                        .into(image)
+                when (attachment.attachmentType) {
+                    Attachment.AttachmentType.IMAGE -> {
+                        image.visibility = View.VISIBLE
+                        Glide.with(image)
+                            .load(attachment.url)
+                            .transform(RoundedCorners(30))
+                            .placeholder(R.drawable.baseline_update_24)
+                            .error(R.drawable.baseline_error_outline_24)
+                            .timeout(10_000)
+                            .into(image)
+                        video.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
+                    Attachment.AttachmentType.AUDIO -> {
+                        audio.visibility = View.VISIBLE
+                        image.visibility = View.GONE
+                        video.visibility = View.GONE
+                    }
+                    Attachment.AttachmentType.VIDEO -> {
+                        video.visibility = View.VISIBLE
+                        image.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
+                    else -> {
+                        image.visibility = View.GONE
+                        video.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
                 }
             } else {
                 image.visibility = View.GONE
