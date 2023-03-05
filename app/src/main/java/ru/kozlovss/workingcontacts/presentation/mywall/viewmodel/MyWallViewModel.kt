@@ -7,15 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.SingleLiveEvent
@@ -42,14 +42,17 @@ private var empty = Post(
 
 @HiltViewModel
 class MyWallViewModel @Inject constructor(
-    private val repository: MyWallRepository,
+    private val userRepository: UserRepository,
+    private val wallRepository: MyWallRepository,
     private val appAuth: AppAuth
 ) : ViewModel() {
 
     val authState = appAuth.authStateFlow
 
-    val data: Flow<PagingData<Post>> = repository.posts
+    val data: Flow<PagingData<Post>> = wallRepository.posts
         .flowOn(Dispatchers.Default)
+
+    val userData = userRepository.myData
 
     private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
     val state: StateFlow<FeedModel.FeedModelState>
@@ -92,9 +95,9 @@ class MyWallViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     photo.value?.let {
-                        repository.saveWithAttachment(post, it)
+                        wallRepository.saveWithAttachment(post, it)
                         clearPhoto()
-                    } ?: repository.save(post)
+                    } ?: wallRepository.save(post)
                 } catch (e: Exception) {
                     _state.value = FeedModel.FeedModelState.Error
                 }
@@ -117,7 +120,7 @@ class MyWallViewModel @Inject constructor(
 
     fun likeById(id: Long) = viewModelScope.launch {
         try {
-            repository.likeById(id)
+            wallRepository.likeById(id)
         } catch (e: Exception) {
             e.printStackTrace()
             _state.value = FeedModel.FeedModelState.Error
@@ -126,7 +129,7 @@ class MyWallViewModel @Inject constructor(
 
     fun removeById(id: Long) = viewModelScope.launch {
         try {
-            repository.removeById(id)
+            wallRepository.removeById(id)
         } catch (e: Exception) {
             _state.value = FeedModel.FeedModelState.Error
         }

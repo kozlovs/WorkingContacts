@@ -1,15 +1,14 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
-import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.dto.User
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
 interface UserRepository {
 
-//    val me: Flow<User>
+    val myData: MutableStateFlow<User?>
 
     suspend fun register(
         login: String,
@@ -20,9 +19,7 @@ interface UserRepository {
 
     suspend fun login(login: String, password: String): Token
 
-    fun saveTokenOfUser(id: Long, token: String)
+    suspend fun saveTokenOfUser(id: Long, token: String)
 
-    fun clearTokenOfUser()
-
-//    fun getMyData(token: Token)
+    suspend fun clearTokenOfUser()
 }

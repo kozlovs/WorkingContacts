@@ -10,14 +10,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentMyWallBinding
-import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListener
-import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
-import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
+import ru.kozlovss.workingcontacts.presentation.mywall.adapter.OnInteractionListener
+import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostLoadingStateAdapter
+import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
 
 @AndroidEntryPoint
@@ -93,6 +94,20 @@ class MyWallFragment : Fragment() {
     }
 
     private fun subscribe(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
+        lifecycleScope.launchWhenCreated {
+            viewModel.userData.collect {
+                it?.let {
+                    binding.name.text = it.name
+                    Glide.with(binding.avatar)
+                        .load(it.avatar)
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(binding.avatar)
+                }
+            }
+        }
+
         lifecycleScope.launchWhenCreated {
             viewModel.data.collectLatest(adapter::submitData)
         }

@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -24,11 +24,7 @@ class UserRepositoryImpl @Inject constructor(
     private val appAuth: AppAuth
 ) : UserRepository {
 
-//    val me: Flow<User>
-//
-//    suspend fun getMyInfo() {
-//        apiService.getUserById(appAuth).body()
-//    }
+    override val myData = MutableStateFlow<User?>(null)
 
     override suspend fun register(
         login: String,
@@ -77,12 +73,14 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun saveTokenOfUser(id: Long, token: String) {
+    override suspend fun saveTokenOfUser(id: Long, token: String) {
         appAuth.setAuth(id, token)
+        myData.value = checkResponse(apiService.getUserById(id))
     }
 
-    override fun clearTokenOfUser() {
+    override suspend fun clearTokenOfUser() {
         appAuth.removeAuth()
+        myData.value = null
     }
 
     private fun <T> checkResponse(response: Response<T>): T {

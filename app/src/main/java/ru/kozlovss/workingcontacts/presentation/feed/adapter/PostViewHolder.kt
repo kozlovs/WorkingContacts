@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.presentation.feed.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.PopupMenu
 import androidx.core.view.isVisible

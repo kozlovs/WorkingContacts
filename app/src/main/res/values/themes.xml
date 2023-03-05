@@ -10,5 +10,9 @@
         <item name="cornerSize">26dp</item>
     </style>
 
+    <style name="roundedProfileAvatarImageView" parent="roundedImageView">
+        <item name="cornerSize">32dp</item>
+    </style>
+
     <style name="Theme.WorkingContacts" parent="Base.Theme.WorkingContacts" />
 </resources>

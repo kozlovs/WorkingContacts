@@ -4,37 +4,26 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.view.View
 import android.widget.PopupMenu
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepositoryImpl
-import ru.kozlovss.workingcontacts.databinding.CardPostBinding
+import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
 class PostViewHolder (
-    private val binding: CardPostBinding,
+    private val binding: CardWallPostBinding,
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
         binding.apply {
-            author.text = post.author
             published.text = post.published
             content.text = post.content
             like.isChecked = post.likedByMe
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
-
-            Glide.with(binding.avatar)
-                .load(post.authorAvatar)
-                .transform(RoundedCorners(30))
-                .placeholder(R.drawable.baseline_update_24)
-                .error(R.drawable.baseline_error_outline_24)
-                .timeout(10_000)
-                .into(binding.avatar)
 
             val attachment = post.attachment
             if (attachment != null) {
@@ -82,7 +71,7 @@ class PostViewHolder (
         }
     }
 
-    private fun setListeners(binding: CardPostBinding, post: Post) = with(binding) {
+    private fun setListeners(binding: CardWallPostBinding, post: Post) = with(binding) {
         like.setOnClickListener {
             onInteractionListener.onLike(post)
         }
@@ -99,9 +88,7 @@ class PostViewHolder (
             onInteractionListener.onToPost(post)
         }
 
-        menu.isVisible = post.ownedByMe
-
-        menu.setOnClickListener {
+        cardPost.setOnLongClickListener {
             PopupMenu(it.context, it).apply {
                 inflate(R.menu.options_post_menu)
                 setOnMenuItemClickListener { item ->
@@ -118,6 +105,7 @@ class PostViewHolder (
                     }
                 }
             }.show()
+            true
         }
 
         image.setOnClickListener {

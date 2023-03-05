@@ -9,4 +9,8 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">26dp</item>
     </style>
+
+    <style name="roundedProfileAvatarImageView" parent="roundedImageView">
+        <item name="cornerSize">32dp</item>
+    </style>
 </resources>

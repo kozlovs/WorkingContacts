@@ -52,11 +52,11 @@ class UserViewModel @Inject constructor(
     }
 
 
-    fun saveTokenOfUser(id: Long, token: String) {
+    suspend fun saveTokenOfUser(id: Long, token: String) {
         repository.saveTokenOfUser(id, token)
     }
 
-    fun logout() {
+    suspend fun logout() {
         repository.clearTokenOfUser()
         _token.value = null
     }

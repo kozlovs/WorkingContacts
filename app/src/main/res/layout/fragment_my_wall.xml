@@ -24,10 +24,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/avatar"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:textSize="20sp"
                 app:layout_constraintStart_toEndOf="@id/avatar"
                 app:layout_constraintTop_toTopOf="@id/avatar"
                 tools:text="Алексей Орлов" />
@@ -59,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/card_post" />
+            tools:listitem="@layout/card_wall_post" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

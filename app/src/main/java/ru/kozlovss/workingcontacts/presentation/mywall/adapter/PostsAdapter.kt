@@ -6,21 +6,21 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.databinding.CardPostBinding
+import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 
 class PostsAdapter(private val onInteractionListener: OnInteractionListener) :
     PagingDataAdapter<Post, RecyclerView.ViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
-            is Post -> R.layout.card_post
+            is Post -> R.layout.card_wall_post
             else -> error("unknown item type")
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): RecyclerView.ViewHolder =
         when (viewTipe) {
-            R.layout.card_post -> {
+            R.layout.card_wall_post -> {
                 val binding =
-                    CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    CardWallPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 PostViewHolder(binding, onInteractionListener)
             }
             else -> error("unknown view type")
