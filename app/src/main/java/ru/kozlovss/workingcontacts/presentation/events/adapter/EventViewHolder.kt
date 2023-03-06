@@ -11,7 +11,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepositoryImpl
 import ru.kozlovss.workingcontacts.databinding.CardEventBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
@@ -23,14 +22,20 @@ class EventViewHolder(
     fun bind(event: Event) {
         binding.apply {
             author.text = event.author
+            authorJob.text = event.authorJob
             published.text = event.published
+            if (event.link != null) {
+                link.visibility = View.VISIBLE
+                link.text = event.link
+            } else {
+                link.visibility = View.GONE
+            }
             content.text = event.content
             like.isChecked = event.likedByMe
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
 
             Glide.with(binding.avatar)
                 .load(event.authorAvatar)
-                .transform(RoundedCorners(30))
                 .placeholder(R.drawable.baseline_update_24)
                 .error(R.drawable.baseline_error_outline_24)
                 .timeout(10_000)
@@ -38,14 +43,34 @@ class EventViewHolder(
 
             val attachment = event.attachment
             if (attachment != null) {
-                if (attachment.attachmentType == Attachment.AttachmentType.IMAGE) {
-                    image.visibility = View.VISIBLE
-                    Glide.with(image)
-                        .load(EventRepositoryImpl.getImageUrl(attachment.url))
-                        .placeholder(R.drawable.baseline_update_24)
-                        .error(R.drawable.baseline_error_outline_24)
-                        .timeout(10_000)
-                        .into(image)
+                when (attachment.attachmentType) {
+                    Attachment.AttachmentType.IMAGE -> {
+                        image.visibility = View.VISIBLE
+                        Glide.with(image)
+                            .load(attachment.url)
+                            .transform(RoundedCorners(30))
+                            .placeholder(R.drawable.baseline_update_24)
+                            .error(R.drawable.baseline_error_outline_24)
+                            .timeout(10_000)
+                            .into(image)
+                        video.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
+                    Attachment.AttachmentType.AUDIO -> {
+                        audio.visibility = View.VISIBLE
+                        image.visibility = View.GONE
+                        video.visibility = View.GONE
+                    }
+                    Attachment.AttachmentType.VIDEO -> {
+                        video.visibility = View.VISIBLE
+                        image.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
+                    else -> {
+                        image.visibility = View.GONE
+                        video.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
                 }
             } else {
                 image.visibility = View.GONE
@@ -101,27 +126,31 @@ class EventViewHolder(
 
         menu.isVisible = event.ownedByMe
 
-        menu.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.options_event_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.remove -> {
-                            onInteractionListener.onRemove(event)
-                            true
-                        }
-                        R.id.edit -> {
-                            onInteractionListener.onEdit(event)
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
+        menu.setOnClickListener { view ->
+            showMenu(view, event)
         }
 
         image.setOnClickListener {
             onInteractionListener.onToImage(event)
         }
+    }
+
+    private fun showMenu(v: View, event: Event) {
+        PopupMenu(v.context, v).apply {
+            inflate(R.menu.options_event_menu)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.remove -> {
+                        onInteractionListener.onRemove(event)
+                        true
+                    }
+                    R.id.edit -> {
+                        onInteractionListener.onEdit(event)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }.show()
     }
 }

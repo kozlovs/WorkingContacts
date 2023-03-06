@@ -8,12 +8,10 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/my_card"
-        style="@style/Widget.Material3.CardView.Elevated"
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/card_color"
-        android:elevation="6dp"
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

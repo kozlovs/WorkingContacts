@@ -126,27 +126,31 @@ class PostViewHolder(
 
         menu.isVisible = post.ownedByMe
 
-        menu.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.options_post_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.remove -> {
-                            onInteractionListener.onRemove(post)
-                            true
-                        }
-                        R.id.edit -> {
-                            onInteractionListener.onEdit(post)
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
+        menu.setOnClickListener { view ->
+            showMenu(view, post)
         }
 
         image.setOnClickListener {
             onInteractionListener.onToImage(post)
         }
+    }
+
+    private fun showMenu(v: View, post: Post) {
+        PopupMenu(v.context, v).apply {
+            inflate(R.menu.options_post_menu)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.remove -> {
+                        onInteractionListener.onRemove(post)
+                        true
+                    }
+                    R.id.edit -> {
+                        onInteractionListener.onEdit(post)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }.show()
     }
 }

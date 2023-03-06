@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.feed.ui.NewPostFragment">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -23,17 +23,19 @@
                 android:adjustViewBounds="true"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <ImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/clear"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_marginEnd="@dimen/min_spacing"
                 android:layout_marginBottom="@dimen/min_spacing"
-                android:src="@drawable/baseline_close_24" />
+                app:icon="@drawable/baseline_close_24"
+                tools:ignore="SpeakableTextPresentCheck" />
         </FrameLayout>
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,7 +47,7 @@
             android:inputType="textMultiLine"
             android:padding="@dimen/common_spacing" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     <androidx.appcompat.widget.LinearLayoutCompat

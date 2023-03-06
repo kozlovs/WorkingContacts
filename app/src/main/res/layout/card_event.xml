@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_event"
+    style="@style/Widget.Material3.CardView.Filled"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@color/card_color"
     android:layout_marginStart="@dimen/card_margin_side"
-    android:layout_marginEnd="@dimen/card_margin_side"
     android:layout_marginTop="@dimen/card_margin_between"
+    android:layout_marginEnd="@dimen/card_margin_side"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,14 +16,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/avatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:scaleType="center"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageView" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/author"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,14 +33,14 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:singleLine="true"
-            app:layout_constraintBottom_toTopOf="@+id/published"
+            app:layout_constraintBottom_toTopOf="@+id/author_job"
             app:layout_constraintEnd_toStartOf="@+id/menu"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/avatar"
             app:layout_constraintTop_toTopOf="@id/avatar" />
 
-        <TextView
-            android:id="@+id/published"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/author_job"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -48,26 +50,25 @@
             app:layout_constraintStart_toEndOf="@+id/avatar"
             app:layout_constraintTop_toBottomOf="@id/author" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/menu"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.Material3.Button.IconButton.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            app:icon="@drawable/baseline_more_vert_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_more_vert_24" />
+            tools:ignore="SpeakableTextPresentCheck" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginVertical="16dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/barrierInfo">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -78,26 +79,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:layout_marginTop="16dp"
-                    android:adjustViewBounds="true"
-                    android:backgroundTint="@color/material_dynamic_tertiary95" />
+                    android:adjustViewBounds="true" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/baseline_play_circle_filled_24" />
             </FrameLayout>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="center"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:scaleType="center" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/audio"
@@ -107,7 +106,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/play_pause_button"
-                    style="?attr/materialIconButtonFilledStyle"
+                    style="?attr/materialIconButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
@@ -115,9 +114,9 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="SpeakableTextPresentCheck" />
+                    tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/track_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -129,7 +128,20 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </LinearLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoLink="web" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/published"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrierInfo"
@@ -137,7 +149,7 @@
             android:layout_height="0dp"
             app:barrierDirection="bottom"
             app:barrierMargin="16dp"
-            app:constraint_referenced_ids="avatar, author, published" />
+            app:constraint_referenced_ids="avatar, author, author_job" />
 
 
         <androidx.constraintlayout.widget.Barrier

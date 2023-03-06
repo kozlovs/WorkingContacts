@@ -21,13 +21,11 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/log_in_card"
-        style="@style/Widget.Material3.CardView.Elevated"
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/card_color"
-        android:elevation="6dp"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_name">
 
@@ -46,7 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/fields_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,9 +83,9 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/log_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
