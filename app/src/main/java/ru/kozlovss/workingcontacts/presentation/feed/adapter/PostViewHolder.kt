@@ -129,10 +129,6 @@ class PostViewHolder(
         menu.setOnClickListener { view ->
             showMenu(view, post)
         }
-
-        image.setOnClickListener {
-            onInteractionListener.onToImage(post)
-        }
     }
 
     private fun showMenu(v: View, post: Post) {

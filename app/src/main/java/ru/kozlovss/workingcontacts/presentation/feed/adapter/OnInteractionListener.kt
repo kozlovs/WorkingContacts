@@ -9,5 +9,4 @@ interface OnInteractionListener {
     fun onEdit(post: Post)
     fun onPlayVideo(post: Post)
     fun onToPost(post: Post)
-    fun onToImage(post: Post)
 }

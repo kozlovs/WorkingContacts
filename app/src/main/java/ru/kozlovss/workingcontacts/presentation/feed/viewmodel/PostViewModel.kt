@@ -150,6 +150,8 @@ class PostViewModel @Inject constructor(
 
     private fun isLogin() = appAuth.authStateFlow.value.id != 0L
 
+    suspend fun getById(id: Long) = repository.getById(id)
+
     fun checkLogin(fragment: Fragment): Boolean =
         if (isLogin()) {
             true

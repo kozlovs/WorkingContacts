@@ -19,6 +19,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListen
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
+import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
@@ -69,18 +70,9 @@ class FeedFragment : Fragment() {
             }
 
             override fun onToPost(post: Post) {
-//                findNavController().navigate(
-//                    R.id.action_feedFragment_to_postFragment,
-//                    Bundle().apply { id = post.id })
-            }
-//
-            override fun onToImage(post: Post) {
-//                post.attachment?.let {
-//                    findNavController().navigate(
-//                        R.id.action_feedFragment_to_imageFragment,
-//                        Bundle().apply { imageUrlArg = it.url }
-//                    )
-//                }
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_postFragment,
+                    Bundle().apply { id = post.id })
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(

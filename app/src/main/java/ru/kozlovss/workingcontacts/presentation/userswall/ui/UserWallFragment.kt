@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.userswall
+package ru.kozlovss.workingcontacts.presentation.userswall.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
