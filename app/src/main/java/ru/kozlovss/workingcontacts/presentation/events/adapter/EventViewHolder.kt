@@ -43,8 +43,8 @@ class EventViewHolder(
 
             val attachment = event.attachment
             if (attachment != null) {
-                when (attachment.attachmentType) {
-                    Attachment.AttachmentType.IMAGE -> {
+                when (attachment.type) {
+                    Attachment.Type.IMAGE -> {
                         image.visibility = View.VISIBLE
                         Glide.with(image)
                             .load(attachment.url)
@@ -56,12 +56,12 @@ class EventViewHolder(
                         video.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
-                    Attachment.AttachmentType.AUDIO -> {
+                    Attachment.Type.AUDIO -> {
                         audio.visibility = View.VISIBLE
                         image.visibility = View.GONE
                         video.visibility = View.GONE
                     }
-                    Attachment.AttachmentType.VIDEO -> {
+                    Attachment.Type.VIDEO -> {
                         video.visibility = View.VISIBLE
                         image.visibility = View.GONE
                         audio.visibility = View.GONE

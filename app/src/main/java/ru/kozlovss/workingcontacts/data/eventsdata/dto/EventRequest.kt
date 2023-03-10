@@ -9,7 +9,7 @@ data class EventRequest(
     val datetime: String?,
     val published: String,
     val coords: Coordinates?,
-    val type: Event.EventType?,
+    val type: Event.Type?,
     val attachment: Attachment?,
     val link: String?,
     val speakerIds: List<Long>?,

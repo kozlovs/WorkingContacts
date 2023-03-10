@@ -27,7 +27,7 @@ class PostViewHolder (
 
             val attachment = post.attachment
             if (attachment != null) {
-                if (attachment.attachmentType == Attachment.AttachmentType.IMAGE) {
+                if (attachment.type == Attachment.Type.IMAGE) {
                     image.visibility = View.VISIBLE
                     Glide.with(image)
                         .load(PostRepositoryImpl.getImageUrl(attachment.url))

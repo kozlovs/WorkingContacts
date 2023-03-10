@@ -1,14 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.events.ui.NewEventFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <FrameLayout
+            android:id="@+id/image_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clear"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="@dimen/min_spacing"
+                android:layout_marginBottom="@dimen/min_spacing"
+                app:icon="@drawable/baseline_close_24"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start|top"
+            android:background="@android:color/transparent"
+            android:gravity="top"
+            android:hint="@string/post_text"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:padding="@dimen/common_spacing" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="14dp"
+        android:backgroundTint="@android:color/transparent"
+        android:orientation="horizontal">
+
+        <HorizontalScrollView
+            android:id="@+id/button_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/take_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/card_margin_side"
+                    android:padding="@dimen/common_spacing"
+                    android:text="@string/take_a_photo"
+                    app:icon="@drawable/baseline_add_a_photo_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/min_spacing"
+                    android:padding="@dimen/common_spacing"
+                    android:text="@string/add_photo"
+                    app:icon="@drawable/baseline_insert_photo_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/min_spacing"
+                    android:padding="@dimen/common_spacing"
+                    android:text="@string/add_video"
+                    app:icon="@drawable/baseline_video_call_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/min_spacing"
+                    android:layout_marginEnd="32dp"
+                    android:padding="@dimen/common_spacing"
+                    android:text="@string/add_audio"
+                    app:icon="@drawable/baseline_audio_file_24" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </HorizontalScrollView>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/card_margin_side"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:contentDescription="@string/add_post_button_description"
+        app:srcCompat="@drawable/baseline_done_24"
+        tools:ignore="RedundantDescriptionCheck" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

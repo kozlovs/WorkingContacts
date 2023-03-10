@@ -13,7 +13,7 @@ data class Event(
     val datetime: String,
     val published: String,
     val coords: Coordinates?,
-    val type: EventType,
+    val type: Type,
     val likeOwnerIds: List<Long> = emptyList(),
     val likedByMe: Boolean,
     val speakerIds: List<Long> = emptyList(),
@@ -38,7 +38,7 @@ data class Event(
         )
     }
 
-    enum class EventType {
+    enum class Type {
         OFFLINE, ONLINE
     }
 }

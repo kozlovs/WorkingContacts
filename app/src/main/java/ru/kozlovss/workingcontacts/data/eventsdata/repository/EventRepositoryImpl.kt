@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.data.eventsdata.repository
 
+import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -121,7 +122,7 @@ class EventRepositoryImpl @Inject constructor(
                 event.copy(
                     attachment = Attachment(
                         media.url,
-                        Attachment.AttachmentType.IMAGE
+                        Attachment.Type.IMAGE
                     )
                 ).toRequest()
             )

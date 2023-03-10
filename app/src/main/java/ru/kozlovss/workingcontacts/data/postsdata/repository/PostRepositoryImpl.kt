@@ -121,7 +121,7 @@ class PostRepositoryImpl @Inject constructor(
                 post.copy(
                     attachment = Attachment(
                         media.url,
-                        Attachment.AttachmentType.IMAGE
+                        Attachment.Type.IMAGE
                     )
                 ).toRequest()
             )
