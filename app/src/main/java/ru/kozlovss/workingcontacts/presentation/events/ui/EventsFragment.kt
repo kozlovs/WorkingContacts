@@ -19,6 +19,7 @@ import ru.kozlovss.workingcontacts.presentation.events.adapter.EventLoadingState
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
+import ru.kozlovss.workingcontacts.presentation.events.ui.EventFragment.Companion.id
 
 @AndroidEntryPoint
 class EventsFragment : Fragment() {
@@ -68,18 +69,9 @@ class EventsFragment : Fragment() {
             }
 
             override fun onToEvent(event: Event) {
-//                findNavController().navigate(
-//                    R.id.action_eventsFragment_to_eventFragment,
-//                    Bundle().apply { id = event.id })
-            }
-
-            override fun onToImage(event: Event) {
-//                event.attachment?.let {
-//                    findNavController().navigate(
-//                        R.id.action_eventsFragment_to_imageFragment,
-//                        Bundle().apply { imageUrlArg = it.url }
-//                    )
-//                }
+                findNavController().navigate(
+                    R.id.action_eventsFragment_to_eventFragment,
+                    Bundle().apply { id = event.id })
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(

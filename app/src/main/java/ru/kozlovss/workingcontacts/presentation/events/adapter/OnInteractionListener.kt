@@ -9,5 +9,4 @@ interface OnInteractionListener {
     fun onEdit(event: Event)
     fun onPlayVideo(event: Event)
     fun onToEvent(event: Event)
-    fun onToImage(event: Event)
 }

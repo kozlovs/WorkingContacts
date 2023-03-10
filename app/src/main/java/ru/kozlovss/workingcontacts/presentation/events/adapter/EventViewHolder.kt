@@ -129,10 +129,6 @@ class EventViewHolder(
         menu.setOnClickListener { view ->
             showMenu(view, event)
         }
-
-        image.setOnClickListener {
-            onInteractionListener.onToImage(event)
-        }
     }
 
     private fun showMenu(v: View, event: Event) {
