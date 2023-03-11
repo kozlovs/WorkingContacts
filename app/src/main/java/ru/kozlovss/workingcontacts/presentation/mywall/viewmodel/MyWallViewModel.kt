@@ -143,13 +143,5 @@ class MyWallViewModel @Inject constructor(
         _photo.value = PhotoModel(uri, toFile)
     }
 
-    private fun isLogin() = appAuth.authStateFlow.value.id != 0L
-
-    fun checkLogin(fragment: Fragment): Boolean =
-        if (isLogin()) {
-            true
-        } else {
-            DialogManager.errorAuthDialog(fragment)
-            false
-        }
+    fun isLogin() = appAuth.isLogin()
 }

@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 
-interface WallApiService {
+interface UserWallApiService {
 
     @GET("{id}/wall")
     suspend fun getWallByUserId(@Path("id") id: Long): Response<List<Post>>

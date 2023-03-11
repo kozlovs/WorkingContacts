@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentMyWallBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostsAdapter
@@ -36,9 +37,8 @@ class MyWallFragment : Fragment() {
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
-                if (viewModel.checkLogin(this@MyWallFragment)) {
-                    viewModel.likeById(post.id)
-                }
+                if (viewModel.isLogin()) viewModel.likeById(post.id)
+                else DialogManager.errorAuthDialog(this@MyWallFragment)
             }
 
             override fun onShare(post: Post) {
@@ -70,16 +70,6 @@ class MyWallFragment : Fragment() {
 //                findNavController().navigate(
 //                    R.id.action_feedFragment_to_postFragment,
 //                    Bundle().apply { id = post.id })
-            }
-
-            //
-            override fun onToImage(post: Post) {
-//                post.attachment?.let {
-//                    findNavController().navigate(
-//                        R.id.action_feedFragment_to_imageFragment,
-//                        Bundle().apply { imageUrlArg = it.url }
-//                    )
-//                }
             }
         })
 
@@ -133,9 +123,8 @@ class MyWallFragment : Fragment() {
 
     private fun setListeners(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
         binding.add.setOnClickListener {
-            if (viewModel.checkLogin(this)) {
-                findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
-            }
+            if (viewModel.isLogin()) findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
+            else DialogManager.errorAuthDialog(this@MyWallFragment)
         }
 
         binding.swipeRefresh.setOnRefreshListener {

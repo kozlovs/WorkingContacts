@@ -25,6 +25,7 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     override val myData = MutableStateFlow<User?>(null)
+    override val userData = MutableStateFlow<User?>(null)
 
     override suspend fun register(
         login: String,
@@ -57,6 +58,14 @@ class UserRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             throw UnknownError()
         }
+    }
+
+    suspend fun getUserInfo(userId: Long) {
+        userData.value = checkResponse(apiService.getUserById(userId))
+    }
+
+    suspend fun clearUserInfo() {
+        userData.value = null
     }
 
     override suspend fun login(login: String, password: String): Token {

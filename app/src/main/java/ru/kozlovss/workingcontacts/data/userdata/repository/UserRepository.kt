@@ -9,6 +9,7 @@ import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 interface UserRepository {
 
     val myData: MutableStateFlow<User?>
+    val userData: MutableStateFlow<User?>
 
     suspend fun register(
         login: String,

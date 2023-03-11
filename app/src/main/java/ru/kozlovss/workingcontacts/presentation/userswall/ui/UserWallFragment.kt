@@ -1,60 +1,122 @@
 package ru.kozlovss.workingcontacts.presentation.userswall.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
+import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.databinding.FragmentUserWallBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.userswall.adapter.OnInteractionListener
+import ru.kozlovss.workingcontacts.presentation.userswall.adapter.PostLoadingStateAdapter
+import ru.kozlovss.workingcontacts.presentation.userswall.adapter.PostsAdapter
+import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UserWallFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@AndroidEntryPoint
 class UserWallFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel: UserWallViewModel by viewModels()
+    private lateinit var binding: FragmentUserWallBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentUserWallBinding.inflate(inflater, container, false)
+
+        viewModel.userId = arguments?.id
+
+        val adapter = PostsAdapter(object : OnInteractionListener {
+            override fun onLike(post: Post) {
+                if (viewModel.isLogin()) viewModel.likeById(post.id)
+                else DialogManager.errorAuthDialog(this@UserWallFragment)
+            }
+
+            override fun onShare(post: Post) {
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                    type = "text/plain"
+                }
+                val shareIntent =
+                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                startActivity(shareIntent)
+            }
+
+            override fun onPlayVideo(post: Post) {
+//                if (post.video.isNullOrBlank()) return
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
+//                startActivity(intent)
+            }
+
+            override fun onToPost(post: Post) {
+//                findNavController().navigate(
+//                    R.id.action_feedFragment_to_postFragment,
+//                    Bundle().apply { id = post.id })
+            }
+        })
+
+        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = PostLoadingStateAdapter { adapter.retry() },
+            footer = PostLoadingStateAdapter { adapter.retry() }
+        )
+        subscribe(binding, adapter)
+        setListeners(binding, adapter)
+
+        return binding.root
+    }
+
+    private fun subscribe(binding: FragmentUserWallBinding, adapter: PostsAdapter) {
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.userData.collect {
+                it?.let {
+                    binding.name.text = it.name
+                    Glide.with(binding.avatar)
+                        .load(it.avatar)
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(binding.avatar)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.data.collectLatest(adapter::submitData)
+        }
+
+        lifecycleScope.launchWhenCreated {
+            adapter.loadStateFlow.collectLatest {
+                binding.swipeRefresh.isRefreshing =
+                    it.refresh is LoadState.Loading
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_wall, container, false)
+    private fun setListeners(binding: FragmentUserWallBinding, adapter: PostsAdapter) {
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter.refresh()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.userId = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UserWallFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UserWallFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        var Bundle.id: Long by LongArg
     }
 }

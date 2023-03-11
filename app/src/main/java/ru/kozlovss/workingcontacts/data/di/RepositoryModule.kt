@@ -12,6 +12,8 @@ import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepositoryImpl
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepositoryImpl
+import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
+import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -33,4 +35,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsMyWallRepository(impl: MyWallRepositoryImpl): MyWallRepository
+
+    @Singleton
+    @Binds
+    fun bindsUserWallRepository(impl: UserWallRepositoryImpl): UserWallRepository
 }

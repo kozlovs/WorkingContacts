@@ -51,4 +51,6 @@ class AppAuth @Inject constructor(
             apply()
         }
     }
+
+    fun isLogin() = authStateFlow.value.id != 0L
 }

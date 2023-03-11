@@ -16,7 +16,7 @@ import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.mywalldata.api.MyWallApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
-import ru.kozlovss.workingcontacts.data.walldata.api.WallApiService
+import ru.kozlovss.workingcontacts.data.walldata.api.UserWallApiService
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -100,9 +100,9 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideWallApiService(
+    fun provideUserWallApiService(
         retrofit: Retrofit
-    ): WallApiService = retrofit.create()
+    ): UserWallApiService = retrofit.create()
 
     companion object {
         const val BASE_URL = "${BuildConfig.BASE_URL}api/"

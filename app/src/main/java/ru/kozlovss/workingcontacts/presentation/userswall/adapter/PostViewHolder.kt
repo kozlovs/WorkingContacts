@@ -1,9 +1,8 @@
-package ru.kozlovss.workingcontacts.presentation.mywall.adapter
+package ru.kozlovss.workingcontacts.presentation.userswall.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.view.View
-import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.kozlovss.workingcontacts.R
@@ -13,7 +12,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepositoryImpl
 import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
-class PostViewHolder (
+class PostViewHolder  (
     private val binding: CardWallPostBinding,
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -86,26 +85,6 @@ class PostViewHolder (
 
         cardPost.setOnClickListener {
             onInteractionListener.onToPost(post)
-        }
-
-        cardPost.setOnLongClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.options_post_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.remove -> {
-                            onInteractionListener.onRemove(post)
-                            true
-                        }
-                        R.id.edit -> {
-                            onInteractionListener.onEdit(post)
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
-            true
         }
     }
 }

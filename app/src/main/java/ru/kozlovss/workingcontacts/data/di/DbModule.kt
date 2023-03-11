@@ -7,15 +7,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
-import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
-import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
-import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.mywalldata.db.MyWallDb
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.walldata.db.UserWallDb
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -31,14 +26,10 @@ class DbModule {
         .build()
 
     @Provides
-    fun providePostDao(
-        postDb: PostDb
-    ): PostDao = postDb.postDao()
+    fun providePostDao(db: PostDb) = db.postDao()
 
     @Provides
-    fun providePostRemoteKeyDao(
-        postDb: PostDb
-    ): PostRemoteKeyDao = postDb.postRemoteKeyDao()
+    fun providePostRemoteKeyDao(db: PostDb) = db.postRemoteKeyDao()
 
     @Singleton
     @Provides
@@ -46,18 +37,14 @@ class DbModule {
         @ApplicationContext
         context: Context
     ): EventDb = Room.databaseBuilder(context, EventDb::class.java, "event.db")
-            .fallbackToDestructiveMigration()
-            .build()
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
-    fun provideEventDao(
-        eventDb: EventDb
-    ): EventDao = eventDb.eventDao()
+    fun provideEventDao(db: EventDb) = db.eventDao()
 
     @Provides
-    fun provideEventRemoteKeyDao(
-        eventDb: EventDb
-    ): EventRemoteKeyDao = eventDb.eventRemoteKeyDao()
+    fun provideEventRemoteKeyDao(db: EventDb) = db.eventRemoteKeyDao()
 
     @Singleton
     @Provides
@@ -69,12 +56,23 @@ class DbModule {
         .build()
 
     @Provides
-    fun provideMyWallDao(
-        myWallDb: MyWallDb
-    ): MyWallDao = myWallDb.myWallDao()
+    fun provideMyWallDao(db: MyWallDb) = db.myWallDao()
 
     @Provides
-    fun provideMyWallRemoteKeyDao(
-        myWallDb: MyWallDb
-    ): MyWallRemoteKeyDao = myWallDb.myWallRemoteKeyDao()
+    fun provideMyWallRemoteKeyDao(db: MyWallDb) = db.myWallRemoteKeyDao()
+
+    @Singleton
+    @Provides
+    fun provideUserWallDb(
+        @ApplicationContext
+        context: Context
+    ): UserWallDb = Room.databaseBuilder(context, UserWallDb::class.java, "user_wall.db")
+        .fallbackToDestructiveMigration()
+        .build()
+
+    @Provides
+    fun provideUserWallDao(db: UserWallDb) = db.userWallDao()
+
+    @Provides
+    fun provideUserWallRemoteKeyDao(db: UserWallDb) = db.userWallRemoteKeyDao()
 }
