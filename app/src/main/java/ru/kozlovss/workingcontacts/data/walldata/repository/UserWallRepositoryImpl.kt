@@ -18,16 +18,16 @@ import javax.inject.Inject
 
 class UserWallRepositoryImpl @Inject constructor(
     private val dao: UserWallDao,
-    wallApiService: UserWallApiService,
+    val wallApiService: UserWallApiService,
     private val postApiService: PostApiService,
-    remoteKeyDao: UserWallRemoteKeyDao,
-    db: UserWallDb
+    val remoteKeyDao: UserWallRemoteKeyDao,
+    val db: UserWallDb
 ) : UserWallRepository {
 
     override var userId: Long? = null
 
     @OptIn(ExperimentalPagingApi::class)
-    override val posts: Flow<PagingData<Post>> = Pager(
+    override var posts: Flow<PagingData<Post>> = Pager(
         config = PagingConfig(pageSize = 10, enablePlaceholders = false),
         pagingSourceFactory = dao::pagingSource,
         remoteMediator = UserWallRemoteMediator(
@@ -62,6 +62,24 @@ class UserWallRepositoryImpl @Inject constructor(
 
     override fun clearData() {
         userId = null
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun getUserPosts(id: Long) {
+        userId = id
+        remoteKeyDao.clear()
+        dao.clear()
+        posts = Pager(
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            pagingSourceFactory = dao::pagingSource,
+            remoteMediator = UserWallRemoteMediator(
+                wallApiService,
+                dao,
+                remoteKeyDao,
+                db,
+                id
+            )
+        ).flow.map { it.map(PostEntity::toDto) }
     }
 
     private suspend fun makeRequestLikeById(id: Long) {

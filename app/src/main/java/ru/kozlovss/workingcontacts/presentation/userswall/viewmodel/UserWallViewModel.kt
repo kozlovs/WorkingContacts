@@ -24,7 +24,6 @@ class UserWallViewModel @Inject constructor(
     var userId: Long? = null
         set(value) {
             value?.let { it ->
-                wallRepository.userId = userId
                 field = it
                 getUserData()
             } ?: {
@@ -46,7 +45,10 @@ class UserWallViewModel @Inject constructor(
 
     private fun getUserData() = viewModelScope.launch {
         try {
-            userId?.let { userRepository.getUserById(it) }
+            userId?.let {
+                userRepository.getUserById(it)
+                wallRepository.getUserPosts(it)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

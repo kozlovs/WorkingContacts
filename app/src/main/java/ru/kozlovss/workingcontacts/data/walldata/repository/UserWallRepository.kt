@@ -11,4 +11,5 @@ interface UserWallRepository {
     suspend fun getById(id: Long): Post?
     suspend fun likeById(id: Long)
     fun clearData()
+    suspend fun getUserPosts(id: Long)
 }
