@@ -60,11 +60,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    suspend fun getUserInfo(userId: Long) {
-        userData.value = checkResponse(apiService.getUserById(userId))
-    }
-
-    suspend fun clearUserInfo() {
+    override fun clearUserInfo() {
         userData.value = null
     }
 
@@ -90,6 +86,10 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun clearTokenOfUser() {
         appAuth.removeAuth()
         myData.value = null
+    }
+
+    override suspend fun getUserById(id: Long) {
+        userData.value = checkResponse(apiService.getUserById(id))
     }
 
     private fun <T> checkResponse(response: Response<T>): T {

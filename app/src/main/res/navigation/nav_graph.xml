@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_feedFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_userWallFragment"
+            app:destination="@id/userWallFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventsFragment"
@@ -40,6 +43,9 @@
         <action
             android:id="@+id/action_eventsFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_eventsFragment_to_userWallFragment"
+            app:destination="@id/userWallFragment" />
     </fragment>
     <fragment
         android:id="@+id/myWallFragment"
@@ -109,6 +115,9 @@
         <action
             android:id="@+id/action_postFragment_to_newPostFragment"
             app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_userWallFragment"
+            app:destination="@id/userWallFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventFragment"
@@ -124,6 +133,9 @@
         <action
             android:id="@+id/action_eventFragment_to_newEventFragment"
             app:destination="@id/newEventFragment" />
+        <action
+            android:id="@+id/action_eventFragment_to_userWallFragment"
+            app:destination="@id/userWallFragment" />
     </fragment>
     <fragment
         android:id="@+id/newEventFragment"
@@ -152,4 +164,9 @@
             android:id="@+id/action_startFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/userWallFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment"
+        android:label="fragment_user_wall"
+        tools:layout="@layout/fragment_user_wall" />
 </navigation>

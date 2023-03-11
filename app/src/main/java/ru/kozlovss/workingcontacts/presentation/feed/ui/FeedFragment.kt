@@ -20,6 +20,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAda
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
@@ -73,6 +74,13 @@ class FeedFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_feedFragment_to_postFragment,
                     Bundle().apply { id = post.id })
+            }
+
+            override fun onToUser(post: Post) {
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_userWallFragment,
+                    Bundle().apply { userId = post.authorId }
+                )
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(

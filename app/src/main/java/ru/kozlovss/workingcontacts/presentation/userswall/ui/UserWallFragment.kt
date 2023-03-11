@@ -35,7 +35,7 @@ class UserWallFragment : Fragment() {
     ): View {
         binding = FragmentUserWallBinding.inflate(inflater, container, false)
 
-        viewModel.userId = arguments?.id
+        viewModel.userId = arguments?.userId
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -117,6 +117,6 @@ class UserWallFragment : Fragment() {
     }
 
     companion object {
-        var Bundle.id: Long by LongArg
+        var Bundle.userId: Long by LongArg
     }
 }

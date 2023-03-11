@@ -124,6 +124,18 @@ class PostViewHolder(
             onInteractionListener.onToPost(post)
         }
 
+        avatar.setOnClickListener {
+            onInteractionListener.onToUser(post)
+        }
+
+        author.setOnClickListener {
+            onInteractionListener.onToUser(post)
+        }
+
+        authorJob.setOnClickListener {
+            onInteractionListener.onToUser(post)
+        }
+
         menu.isVisible = post.ownedByMe
 
         menu.setOnClickListener { view ->
