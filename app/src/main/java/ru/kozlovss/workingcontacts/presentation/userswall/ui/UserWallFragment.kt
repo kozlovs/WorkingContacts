@@ -2,13 +2,13 @@ package ru.kozlovss.workingcontacts.presentation.userswall.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -18,7 +18,6 @@ import ru.kozlovss.workingcontacts.databinding.FragmentUserWallBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.OnInteractionListener
-import ru.kozlovss.workingcontacts.presentation.userswall.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 
@@ -35,8 +34,8 @@ class UserWallFragment : Fragment() {
     ): View {
         binding = FragmentUserWallBinding.inflate(inflater, container, false)
 
-        viewModel.userId = arguments?.userId
-
+        viewModel.getUserData(arguments?.userId!!)
+        viewModel.getPosts(arguments?.userId!!)
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
                 if (viewModel.isLogin()) viewModel.likeById(post.id)
@@ -67,12 +66,10 @@ class UserWallFragment : Fragment() {
             }
         })
 
-        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = PostLoadingStateAdapter { adapter.retry() },
-            footer = PostLoadingStateAdapter { adapter.retry() }
-        )
+        binding.list.adapter = adapter
+
         subscribe(binding, adapter)
-        setListeners(binding, adapter)
+        setListeners(binding)
 
         return binding.root
     }
@@ -94,26 +91,24 @@ class UserWallFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest(adapter::submitData)
+            viewModel.postsData.collectLatest {
+                Log.d("MyLog", "set data ${it.size}")
+                adapter.submitList(it)
+            }
         }
 
         lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
-                binding.swipeRefresh.isRefreshing =
-                    it.refresh is LoadState.Loading
-            }
+//            adapter.loadStateFlow.collectLatest {
+//                binding.swipeRefresh.isRefreshing =
+//                    it.refresh is LoadState.Loading
+//            }
         }
     }
 
-    private fun setListeners(binding: FragmentUserWallBinding, adapter: PostsAdapter) {
+    private fun setListeners(binding: FragmentUserWallBinding) {
         binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
+            viewModel.getPosts(arguments?.userId!!)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.userId = null
     }
 
     companion object {

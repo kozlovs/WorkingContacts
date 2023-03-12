@@ -2,21 +2,20 @@ package ru.kozlovss.workingcontacts.presentation.userswall.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 
 class PostsAdapter (private val onInteractionListener: OnInteractionListener) :
-    PagingDataAdapter<Post, RecyclerView.ViewHolder>(PostDiffCallback()) {
+    ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
             is Post -> R.layout.card_wall_post
             else -> error("unknown item type")
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): RecyclerView.ViewHolder =
+    override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): PostViewHolder =
         when (viewTipe) {
             R.layout.card_wall_post -> {
                 val binding =
@@ -27,14 +26,14 @@ class PostsAdapter (private val onInteractionListener: OnInteractionListener) :
         }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
+        holder: PostViewHolder,
         position: Int
     ) {
         bindItem(holder, position)
     }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
+        holder: PostViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
@@ -50,7 +49,7 @@ class PostsAdapter (private val onInteractionListener: OnInteractionListener) :
     }
 
     private fun bindItem(
-        holder: RecyclerView.ViewHolder,
+        holder: PostViewHolder,
         position: Int,
         payload: Payload? = null
     ) {

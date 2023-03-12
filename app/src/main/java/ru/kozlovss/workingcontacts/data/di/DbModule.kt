@@ -10,7 +10,6 @@ import dagger.hilt.components.SingletonComponent
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.mywalldata.db.MyWallDb
-import ru.kozlovss.workingcontacts.data.walldata.db.UserWallDb
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -60,19 +59,4 @@ class DbModule {
 
     @Provides
     fun provideMyWallRemoteKeyDao(db: MyWallDb) = db.myWallRemoteKeyDao()
-
-    @Singleton
-    @Provides
-    fun provideUserWallDb(
-        @ApplicationContext
-        context: Context
-    ): UserWallDb = Room.databaseBuilder(context, UserWallDb::class.java, "user_wall.db")
-        .fallbackToDestructiveMigration()
-        .build()
-
-    @Provides
-    fun provideUserWallDao(db: UserWallDb) = db.userWallDao()
-
-    @Provides
-    fun provideUserWallRemoteKeyDao(db: UserWallDb) = db.userWallRemoteKeyDao()
 }
