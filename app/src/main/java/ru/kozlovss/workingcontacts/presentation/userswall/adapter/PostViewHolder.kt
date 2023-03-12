@@ -5,10 +5,10 @@ import android.animation.PropertyValuesHolder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepositoryImpl
 import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
@@ -26,14 +26,34 @@ class PostViewHolder  (
 
             val attachment = post.attachment
             if (attachment != null) {
-                if (attachment.type == Attachment.Type.IMAGE) {
-                    image.visibility = View.VISIBLE
-                    Glide.with(image)
-                        .load(PostRepositoryImpl.getImageUrl(attachment.url))
-                        .placeholder(R.drawable.baseline_update_24)
-                        .error(R.drawable.baseline_error_outline_24)
-                        .timeout(10_000)
-                        .into(image)
+                when (attachment.type) {
+                    Attachment.Type.IMAGE -> {
+                        image.visibility = View.VISIBLE
+                        Glide.with(image)
+                            .load(attachment.url)
+                            .transform(RoundedCorners(30))
+                            .placeholder(R.drawable.baseline_update_24)
+                            .error(R.drawable.baseline_error_outline_24)
+                            .timeout(10_000)
+                            .into(image)
+                        video.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
+                    Attachment.Type.AUDIO -> {
+                        audio.visibility = View.VISIBLE
+                        image.visibility = View.GONE
+                        video.visibility = View.GONE
+                    }
+                    Attachment.Type.VIDEO -> {
+                        video.visibility = View.VISIBLE
+                        image.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
+                    else -> {
+                        image.visibility = View.GONE
+                        video.visibility = View.GONE
+                        audio.visibility = View.GONE
+                    }
                 }
             } else {
                 image.visibility = View.GONE

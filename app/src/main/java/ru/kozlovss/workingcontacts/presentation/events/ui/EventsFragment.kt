@@ -20,6 +20,7 @@ import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
 import ru.kozlovss.workingcontacts.presentation.events.ui.EventFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 
 @AndroidEntryPoint
 class EventsFragment : Fragment() {
@@ -72,6 +73,13 @@ class EventsFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_eventsFragment_to_eventFragment,
                     Bundle().apply { id = event.id })
+            }
+
+            override fun onToUser(event: Event) {
+                findNavController().navigate(
+                    R.id.action_eventsFragment_to_userWallFragment,
+                    Bundle().apply { userId = event.authorId }
+                )
             }
         })
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(

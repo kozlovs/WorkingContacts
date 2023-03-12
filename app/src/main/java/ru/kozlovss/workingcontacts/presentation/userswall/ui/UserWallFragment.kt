@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
@@ -17,6 +18,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentUserWallBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
@@ -98,10 +100,16 @@ class UserWallFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenCreated {
-//            adapter.loadStateFlow.collectLatest {
-//                binding.swipeRefresh.isRefreshing =
-//                    it.refresh is LoadState.Loading
-//            }
+            viewModel.state.collectLatest { state ->
+                binding.swipeRefresh.isRefreshing = state is FeedModel.FeedModelState.Refreshing
+                if (state is FeedModel.FeedModelState.Error) {
+                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.retry_loading) {
+                            viewModel.getPosts(arguments?.userId!!)
+                        }
+                        .show()
+                }
+            }
         }
     }
 

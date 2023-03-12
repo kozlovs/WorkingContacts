@@ -129,6 +129,18 @@ class EventViewHolder(
         menu.setOnClickListener { view ->
             showMenu(view, event)
         }
+
+        avatar.setOnClickListener {
+            onInteractionListener.onToUser(event)
+        }
+
+        author.setOnClickListener {
+            onInteractionListener.onToUser(event)
+        }
+
+        authorJob.setOnClickListener {
+            onInteractionListener.onToUser(event)
+        }
     }
 
     private fun showMenu(v: View, event: Event) {
