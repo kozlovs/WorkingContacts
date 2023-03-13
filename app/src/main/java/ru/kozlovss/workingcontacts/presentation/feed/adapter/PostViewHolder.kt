@@ -120,6 +120,10 @@ class PostViewHolder(
             onInteractionListener.onPlayVideo(post)
         }
 
+        switchButton.setOnClickListener {
+            onInteractionListener.onSwitchAudio(post)
+        }
+
         cardPost.setOnClickListener {
             onInteractionListener.onToPost(post)
         }

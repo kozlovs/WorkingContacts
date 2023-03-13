@@ -70,6 +70,10 @@ class FeedFragment : Fragment() {
 //                startActivity(intent)
             }
 
+            override fun onSwitchAudio(post: Post) {
+                viewModel.switchAudio(post)
+            }
+
             override fun onToPost(post: Post) {
                 findNavController().navigate(
                     R.id.action_feedFragment_to_postFragment,

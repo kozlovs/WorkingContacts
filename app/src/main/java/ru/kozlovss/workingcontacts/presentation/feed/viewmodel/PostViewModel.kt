@@ -13,9 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
+import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.SingleLiveEvent
@@ -43,7 +45,8 @@ private var empty = Post(
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
-    private val appAuth: AppAuth
+    private val appAuth: AppAuth,
+    private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
     val authState = appAuth.authStateFlow
@@ -159,4 +162,10 @@ class PostViewModel @Inject constructor(
             DialogManager.errorAuthDialog(fragment)
             false
         }
+
+    fun switchAudio(post: Post) {
+        if (post.attachment?.type == Attachment.Type.AUDIO) {
+            audioPlayer.switch(post.attachment)
+        }
+    }
 }
