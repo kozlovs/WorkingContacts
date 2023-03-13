@@ -69,6 +69,10 @@ class EventsFragment : Fragment() {
 //                startActivity(intent)
             }
 
+            override fun onSwitchAudio(event: Event) {
+                viewModel.switchAudio(event)
+            }
+
             override fun onToEvent(event: Event) {
                 findNavController().navigate(
                     R.id.action_eventsFragment_to_eventFragment,

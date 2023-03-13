@@ -6,9 +6,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
+import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import javax.inject.Inject
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class UserWallViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val wallRepository: UserWallRepository,
-    private val appAuth: AppAuth
+    private val appAuth: AppAuth,
+    private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
 
@@ -63,4 +66,10 @@ class UserWallViewModel @Inject constructor(
     }
 
     fun isLogin() = appAuth.isLogin()
+
+    fun switchAudio(post: Post) {
+        if (post.attachment?.type == Attachment.Type.AUDIO) {
+            audioPlayer.switch(post.attachment)
+        }
+    }
 }

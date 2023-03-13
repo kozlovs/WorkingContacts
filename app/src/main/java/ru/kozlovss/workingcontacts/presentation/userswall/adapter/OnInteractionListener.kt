@@ -6,5 +6,6 @@ interface OnInteractionListener {
     fun onLike(post: Post)
     fun onShare(post: Post)
     fun onPlayVideo(post: Post)
+    fun onSwitchAudio(post: Post)
     fun onToPost(post: Post)
 }

@@ -105,7 +105,7 @@
                 android:layout_marginTop="8dp">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/play_pause_button"
+                    android:id="@+id/switch_button"
                     style="?attr/materialIconButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

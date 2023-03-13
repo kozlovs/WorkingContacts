@@ -120,6 +120,10 @@ class EventViewHolder(
             onInteractionListener.onPlayVideo(event)
         }
 
+        switchButton.setOnClickListener {
+            onInteractionListener.onSwitchAudio(event)
+        }
+
         cardEvent.setOnClickListener {
             onInteractionListener.onToEvent(event)
         }
