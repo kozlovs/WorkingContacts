@@ -17,15 +17,18 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentMyWallBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
+import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
 
 @AndroidEntryPoint
 class MyWallFragment : Fragment() {
 
-    private val viewModel: MyWallViewModel by viewModels()
+    private val myWallViewModel: MyWallViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     private lateinit var binding: FragmentMyWallBinding
 
     override fun onCreateView(
@@ -37,7 +40,7 @@ class MyWallFragment : Fragment() {
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
-                if (viewModel.isLogin()) viewModel.likeById(post.id)
+                if (myWallViewModel.isLogin()) myWallViewModel.likeById(post.id)
                 else DialogManager.errorAuthDialog(this@MyWallFragment)
             }
 
@@ -53,11 +56,11 @@ class MyWallFragment : Fragment() {
             }
 
             override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
+                myWallViewModel.removeById(post.id)
             }
 
             override fun onEdit(post: Post) {
-                viewModel.edit(post)
+                myWallViewModel.edit(post)
             }
 
             override fun onPlayVideo(post: Post) {
@@ -67,13 +70,13 @@ class MyWallFragment : Fragment() {
             }
 
             override fun onSwitchAudio(post: Post) {
-                viewModel.switchAudio(post)
+                myWallViewModel.switchAudio(post)
             }
 
             override fun onToPost(post: Post) {
-//                findNavController().navigate(
-//                    R.id.action_feedFragment_to_postFragment,
-//                    Bundle().apply { id = post.id })
+                findNavController().navigate(
+                    R.id.action_myWallFragment_to_postFragment,
+                    Bundle().apply { id = post.id })
             }
         })
 
@@ -89,7 +92,7 @@ class MyWallFragment : Fragment() {
 
     private fun subscribe(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
         lifecycleScope.launchWhenCreated {
-            viewModel.userData.collect {
+            myWallViewModel.userData.collect {
                 it?.let {
                     binding.name.text = it.name
                     Glide.with(binding.avatar)
@@ -103,7 +106,7 @@ class MyWallFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest(adapter::submitData)
+            myWallViewModel.data.collectLatest(adapter::submitData)
         }
 
         lifecycleScope.launchWhenCreated {
@@ -113,13 +116,13 @@ class MyWallFragment : Fragment() {
             }
         }
 
-        viewModel.edited.observe(viewLifecycleOwner) { post ->
+        myWallViewModel.edited.observe(viewLifecycleOwner) { post ->
             if (post.id == 0L) return@observe
             findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
         }
 
         lifecycleScope.launchWhenCreated {
-            viewModel.authState.collect {
+            myWallViewModel.authState.collect {
                 adapter.refresh()
             }
         }
@@ -127,8 +130,12 @@ class MyWallFragment : Fragment() {
 
     private fun setListeners(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
         binding.add.setOnClickListener {
-            if (viewModel.isLogin()) findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
+            if (myWallViewModel.isLogin()) findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
             else DialogManager.errorAuthDialog(this@MyWallFragment)
+        }
+
+        binding.buttonLogout.setOnClickListener {
+            userViewModel.logout()
         }
 
         binding.swipeRefresh.setOnRefreshListener {

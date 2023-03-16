@@ -80,6 +80,12 @@ class UserWallFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.clearUserData()
+        viewModel.cleanPosts()
+    }
+
     private fun subscribe(binding: FragmentUserWallBinding, adapter: PostsAdapter) {
 
         lifecycleScope.launchWhenCreated {

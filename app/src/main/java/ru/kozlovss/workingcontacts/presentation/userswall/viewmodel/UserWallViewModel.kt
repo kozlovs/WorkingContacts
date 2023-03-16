@@ -45,12 +45,23 @@ class UserWallViewModel @Inject constructor(
             e.printStackTrace()
             _state.value = FeedModel.FeedModelState.Error
         }
+    }
 
+    fun cleanPosts() {
+        _postsData.value = emptyList()
     }
 
     fun getUserData(userId: Long) = viewModelScope.launch {
         try {
-            userRepository.getUserById(userId)
+            userRepository.getUserInfoById(userId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun clearUserData() = viewModelScope.launch {
+        try {
+            userRepository.clearUserInfo()
         } catch (e: Exception) {
             e.printStackTrace()
         }

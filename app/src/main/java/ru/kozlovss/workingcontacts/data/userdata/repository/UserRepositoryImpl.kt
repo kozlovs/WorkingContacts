@@ -60,10 +60,6 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun clearUserInfo() {
-        userData.value = null
-    }
-
     override suspend fun login(login: String, password: String): Token {
         try {
             val response = withContext(Dispatchers.Default) {
@@ -88,8 +84,12 @@ class UserRepositoryImpl @Inject constructor(
         myData.value = null
     }
 
-    override suspend fun getUserById(id: Long) {
+    override suspend fun getUserInfoById(id: Long) {
         userData.value = checkResponse(apiService.getUserById(id))
+    }
+
+    override suspend fun clearUserInfo() {
+        userData.value = null
     }
 
     private fun <T> checkResponse(response: Response<T>): T {

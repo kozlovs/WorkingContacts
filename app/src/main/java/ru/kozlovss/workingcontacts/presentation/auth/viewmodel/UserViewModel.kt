@@ -56,9 +56,11 @@ class UserViewModel @Inject constructor(
         repository.saveTokenOfUser(id, token)
     }
 
-    suspend fun logout() {
-        repository.clearTokenOfUser()
-        _token.value = null
+    fun logout() {
+        viewModelScope.launch {
+            repository.clearTokenOfUser()
+            _token.value = null
+        }
     }
 
     fun saveAvatar(uri: Uri?, toFile: File?) {

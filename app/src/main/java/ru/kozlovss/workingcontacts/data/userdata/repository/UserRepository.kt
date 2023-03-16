@@ -23,7 +23,7 @@ interface UserRepository {
 
     suspend fun clearTokenOfUser()
 
-    suspend fun getUserById(id: Long)
+    suspend fun getUserInfoById(id: Long)
 
-    fun clearUserInfo()
+    suspend fun clearUserInfo()
 }
