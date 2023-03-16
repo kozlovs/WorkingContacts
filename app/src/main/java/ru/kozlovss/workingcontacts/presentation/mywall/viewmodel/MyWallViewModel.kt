@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.viewmodel
 
 import android.net.Uri
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,13 +10,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
-import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
+import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.SingleLiveEvent
 import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import java.io.File
@@ -44,7 +43,8 @@ private var empty = Post(
 class MyWallViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val wallRepository: MyWallRepository,
-    private val appAuth: AppAuth
+    private val appAuth: AppAuth,
+    private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
     val authState = appAuth.authStateFlow
@@ -144,4 +144,10 @@ class MyWallViewModel @Inject constructor(
     }
 
     fun isLogin() = appAuth.isLogin()
+
+    fun switchAudio(post: Post) {
+        if (post.attachment?.type == Attachment.Type.AUDIO) {
+            audioPlayer.switch(post.attachment)
+        }
+    }
 }

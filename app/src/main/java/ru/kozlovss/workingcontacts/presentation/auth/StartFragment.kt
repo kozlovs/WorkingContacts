@@ -45,6 +45,9 @@ class StartFragment : Fragment() {
             registrationButton.setOnClickListener {
                 findNavController().navigate(R.id.action_startFragment_to_registrationFragment)
             }
+            skipButton.setOnClickListener {
+                findNavController().navigate(R.id.action_startFragment_to_feedFragment)
+            }
         }
     }
 }

@@ -1,10 +1,7 @@
 package ru.kozlovss.workingcontacts.data.postsdata.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 
 @Dao
@@ -40,4 +37,10 @@ interface PostDao {
 
     @Query("DELETE FROM PostEntity")
     suspend fun clear()
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(post: PostEntity)
+
+    @Query("UPDATE PostEntity SET isPaying = 0")
+    suspend fun stopPlayer()
 }

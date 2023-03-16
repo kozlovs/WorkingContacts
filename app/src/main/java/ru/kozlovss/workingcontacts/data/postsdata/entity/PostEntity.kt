@@ -28,7 +28,8 @@ data class PostEntity(
     @Embedded
     val attachment: Attachment? = null,
     val ownedByMe: Boolean,
-    val users: Map<Long, UserPreview> = emptyMap()
+    val users: Map<Long, UserPreview> = emptyMap(),
+    val isPaying: Boolean = false
 ) {
     fun toDto() = with(this) {
         Post(
@@ -47,7 +48,8 @@ data class PostEntity(
             likedByMe,
             attachment,
             ownedByMe,
-            users
+            users,
+            isPaying
         )
     }
 
@@ -69,7 +71,8 @@ data class PostEntity(
                 likedByMe,
                 attachment,
                 ownedByMe,
-                users
+                users,
+                isPaying
             )
         }
     }

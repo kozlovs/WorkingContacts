@@ -7,7 +7,6 @@ import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
@@ -33,6 +32,7 @@ class PostViewHolder(
             content.text = post.content
             like.isChecked = post.likedByMe
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
+            switchButton.isChecked = post.isPaying == true
 
             Glide.with(binding.avatar)
                 .load(post.authorAvatar)
@@ -48,7 +48,6 @@ class PostViewHolder(
                         image.visibility = View.VISIBLE
                         Glide.with(image)
                             .load(attachment.url)
-                            .transform(RoundedCorners(30))
                             .placeholder(R.drawable.baseline_update_24)
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)

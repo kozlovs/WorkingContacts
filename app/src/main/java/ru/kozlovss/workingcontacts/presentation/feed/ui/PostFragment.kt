@@ -176,6 +176,10 @@ class PostFragment : Fragment() {
                 //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
                 //startActivity(intent)
             }
+
+            switchButton.setOnClickListener {
+                viewModel.switchAudio(post)
+            }
         }
     }
 

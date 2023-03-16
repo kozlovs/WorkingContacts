@@ -12,4 +12,6 @@ interface PostRepository {
     suspend fun removeById(id: Long)
     suspend fun save(post: Post)
     suspend fun saveWithAttachment(post: Post, photo: PhotoModel)
+    suspend fun switchAudioPlayer(post: Post, audioPlayerState: Boolean)
+    suspend fun stopAudioPlayer()
 }

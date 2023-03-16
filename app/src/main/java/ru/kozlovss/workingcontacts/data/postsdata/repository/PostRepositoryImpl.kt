@@ -1,12 +1,12 @@
 package ru.kozlovss.workingcontacts.data.postsdata.repository
 
+import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
-import ru.kozlovss.workingcontacts.BuildConfig.BASE_URL
 import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
@@ -48,8 +48,8 @@ class PostRepositoryImpl @Inject constructor(
             return checkResponse(response)
         } catch (e: IOException) {
             throw NetworkError()
-        } catch (e: Exception) {
-            throw UnknownError()
+//        } catch (e: Exception) {
+//            throw UnknownError()
         }
     }
 
@@ -135,6 +135,20 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun switchAudioPlayer(post: Post, audioPlayerState: Boolean) {
+        val newPost = post.copy(
+            isPaying = audioPlayerState
+        )
+        Log.d("MyLog", "audioPlayerState: $audioPlayerState")
+        Log.d("MyLog", "post: ${post.attachment}")
+        Log.d("MyLog", "newPost: ${newPost.attachment}")
+        dao.update(PostEntity.fromDto(newPost))
+    }
+
+    override suspend fun stopAudioPlayer() {
+        dao.stopPlayer()
+    }
+
     private suspend fun upload(photo: PhotoModel): Media {
         try {
             val media = MultipartBody.Part.createFormData(
@@ -155,9 +169,5 @@ class PostRepositoryImpl @Inject constructor(
     private fun <T> checkResponse(response: Response<T>): T {
         if (!response.isSuccessful) throw ApiError(response.code(), response.message())
         return response.body() ?: throw ApiError(response.code(), response.message())
-    }
-
-    companion object {
-        fun getImageUrl(imageURL: String) = "${BASE_URL}/media/$imageURL"
     }
 }

@@ -20,7 +20,8 @@ data class Post(
     val likedByMe: Boolean,
     val attachment: Attachment?,
     val ownedByMe: Boolean,
-    val users: Map<Long, UserPreview>
+    val users: Map<Long, UserPreview>,
+    val isPaying: Boolean = false
 ) {
     fun toRequest() = with(this) {
         PostRequest(

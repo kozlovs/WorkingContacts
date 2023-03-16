@@ -120,6 +120,12 @@ class FeedFragment : Fragment() {
                 adapter.refresh()
             }
         }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.audioPlayerState.collect {
+                viewModel.stopAudio()
+            }
+        }
     }
 
     private fun setListeners(binding: FragmentFeedBinding, adapter: PostsAdapter) {

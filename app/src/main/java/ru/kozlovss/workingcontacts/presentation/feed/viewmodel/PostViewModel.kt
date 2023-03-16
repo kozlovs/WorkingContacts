@@ -50,6 +50,7 @@ class PostViewModel @Inject constructor(
 ) : ViewModel() {
 
     val authState = appAuth.authStateFlow
+    val audioPlayerState = audioPlayer.isPlaying
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val data: Flow<PagingData<Post>> = appAuth.authStateFlow
@@ -165,7 +166,16 @@ class PostViewModel @Inject constructor(
 
     fun switchAudio(post: Post) {
         if (post.attachment?.type == Attachment.Type.AUDIO) {
-            audioPlayer.switch(post.attachment)
+            viewModelScope.launch {
+                audioPlayer.switch(post.attachment)
+                repository.switchAudioPlayer(post, audioPlayerState.value)
+            }
+        }
+    }
+
+    fun stopAudio() {
+        viewModelScope.launch {
+            repository.stopAudioPlayer()
         }
     }
 }
