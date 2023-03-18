@@ -24,7 +24,6 @@ class UserRepositoryImpl @Inject constructor(
     private val appAuth: AppAuth
 ) : UserRepository {
 
-    override val myData = MutableStateFlow<User?>(null)
     override val userData = MutableStateFlow<User?>(null)
 
     override suspend fun register(
@@ -74,15 +73,15 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveTokenOfUser(id: Long, token: String) {
-        appAuth.setAuth(id, token)
-        myData.value = checkResponse(apiService.getUserById(id))
+    override suspend fun saveTokenOfUser(token: Token) {
+        appAuth.setAuth(token)
     }
 
     override suspend fun clearTokenOfUser() {
         appAuth.removeAuth()
-        myData.value = null
     }
+
+    override suspend fun getMyData(id: Long)  = checkResponse(apiService.getUserById(id))
 
     override suspend fun getUserInfoById(id: Long) {
         userData.value = checkResponse(apiService.getUserById(id))

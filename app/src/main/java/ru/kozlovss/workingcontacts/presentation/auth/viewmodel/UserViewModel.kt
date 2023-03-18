@@ -13,31 +13,26 @@ import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.auth.AuthState
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val repository: UserRepository,
-    appAuth: AppAuth
+    private val appAuth: AppAuth
 ): ViewModel() {
-    val data: StateFlow<AuthState> = appAuth.authStateFlow
-    private val _token = MutableStateFlow<Token?>(null)
-    val token: StateFlow<Token?>
-        get() = _token
+    val token: StateFlow<Token?> = appAuth.authStateFlow
 
     private val _avatar = MutableStateFlow<PhotoModel?>(null)
     val avatar: StateFlow<PhotoModel?>
         get() = _avatar
 
-    val authenticated: Boolean
-        get() = data.value.id != 0L
+    fun isLogin() = appAuth.isLogin()
 
     fun logIn(login: String, password: String) {
         viewModelScope.launch {
             val body = repository.login(login, password)
-            _token.value = body
+            appAuth.setAuth(body)
         }
     }
 
@@ -46,20 +41,14 @@ class UserViewModel @Inject constructor(
             val body = withContext(Dispatchers.Default) {
                 repository.register(login, password, name, avatar.value)
             }
-            _token.value = body
+            appAuth.setAuth(body)
             clearAvatar()
         }
-    }
-
-
-    suspend fun saveTokenOfUser(id: Long, token: String) {
-        repository.saveTokenOfUser(id, token)
     }
 
     fun logout() {
         viewModelScope.launch {
             repository.clearTokenOfUser()
-            _token.value = null
         }
     }
 

@@ -7,7 +7,6 @@ import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
 interface UserRepository {
 
-    val myData: MutableStateFlow<User?>
     val userData: MutableStateFlow<User?>
 
     suspend fun register(
@@ -19,7 +18,9 @@ interface UserRepository {
 
     suspend fun login(login: String, password: String): Token
 
-    suspend fun saveTokenOfUser(id: Long, token: String)
+    suspend fun saveTokenOfUser(token: Token)
+
+    suspend fun getMyData(id: Long): User
 
     suspend fun clearTokenOfUser()
 

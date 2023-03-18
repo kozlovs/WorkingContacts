@@ -80,6 +80,8 @@ class MyWallFragment : Fragment() {
             }
         })
 
+        myWallViewModel.getMyData()
+
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = PostLoadingStateAdapter { adapter.retry() },
             footer = PostLoadingStateAdapter { adapter.retry() }
@@ -91,8 +93,8 @@ class MyWallFragment : Fragment() {
     }
 
     private fun subscribe(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
-        lifecycleScope.launchWhenCreated {
-            myWallViewModel.userData.collect {
+        lifecycleScope.launchWhenStarted {
+            myWallViewModel.myData.collect {
                 it?.let {
                     binding.name.text = it.name
                     Glide.with(binding.avatar)

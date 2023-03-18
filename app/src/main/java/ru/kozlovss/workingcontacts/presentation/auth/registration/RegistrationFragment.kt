@@ -80,7 +80,6 @@ class RegistrationFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.token.collect {
                 it?.let {
-                    viewModel.saveTokenOfUser(it.id, it.token)
                     findNavController().navigate(R.id.action_registrationFragment_to_feedFragment)
                 }
             }

@@ -57,11 +57,11 @@ class EventViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val data: Flow<PagingData<Event>> = appAuth.authStateFlow
-        .flatMapLatest { (myId, _) ->
+        .flatMapLatest { token ->
             repository.events
                 .map { events ->
                     events.map { event ->
-                        event.copy(ownedByMe = event.authorId == myId)
+                        event.copy(ownedByMe = event.authorId == token?.id)
                     }
                 }
         }.flowOn(Dispatchers.Default)
@@ -156,12 +156,10 @@ class EventViewModel @Inject constructor(
         _photo.value = PhotoModel(uri, toFile)
     }
 
-    private fun isLogin() = appAuth.authStateFlow.value.id != 0L
-
     suspend fun getById(id: Long) = repository.getById(id)
 
     fun checkLogin(fragment: Fragment): Boolean =
-        if (isLogin()) {
+        if (appAuth.isLogin()) {
             true
         } else {
             DialogManager.errorAuthDialog(fragment)

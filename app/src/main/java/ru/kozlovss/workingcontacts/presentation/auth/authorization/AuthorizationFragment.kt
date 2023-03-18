@@ -45,7 +45,6 @@ class AuthorizationFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.token.collect {
                 it?.let {
-                    viewModel.saveTokenOfUser(it.id, it.token)
                     findNavController().navigate(R.id.action_authorizationFragment_to_feedFragment)
                 }
             }

@@ -54,11 +54,11 @@ class PostViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val data: Flow<PagingData<Post>> = appAuth.authStateFlow
-        .flatMapLatest { (myId, _) ->
+        .flatMapLatest { token ->
             repository.posts
                 .map { posts ->
                     posts.map { post ->
-                        post.copy(ownedByMe = post.authorId == myId)
+                        post.copy(ownedByMe = post.authorId == token?.id)
                     }
                 }
         }.flowOn(Dispatchers.Default)
@@ -152,12 +152,10 @@ class PostViewModel @Inject constructor(
         _photo.value = PhotoModel(uri, toFile)
     }
 
-    private fun isLogin() = appAuth.authStateFlow.value.id != 0L
-
     suspend fun getById(id: Long) = repository.getById(id)
 
     fun checkLogin(fragment: Fragment): Boolean =
-        if (isLogin()) {
+        if (appAuth.isLogin()) {
             true
         } else {
             DialogManager.errorAuthDialog(fragment)

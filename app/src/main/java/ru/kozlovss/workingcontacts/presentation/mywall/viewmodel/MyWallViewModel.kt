@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
@@ -52,7 +53,9 @@ class MyWallViewModel @Inject constructor(
     val data: Flow<PagingData<Post>> = wallRepository.posts
         .flowOn(Dispatchers.Default)
 
-    val userData = userRepository.myData
+    private val _myData = MutableStateFlow<User?>(null)
+    val myData: StateFlow<User?>
+        get() = _myData
 
     private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
     val state: StateFlow<FeedModel.FeedModelState>
@@ -87,6 +90,22 @@ class MyWallViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun getMyData() = viewModelScope.launch {
+        try {
+            authState.value?.let {
+                if(myData.value == null) {
+                    _myData.value = userRepository.getMyData(it.id)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun clearMyData() {
+        _myData.value = null
     }
 
     private fun save() {

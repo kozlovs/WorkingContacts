@@ -5,6 +5,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import javax.inject.Inject
 
 class AppAuth @Inject constructor(
@@ -12,7 +13,7 @@ class AppAuth @Inject constructor(
     private val context: Context
 ){
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
-    private val _authStateFlow: MutableStateFlow<AuthState>
+    private val _authStateFlow: MutableStateFlow<Token?>
     private val tokenKey = "TOKEN_KEY"
     private val idKey = "ID_KEY"
 
@@ -21,36 +22,36 @@ class AppAuth @Inject constructor(
         val id = prefs.getLong(idKey, 0L)
 
         if (token == null || id == 0L) {
-            _authStateFlow = MutableStateFlow(AuthState())
+            _authStateFlow = MutableStateFlow(null)
             with(prefs.edit()) {
                 clear()
                 apply()
             }
         } else {
-            _authStateFlow = MutableStateFlow(AuthState(id, token))
+            _authStateFlow = MutableStateFlow(Token(id, token))
         }
     }
 
-    val authStateFlow: StateFlow<AuthState> = _authStateFlow.asStateFlow()
+    val authStateFlow: StateFlow<Token?> = _authStateFlow.asStateFlow()
 
     @Synchronized
-    fun setAuth(id: Long, token: String) {
-        _authStateFlow.value = AuthState(id, token)
+    fun setAuth(token: Token) {
+        _authStateFlow.value = token
         with(prefs.edit()) {
-            putString(tokenKey, token)
-            putLong(idKey, id)
+            putString(tokenKey, token.token)
+            putLong(idKey, token.id)
             apply()
         }
     }
 
     @Synchronized
     fun removeAuth() {
-        _authStateFlow.value = AuthState()
+        _authStateFlow.value = null
         with(prefs.edit()) {
             clear()
             apply()
         }
     }
 
-    fun isLogin() = authStateFlow.value.id != 0L
+    fun isLogin() = authStateFlow.value != null
 }
