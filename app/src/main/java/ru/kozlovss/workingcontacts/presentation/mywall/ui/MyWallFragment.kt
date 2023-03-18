@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -28,7 +28,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.i
 @AndroidEntryPoint
 class MyWallFragment : Fragment() {
 
-    private val myWallViewModel: MyWallViewModel by viewModels()
+    private val myWallViewModel: MyWallViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentMyWallBinding
 
@@ -81,8 +81,6 @@ class MyWallFragment : Fragment() {
             }
         })
 
-        myWallViewModel.getMyData()
-
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = PostLoadingStateAdapter { adapter.retry() },
             footer = PostLoadingStateAdapter { adapter.retry() }
@@ -96,7 +94,8 @@ class MyWallFragment : Fragment() {
     private fun subscribe(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
         lifecycleScope.launchWhenStarted {
             myWallViewModel.myData.collect {
-                it?.let {
+                if (it != null) {
+                    binding.myCard.isVisible = true
                     binding.name.text = it.name
                     Glide.with(binding.avatar)
                         .load(it.avatar)
@@ -104,6 +103,8 @@ class MyWallFragment : Fragment() {
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
                         .into(binding.avatar)
+                } else {
+                    binding.myCard.isVisible = false
                 }
             }
         }
@@ -126,9 +127,11 @@ class MyWallFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             userViewModel.token.collect { token ->
+                myWallViewModel.updateMyData(token)
                 if (token != null) {
                     adapter.refresh()
                 } else {
+                    myWallViewModel.clearMyData()
                     DialogManager.logoutDialog(this@MyWallFragment)
                 }
             }

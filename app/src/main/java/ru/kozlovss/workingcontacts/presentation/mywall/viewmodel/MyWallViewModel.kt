@@ -15,6 +15,7 @@ import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
@@ -92,12 +93,10 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
-    fun getMyData() = viewModelScope.launch {
+    fun updateMyData(token: Token?) = viewModelScope.launch {
         try {
-            authState.value?.let {
-                if(myData.value == null) {
-                    _myData.value = userRepository.getMyData(it.id)
-                }
+            _myData.value = token?.let {
+                userRepository.getMyData(it.id)
             }
         } catch (e: Exception) {
             e.printStackTrace()
