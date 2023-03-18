@@ -155,7 +155,7 @@ class PostViewModel @Inject constructor(
     suspend fun getById(id: Long) = repository.getById(id)
 
     fun checkLogin(fragment: Fragment): Boolean =
-        if (appAuth.isLogin()) {
+        if (appAuth.isAuthenticated()) {
             true
         } else {
             DialogManager.errorAuthDialog(fragment)

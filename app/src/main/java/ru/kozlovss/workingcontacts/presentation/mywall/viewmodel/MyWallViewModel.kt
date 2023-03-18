@@ -162,7 +162,7 @@ class MyWallViewModel @Inject constructor(
         _photo.value = PhotoModel(uri, toFile)
     }
 
-    fun isLogin() = appAuth.isLogin()
+    fun isLogin() = appAuth.isAuthenticated()
 
     fun switchAudio(post: Post) {
         if (post.attachment?.type == Attachment.Type.AUDIO) {

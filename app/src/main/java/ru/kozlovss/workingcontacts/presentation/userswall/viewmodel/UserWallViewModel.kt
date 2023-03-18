@@ -76,7 +76,7 @@ class UserWallViewModel @Inject constructor(
         }
     }
 
-    fun isLogin() = appAuth.isLogin()
+    fun isLogin() = appAuth.isAuthenticated()
 
     fun switchAudio(post: Post) {
         if (post.attachment?.type == Attachment.Type.AUDIO) {

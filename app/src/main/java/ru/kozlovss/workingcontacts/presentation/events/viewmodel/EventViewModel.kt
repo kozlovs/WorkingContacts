@@ -17,7 +17,6 @@ import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
@@ -159,7 +158,7 @@ class EventViewModel @Inject constructor(
     suspend fun getById(id: Long) = repository.getById(id)
 
     fun checkLogin(fragment: Fragment): Boolean =
-        if (appAuth.isLogin()) {
+        if (appAuth.isAuthenticated()) {
             true
         } else {
             DialogManager.errorAuthDialog(fragment)

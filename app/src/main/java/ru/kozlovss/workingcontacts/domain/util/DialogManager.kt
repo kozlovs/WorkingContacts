@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.domain.util
 
 import android.app.AlertDialog
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -15,73 +14,103 @@ import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment
 
 object DialogManager {
 
-    fun errorDialog(fragment: Fragment, e: Exception) {
-        val builder = MaterialAlertDialogBuilder(fragment.requireContext())
-        val dialog = builder.create()
-        dialog.setTitle("Error")
-        val massage = makeErrorMessage(e)
-        dialog.setMessage(massage)
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
-    fun differentPasswordsDialog(fragment: Fragment) {
-        val builder = MaterialAlertDialogBuilder(fragment.requireContext())
-        val dialog = builder.create()
-        dialog.setTitle("Error")
-        dialog.setMessage("Passwords are different")
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
-
-    fun errorAuthDialog(fragment: Fragment) {
-        val builder = MaterialAlertDialogBuilder(fragment.requireContext())
-        val dialog = builder.create()
-        dialog.setTitle("Auth error")
-        dialog.setMessage("Sign In to yur account")
-        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Sign in") { _, _ ->
-            when (fragment) {
-                is FeedFragment -> fragment.findNavController().navigate(R.id.action_feedFragment_to_authorizationFragment)
-                is PostFragment -> fragment.findNavController().navigate(R.id.action_postFragment_to_authorizationFragment)
-                is NewPostFragment -> fragment.findNavController().navigate(R.id.action_newPostFragment_to_authorizationFragment)
-                is EventsFragment -> fragment.findNavController().navigate(R.id.action_eventsFragment_to_authorizationFragment)
-                is EventFragment -> fragment.findNavController().navigate(R.id.action_eventFragment_to_authorizationFragment)
-                is NewEventFragment -> fragment.findNavController().navigate(R.id.action_newEventFragment_to_authorizationFragment)
+    fun errorDialog(fragment: Fragment, e: Exception) =
+        MaterialAlertDialogBuilder(fragment.requireContext())
+            .create()
+            .apply {
+                setTitle("Error")
+                setMessage(makeErrorMessage(e))
+                setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+                    dismiss()
+                }
             }
-        }
-        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Sign up") { _, _ ->
-            when (fragment) {
-                is FeedFragment -> fragment.findNavController().navigate(R.id.action_feedFragment_to_registrationFragment)
-                is PostFragment -> fragment.findNavController().navigate(R.id.action_postFragment_to_registrationFragment)
-                is NewPostFragment -> fragment.findNavController().navigate(R.id.action_newPostFragment_to_registrationFragment)
-                is EventsFragment -> fragment.findNavController().navigate(R.id.action_eventsFragment_to_registrationFragment)
-                is EventFragment -> fragment.findNavController().navigate(R.id.action_eventFragment_to_registrationFragment)
-                is NewEventFragment -> fragment.findNavController().navigate(R.id.action_newEventFragment_to_registrationFragment)
-            }
-        }
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
-            dialog.dismiss()
-        }
-        dialog.show()
-    }
+            .show()
 
-    fun addPhotoDialog(fragment: Fragment, isPhotoUploaded: Boolean = false) {
-        val builder = MaterialAlertDialogBuilder(fragment.requireContext())
-        val dialog = builder.create()
-        dialog.setTitle("Photo upload")
-        if (isPhotoUploaded) {
-            dialog.setMessage("Manage your photo")
-        } else {
-            dialog.setMessage("Add your photo")
-        }
-        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
-            dialog.dismiss()
-        }
-        dialog.show()
+    fun differentPasswordsDialog(fragment: Fragment) =
+        MaterialAlertDialogBuilder(fragment.requireContext())
+            .create()
+            .apply {
+                setTitle("Error")
+                setMessage("Passwords are different")
+                setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+                    dismiss()
+                }
+            }
+            .show()
+
+    fun logoutDialog(fragment: Fragment) =
+        MaterialAlertDialogBuilder(fragment.requireContext())
+            .create().apply {
+                setTitle("Authentication")
+                setMessage("You are not authenticated")
+                setButton(AlertDialog.BUTTON_POSITIVE, "Log in") { _, _ ->
+                    fragment.findNavController()
+                        .navigate(R.id.action_myWallFragment_to_authorizationFragment)
+                }
+                setButton(AlertDialog.BUTTON_NEUTRAL, "Sign up") { _, _ ->
+                    fragment.findNavController()
+                        .navigate(R.id.action_myWallFragment_to_registrationFragment)
+                }
+                setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+                    dismiss()
+                }
+            }
+            .show()
+
+    fun errorAuthDialog(fragment: Fragment) =
+        MaterialAlertDialogBuilder(fragment.requireContext())
+            .create()
+            .apply {
+                setTitle("Auth error")
+                setMessage("Sign In to yur account")
+                setButton(AlertDialog.BUTTON_POSITIVE, "Sign in") { _, _ ->
+                    when (fragment) {
+                        is FeedFragment -> fragment.findNavController()
+                            .navigate(R.id.action_feedFragment_to_authorizationFragment)
+                        is PostFragment -> fragment.findNavController()
+                            .navigate(R.id.action_postFragment_to_authorizationFragment)
+                        is NewPostFragment -> fragment.findNavController()
+                            .navigate(R.id.action_newPostFragment_to_authorizationFragment)
+                        is EventsFragment -> fragment.findNavController()
+                            .navigate(R.id.action_eventsFragment_to_authorizationFragment)
+                        is EventFragment -> fragment.findNavController()
+                            .navigate(R.id.action_eventFragment_to_authorizationFragment)
+                        is NewEventFragment -> fragment.findNavController()
+                            .navigate(R.id.action_newEventFragment_to_authorizationFragment)
+                    }
+                }
+                setButton(AlertDialog.BUTTON_NEUTRAL, "Sign up") { _, _ ->
+                    when (fragment) {
+                        is FeedFragment -> fragment.findNavController()
+                            .navigate(R.id.action_feedFragment_to_registrationFragment)
+                        is PostFragment -> fragment.findNavController()
+                            .navigate(R.id.action_postFragment_to_registrationFragment)
+                        is NewPostFragment -> fragment.findNavController()
+                            .navigate(R.id.action_newPostFragment_to_registrationFragment)
+                        is EventsFragment -> fragment.findNavController()
+                            .navigate(R.id.action_eventsFragment_to_registrationFragment)
+                        is EventFragment -> fragment.findNavController()
+                            .navigate(R.id.action_eventFragment_to_registrationFragment)
+                        is NewEventFragment -> fragment.findNavController()
+                            .navigate(R.id.action_newEventFragment_to_registrationFragment)
+                    }
+                }
+                setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+                    dismiss()
+                }
+            }.show()
+
+    fun addPhotoDialog(fragment: Fragment, isPhotoUploaded: Boolean = false) =
+        MaterialAlertDialogBuilder(fragment.requireContext())
+            .create()
+            .apply {
+                setTitle("Photo upload")
+                if (isPhotoUploaded) setMessage("Manage your photo")
+                else setMessage("Add your photo")
+                setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+                    dismiss()
+                }
+            }.show()
         //        takePhoto.setOnClickListener {
 //            ImagePicker.Builder(this@RegistrationFragment)
 //                .cameraOnly()
@@ -99,9 +128,6 @@ object DialogManager {
 //        clear.setOnClickListener {
 //            viewModel.clearAvatar()
 //        }//todo добавить механизм загрузки фото
-    }
 
-    private fun makeErrorMessage(e: Exception): String {
-        return e.message.toString()
-    }
+    private fun makeErrorMessage(e: Exception) = e.message.toString()
 }

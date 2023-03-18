@@ -27,7 +27,7 @@ class UserViewModel @Inject constructor(
     val avatar: StateFlow<PhotoModel?>
         get() = _avatar
 
-    fun isLogin() = appAuth.isLogin()
+    fun isLogin() = appAuth.isAuthenticated()
 
     fun logIn(login: String, password: String) {
         viewModelScope.launch {
@@ -48,7 +48,7 @@ class UserViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            repository.clearTokenOfUser()
+            appAuth.removeAuth()
         }
     }
 

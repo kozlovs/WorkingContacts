@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -28,7 +29,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.i
 class MyWallFragment : Fragment() {
 
     private val myWallViewModel: MyWallViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentMyWallBinding
 
     override fun onCreateView(
@@ -124,8 +125,12 @@ class MyWallFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenCreated {
-            myWallViewModel.authState.collect {
-                adapter.refresh()
+            userViewModel.token.collect { token ->
+                if (token != null) {
+                    adapter.refresh()
+                } else {
+                    DialogManager.logoutDialog(this@MyWallFragment)
+                }
             }
         }
     }
