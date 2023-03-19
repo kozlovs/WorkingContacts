@@ -68,4 +68,5 @@ data class Payload(
     val likedByMe: Boolean? = null,
     val likes: Int? = null,
     val content: String? = null,
+    val isPlay: Boolean? = null
 )

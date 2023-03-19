@@ -12,6 +12,7 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
         Payload(
             likedByMe = newItem.likedByMe.takeIf { it != oldItem.likedByMe },
             likes = newItem.likeOwnerIds.size.takeIf { it != oldItem.likeOwnerIds.size },
-            content = newItem.content.takeIf { it != oldItem.content }
+            content = newItem.content.takeIf { it != oldItem.content },
+            isPlay = newItem.isPaying.takeIf { it != oldItem.isPaying }
         )
 }
