@@ -31,7 +31,8 @@ data class EventEntity(
     val attachment: Attachment?,
     val link: String?,
     val ownedByMe: Boolean,
-    val users: Map<Long, UserPreview> = emptyMap()
+    val users: Map<Long, UserPreview> = emptyMap(),
+    val isPaying: Boolean = false
 ) {
     fun toDto() = with(this) {
         Event(
@@ -53,7 +54,8 @@ data class EventEntity(
             attachment,
             link,
             ownedByMe,
-            users
+            users,
+            isPaying
         )
     }
 
@@ -78,7 +80,8 @@ data class EventEntity(
                 attachment,
                 link,
                 ownedByMe,
-                users
+                users,
+                isPaying
             )
         }
     }

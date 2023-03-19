@@ -7,7 +7,6 @@ import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
@@ -93,10 +92,10 @@ class EventViewHolder(
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
                 ).start()
             } else {
-                ObjectAnimator.ofFloat(
+                ObjectAnimator.ofPropertyValuesHolder(
                     binding.like,
-                    View.ROTATION,
-                    0F, 360F
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
                 ).start()
             }
         }

@@ -22,7 +22,8 @@ data class Event(
     val attachment: Attachment?,
     val link: String?,
     val ownedByMe: Boolean,
-    val users: Map<Long, UserPreview>
+    val users: Map<Long, UserPreview>,
+    val isPaying: Boolean = false
 ) {
     fun toRequest() = with(this) {
         EventRequest(
