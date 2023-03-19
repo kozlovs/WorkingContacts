@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
+import ru.kozlovss.workingcontacts.domain.videoplayer.VideoPlayer
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -12,5 +13,9 @@ import javax.inject.Singleton
 class DomainDi {
     @Provides
     @Singleton
-    fun provideAudioPlayer(): AudioPlayer = AudioPlayer()
+    fun provideAudioPlayer() = AudioPlayer()
+
+    @Provides
+    @Singleton
+    fun provideVideoPlayer() = VideoPlayer()
 }
