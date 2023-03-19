@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentFeedBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
@@ -26,6 +28,7 @@ import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Co
 class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +43,9 @@ class FeedFragment : Fragment() {
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
-                if (viewModel.checkLogin(this@FeedFragment)) {
+                if (userViewModel.isLogin()) {
                     viewModel.likeById(post.id)
-                }
+                } else DialogManager.errorAuthDialog(this@FeedFragment)
             }
 
             override fun onShare(post: Post) {
@@ -57,11 +60,15 @@ class FeedFragment : Fragment() {
             }
 
             override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
+                if (userViewModel.isLogin()) {
+                    viewModel.removeById(post.id)
+                } else DialogManager.errorAuthDialog(this@FeedFragment)
             }
 
             override fun onEdit(post: Post) {
-                viewModel.edit(post)
+                if (userViewModel.isLogin()) {
+                    viewModel.edit(post)
+                } else DialogManager.errorAuthDialog(this@FeedFragment)
             }
 
             override fun onPlayVideo(post: Post) {
@@ -130,9 +137,9 @@ class FeedFragment : Fragment() {
 
     private fun setListeners(binding: FragmentFeedBinding, adapter: PostsAdapter) {
         binding.add.setOnClickListener {
-            if (viewModel.checkLogin(this)) {
+            if (userViewModel.isLogin()) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-            }
+            } else DialogManager.errorAuthDialog(this)
         }
 
         binding.swipeRefresh.setOnRefreshListener {

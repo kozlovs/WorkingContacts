@@ -32,6 +32,7 @@ class EventViewHolder(
             content.text = event.content
             like.isChecked = event.likedByMe
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
+            menu.isVisible = event.ownedByMe
 
             if (event.authorAvatar != null) {
                 Glide.with(binding.avatar)
@@ -53,28 +54,28 @@ class EventViewHolder(
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)
                             .into(image)
-                        video.visibility = View.GONE
+                        videoLayout.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                     Attachment.Type.AUDIO -> {
                         audio.visibility = View.VISIBLE
                         image.visibility = View.GONE
-                        video.visibility = View.GONE
+                        videoLayout.visibility = View.GONE
                     }
                     Attachment.Type.VIDEO -> {
-                        video.visibility = View.VISIBLE
+                        videoLayout.visibility = View.VISIBLE
                         image.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                     else -> {
                         image.visibility = View.GONE
-                        video.visibility = View.GONE
+                        videoLayout.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                 }
             } else {
                 image.visibility = View.GONE
-                video.visibility = View.GONE
+                videoLayout.visibility = View.GONE
                 audio.visibility = View.GONE
             }
         }
@@ -127,8 +128,6 @@ class EventViewHolder(
         cardEvent.setOnClickListener {
             onInteractionListener.onToEvent(event)
         }
-
-        menu.isVisible = event.ownedByMe
 
         menu.setOnClickListener { view ->
             showMenu(view, event)

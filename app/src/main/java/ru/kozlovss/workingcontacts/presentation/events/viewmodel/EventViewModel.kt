@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.events.viewmodel
 
 import android.net.Uri
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.SingleLiveEvent
 import ru.kozlovss.workingcontacts.presentation.events.model.EventsModel
 import java.io.File
@@ -48,11 +46,9 @@ private var empty = Event(
 @HiltViewModel
 class EventViewModel @Inject constructor(
     private val repository: EventRepository,
-    private val appAuth: AppAuth,
+    appAuth: AppAuth,
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
-
-    val authState = appAuth.authStateFlow
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val data: Flow<PagingData<Event>> = appAuth.authStateFlow
@@ -156,14 +152,6 @@ class EventViewModel @Inject constructor(
     }
 
     suspend fun getById(id: Long) = repository.getById(id)
-
-    fun checkLogin(fragment: Fragment): Boolean =
-        if (appAuth.isAuthenticated()) {
-            true
-        } else {
-            DialogManager.errorAuthDialog(fragment)
-            false
-        }
 
     fun switchAudio(event: Event) {
         if (event.attachment?.type == Attachment.Type.AUDIO) {

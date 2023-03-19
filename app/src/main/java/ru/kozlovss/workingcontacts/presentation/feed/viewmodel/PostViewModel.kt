@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.feed.viewmodel
 
 import android.net.Uri
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.SingleLiveEvent
 import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import java.io.File
@@ -45,7 +43,7 @@ private var empty = Post(
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
-    private val appAuth: AppAuth,
+    appAuth: AppAuth,
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
@@ -153,14 +151,6 @@ class PostViewModel @Inject constructor(
     }
 
     suspend fun getById(id: Long) = repository.getById(id)
-
-    fun checkLogin(fragment: Fragment): Boolean =
-        if (appAuth.isAuthenticated()) {
-            true
-        } else {
-            DialogManager.errorAuthDialog(fragment)
-            false
-        }
 
     fun switchAudio(post: Post) {
         if (post.attachment?.type == Attachment.Type.AUDIO) {

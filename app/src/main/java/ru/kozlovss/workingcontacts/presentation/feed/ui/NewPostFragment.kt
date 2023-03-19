@@ -24,12 +24,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
 
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
     private val viewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewPostBinding
     lateinit var post: Post
 
@@ -180,9 +183,9 @@ class NewPostFragment : Fragment() {
         done.setOnClickListener {
             val content = binding.content.text.toString()
             if (content.isNotBlank()) {
-                if (viewModel.checkLogin(this@NewPostFragment)) {
+                if (userViewModel.isLogin()) {
                     viewModel.changeContentAndSave(content)
-                }
+                } else DialogManager.errorAuthDialog(this@NewPostFragment)
             } else {
                 viewModel.clearEdited()
             }

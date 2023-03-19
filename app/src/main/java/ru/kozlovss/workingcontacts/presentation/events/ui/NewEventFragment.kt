@@ -15,14 +15,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
-import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
 
 @AndroidEntryPoint
 class NewEventFragment : Fragment() {
     private val viewModel: EventViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewEventBinding
     lateinit var event: Event
 
@@ -173,9 +174,9 @@ class NewEventFragment : Fragment() {
         done.setOnClickListener {
             val content = binding.content.text.toString()
             if (content.isNotBlank()) {
-                if (viewModel.checkLogin(this@NewEventFragment)) {
+                if (userViewModel.isLogin()) {
                     viewModel.changeContentAndSave(content)
-                }
+                } else DialogManager.errorAuthDialog(this@NewEventFragment)
             } else {
                 viewModel.clearEdited()
             }

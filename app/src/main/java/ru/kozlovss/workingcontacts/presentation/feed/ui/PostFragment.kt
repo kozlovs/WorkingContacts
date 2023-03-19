@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,14 +19,17 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentPostBinding
+import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
 
 @AndroidEntryPoint
 class PostFragment : Fragment() {
 
     private val viewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     lateinit var post: Post
     private lateinit var binding: FragmentPostBinding
     private var id: Long? = null
@@ -52,7 +56,7 @@ class PostFragment : Fragment() {
     private fun subscribe() {
         lifecycleScope.launchWhenCreated {
             viewModel.data.collectLatest {
-                val requestPost = id?.let { viewModel.getById(it)}
+                val requestPost = id?.let { viewModel.getById(it) }
                 requestPost?.let {
                     post = requestPost
                     updateView()
@@ -84,13 +88,16 @@ class PostFragment : Fragment() {
             content.text = post.content
             like.isChecked = post.likedByMe
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
+            menu.isVisible = post.ownedByMe
 
-            Glide.with(binding.avatar)
-                .load(post.authorAvatar)
-                .placeholder(R.drawable.baseline_update_24)
-                .error(R.drawable.baseline_error_outline_24)
-                .timeout(10_000)
-                .into(binding.avatar)
+            if (post.authorAvatar != null) {
+                Glide.with(binding.avatar)
+                    .load(post.authorAvatar)
+                    .placeholder(R.drawable.baseline_update_24)
+                    .error(R.drawable.baseline_error_outline_24)
+                    .timeout(10_000)
+                    .into(binding.avatar)
+            }
 
             val attachment = post.attachment
             if (attachment != null) {
@@ -104,28 +111,28 @@ class PostFragment : Fragment() {
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)
                             .into(image)
-                        video.visibility = View.GONE
+                        videoLayout.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                     Attachment.Type.AUDIO -> {
                         audio.visibility = View.VISIBLE
                         image.visibility = View.GONE
-                        video.visibility = View.GONE
+                        videoLayout.visibility = View.GONE
                     }
                     Attachment.Type.VIDEO -> {
-                        video.visibility = View.VISIBLE
+                        videoLayout.visibility = View.VISIBLE
                         image.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                     else -> {
                         image.visibility = View.GONE
-                        video.visibility = View.GONE
+                        videoLayout.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                 }
             } else {
                 image.visibility = View.GONE
-                video.visibility = View.GONE
+                videoLayout.visibility = View.GONE
                 audio.visibility = View.GONE
             }
         }
@@ -135,9 +142,9 @@ class PostFragment : Fragment() {
         binding.apply {
 
             like.setOnClickListener {
-                if (viewModel.checkLogin(this@PostFragment)) {
+                if (userViewModel.isLogin()) {
                     viewModel.likeById(post.id)
-                }
+                } else DialogManager.errorAuthDialog(this@PostFragment)
             }
 
             share.setOnClickListener {
@@ -157,11 +164,15 @@ class PostFragment : Fragment() {
                     setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.remove -> {
-                                viewModel.removeById(post.id)
+                                if (userViewModel.isLogin()) {
+                                    viewModel.removeById(post.id)
+                                } else DialogManager.errorAuthDialog(this@PostFragment)
                                 true
                             }
                             R.id.edit -> {
-                                viewModel.edit(post)
+                                if (userViewModel.isLogin()) {
+                                    viewModel.edit(post)
+                                } else DialogManager.errorAuthDialog(this@PostFragment)
                                 true
                             }
                             else -> false
