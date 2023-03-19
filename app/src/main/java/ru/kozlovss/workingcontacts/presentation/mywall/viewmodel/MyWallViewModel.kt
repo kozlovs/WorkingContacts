@@ -20,7 +20,7 @@ import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.util.SingleLiveEvent
-import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
+import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import java.io.File
 import javax.inject.Inject
 
@@ -49,8 +49,6 @@ class MyWallViewModel @Inject constructor(
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
-    val authState = appAuth.authStateFlow
-
     val data: Flow<PagingData<Post>> = wallRepository.posts
         .flowOn(Dispatchers.Default)
 
@@ -58,8 +56,9 @@ class MyWallViewModel @Inject constructor(
     val myData: StateFlow<User?>
         get() = _myData
 
-    private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
-    val state: StateFlow<FeedModel.FeedModelState>
+    private val _state =
+        MutableStateFlow<MyWallModel.MyWallModelState>(MyWallModel.MyWallModelState.Idle)
+    val state: StateFlow<MyWallModel.MyWallModelState>
         get() = _state
 
     private val _postCreated = SingleLiveEvent<Unit>()
@@ -95,16 +94,28 @@ class MyWallViewModel @Inject constructor(
 
     fun updateMyData(token: Token?) = viewModelScope.launch {
         try {
-            _myData.value = token?.let {
-                userRepository.getMyData(it.id)
+            _state.value = MyWallModel.MyWallModelState.Loading
+            if (token == null) {
+                _state.value = MyWallModel.MyWallModelState.NoLogin
+            } else {
+                _myData.value = userRepository.getMyData(token.id)
+                _state.value = MyWallModel.MyWallModelState.Idle
             }
         } catch (e: Exception) {
+            _state.value = MyWallModel.MyWallModelState.Error
             e.printStackTrace()
         }
     }
 
     fun clearMyData() {
-        _myData.value = null
+        try {
+            _state.value = MyWallModel.MyWallModelState.Loading
+            _myData.value = null
+            _state.value = MyWallModel.MyWallModelState.NoLogin
+        } catch (e: Exception) {
+            _state.value = MyWallModel.MyWallModelState.Error
+            e.printStackTrace()
+        }
     }
 
     private fun save() {
@@ -117,7 +128,7 @@ class MyWallViewModel @Inject constructor(
                         clearPhoto()
                     } ?: wallRepository.save(post)
                 } catch (e: Exception) {
-                    _state.value = FeedModel.FeedModelState.Error
+                    _state.value = MyWallModel.MyWallModelState.Error
                 }
             }
         }
@@ -141,7 +152,7 @@ class MyWallViewModel @Inject constructor(
             wallRepository.likeById(id)
         } catch (e: Exception) {
             e.printStackTrace()
-            _state.value = FeedModel.FeedModelState.Error
+            _state.value = MyWallModel.MyWallModelState.Error
         }
     }
 
@@ -149,7 +160,7 @@ class MyWallViewModel @Inject constructor(
         try {
             wallRepository.removeById(id)
         } catch (e: Exception) {
-            _state.value = FeedModel.FeedModelState.Error
+            _state.value = MyWallModel.MyWallModelState.Error
         }
     }
 

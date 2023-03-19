@@ -24,6 +24,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostLoadingStateA
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 
 @AndroidEntryPoint
 class MyWallFragment : Fragment() {
@@ -94,8 +95,7 @@ class MyWallFragment : Fragment() {
     private fun subscribe(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
         lifecycleScope.launchWhenStarted {
             myWallViewModel.myData.collect {
-                if (it != null) {
-                    binding.myCard.isVisible = true
+                it?.let {
                     binding.name.text = it.name
                     Glide.with(binding.avatar)
                         .load(it.avatar)
@@ -103,8 +103,6 @@ class MyWallFragment : Fragment() {
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
                         .into(binding.avatar)
-                } else {
-                    binding.myCard.isVisible = false
                 }
             }
         }
@@ -120,6 +118,16 @@ class MyWallFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launchWhenCreated {
+            myWallViewModel.state.collectLatest { state ->
+                binding.authButtons.isVisible = state is MyWallModel.MyWallModelState.NoLogin
+                binding.progress.isVisible = state is MyWallModel.MyWallModelState.Loading
+                binding.myCard.isVisible = state is MyWallModel.MyWallModelState.Idle
+                binding.swipeRefresh.isVisible = state is MyWallModel.MyWallModelState.Idle
+                binding.add.isVisible = state is MyWallModel.MyWallModelState.Idle
+            }
+        }
+
         myWallViewModel.edited.observe(viewLifecycleOwner) { post ->
             if (post.id == 0L) return@observe
             findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
@@ -132,24 +140,31 @@ class MyWallFragment : Fragment() {
                     adapter.refresh()
                 } else {
                     myWallViewModel.clearMyData()
-                    DialogManager.logoutDialog(this@MyWallFragment)
                 }
             }
         }
     }
 
-    private fun setListeners(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
-        binding.add.setOnClickListener {
+    private fun setListeners(binding: FragmentMyWallBinding, adapter: PostsAdapter) = with(binding) {
+        add.setOnClickListener {
             if (myWallViewModel.isLogin()) findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
             else DialogManager.errorAuthDialog(this@MyWallFragment)
         }
 
-        binding.buttonLogout.setOnClickListener {
+        buttonLogout.setOnClickListener {
             userViewModel.logout()
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
+        swipeRefresh.setOnRefreshListener {
             adapter.refresh()
+        }
+
+        onLogInButton.setOnClickListener {
+            findNavController().navigate(R.id.action_myWallFragment_to_authorizationFragment)
+        }
+
+        onSignInButton.setOnClickListener {
+            findNavController().navigate(R.id.action_myWallFragment_to_registrationFragment)
         }
     }
 }
