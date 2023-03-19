@@ -5,8 +5,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 
 data class MyWallModel(
     val posts: List<Post> = emptyList(),
-    val user: User?,
-    val empty: Boolean = false,
+    val user: User? = null
 ) {
     sealed interface MyWallModelState {
         object Idle : MyWallModelState

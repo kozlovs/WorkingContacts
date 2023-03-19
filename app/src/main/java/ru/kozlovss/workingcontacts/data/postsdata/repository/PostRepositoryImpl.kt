@@ -14,6 +14,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
@@ -24,6 +25,7 @@ import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
+    private val myWallDao: MyWallDao,
     private val apiService: PostApiService,
     private val mediaApiService: MediaApiService,
     remoteKeyDao: PostRemoteKeyDao,
@@ -67,7 +69,9 @@ class PostRepositoryImpl @Inject constructor(
         try {
             val response = apiService.likePostById(id)
             val body = checkResponse(response)
-            dao.insert(PostEntity.fromDto(body))
+            val post = PostEntity.fromDto(body)
+            dao.insert(post)
+            if (post.ownedByMe) myWallDao.insert(post)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -79,7 +83,9 @@ class PostRepositoryImpl @Inject constructor(
         try {
             val response = apiService.dislikePostById(id)
             val body = checkResponse(response)
-            dao.insert(PostEntity.fromDto(body))
+            val post = PostEntity.fromDto(body)
+            dao.insert(post)
+            if (post.ownedByMe) myWallDao.insert(post)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -90,6 +96,7 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun removeById(id: Long) {
         try {
             dao.removeById(id)
+            myWallDao.removeById(id)
             val response = apiService.deletePostById(id)
             checkResponse(response)
         } catch (e: IOException) {
@@ -106,10 +113,11 @@ class PostRepositoryImpl @Inject constructor(
             val body = checkResponse(response)
             dao.removeById(newPostId)
             dao.save(PostEntity.fromDto(body))
+            myWallDao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
-            throw UnknownError()
+            e.printStackTrace()
         }
     }
 
@@ -128,6 +136,7 @@ class PostRepositoryImpl @Inject constructor(
             val body = checkResponse(response)
             dao.removeById(newPostId)
             dao.save(PostEntity.fromDto(body))
+            myWallDao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {

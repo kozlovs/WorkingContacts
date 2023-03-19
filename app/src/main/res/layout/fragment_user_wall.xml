@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.userswall.ui.UserWallFragment">
@@ -26,9 +26,11 @@
                 android:id="@+id/avatar"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView"
+                android:background="@color/material_dynamic_neutral_variant70"
+                android:src="@drawable/baseline_person_outline_24"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/name"
@@ -46,9 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
                 app:layout_constraintStart_toEndOf="@id/avatar"
                 app:layout_constraintTop_toBottomOf="@id/name"
-                app:layout_constraintBottom_toBottomOf="@id/avatar"
                 tools:text="Google" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

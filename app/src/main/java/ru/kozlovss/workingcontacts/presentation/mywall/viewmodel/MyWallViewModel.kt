@@ -143,9 +143,7 @@ class MyWallViewModel @Inject constructor(
         _edited.value = empty
     }
 
-    fun clearPhoto() {
-        savePhoto(null, null)
-    }
+    fun clearPhoto() = savePhoto(null, null)
 
     fun likeById(id: Long) = viewModelScope.launch {
         try {

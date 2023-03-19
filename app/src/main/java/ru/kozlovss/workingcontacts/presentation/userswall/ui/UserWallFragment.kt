@@ -92,12 +92,14 @@ class UserWallFragment : Fragment() {
             viewModel.userData.collect {
                 it?.let {
                     binding.name.text = it.name
-                    Glide.with(binding.avatar)
-                        .load(it.avatar)
-                        .placeholder(R.drawable.baseline_update_24)
-                        .error(R.drawable.baseline_error_outline_24)
-                        .timeout(10_000)
-                        .into(binding.avatar)
+                    if (it.avatar != null) {
+                        Glide.with(binding.avatar)
+                            .load(it.avatar)
+                            .placeholder(R.drawable.baseline_update_24)
+                            .error(R.drawable.baseline_error_outline_24)
+                            .timeout(10_000)
+                            .into(binding.avatar)
+                    }
                 }
             }
         }

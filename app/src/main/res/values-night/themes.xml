@@ -13,4 +13,8 @@
     <style name="roundedProfileAvatarImageView" parent="roundedImageView">
         <item name="cornerSize">32dp</item>
     </style>
+
+    <style name="roundedPostImageView" parent="roundedImageView">
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

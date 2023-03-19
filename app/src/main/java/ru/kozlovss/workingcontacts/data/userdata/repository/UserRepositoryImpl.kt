@@ -65,7 +65,6 @@ class UserRepositoryImpl @Inject constructor(
                 apiService.logIn(AuthenticationRequest(login, password))
             }
             return checkResponse(response)
-
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {

@@ -34,12 +34,14 @@ class EventViewHolder(
             like.isChecked = event.likedByMe
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
 
-            Glide.with(binding.avatar)
-                .load(event.authorAvatar)
-                .placeholder(R.drawable.baseline_update_24)
-                .error(R.drawable.baseline_error_outline_24)
-                .timeout(10_000)
-                .into(binding.avatar)
+            if (event.authorAvatar != null) {
+                Glide.with(binding.avatar)
+                    .load(event.authorAvatar)
+                    .placeholder(R.drawable.baseline_update_24)
+                    .error(R.drawable.baseline_error_outline_24)
+                    .timeout(10_000)
+                    .into(binding.avatar)
+            }
 
             val attachment = event.attachment
             if (attachment != null) {
@@ -48,7 +50,6 @@ class EventViewHolder(
                         image.visibility = View.VISIBLE
                         Glide.with(image)
                             .load(attachment.url)
-                            .transform(RoundedCorners(30))
                             .placeholder(R.drawable.baseline_update_24)
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)

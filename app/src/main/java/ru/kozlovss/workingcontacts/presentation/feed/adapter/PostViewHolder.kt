@@ -34,12 +34,14 @@ class PostViewHolder(
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
             switchButton.isChecked = post.isPaying == true
 
-            Glide.with(binding.avatar)
-                .load(post.authorAvatar)
-                .placeholder(R.drawable.baseline_update_24)
-                .error(R.drawable.baseline_error_outline_24)
-                .timeout(10_000)
-                .into(binding.avatar)
+            if (post.authorAvatar != null) {
+                Glide.with(binding.avatar)
+                    .load(post.authorAvatar)
+                    .placeholder(R.drawable.baseline_update_24)
+                    .error(R.drawable.baseline_error_outline_24)
+                    .timeout(10_000)
+                    .into(binding.avatar)
+            }
 
             val attachment = post.attachment
             if (attachment != null) {

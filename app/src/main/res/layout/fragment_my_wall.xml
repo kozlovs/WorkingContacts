@@ -26,6 +26,8 @@
                 android:id="@+id/avatar"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
+                android:background="@color/material_dynamic_neutral_variant70"
+                android:src="@drawable/baseline_person_outline_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView" />
@@ -95,32 +97,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/auth_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/on_log_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/log_in_button"/>
+            android:text="@string/log_in_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/on_sign_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/card_margin_between"
-            android:text="@string/sign_in_button"/>
+            android:text="@string/sign_in_button" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
