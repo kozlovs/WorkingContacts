@@ -78,13 +78,14 @@
             <FrameLayout
                 android:id="@+id/video_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_marginTop="8dp">
 
                 <VideoView
                     android:id="@+id/video"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:adjustViewBounds="true" />
 
                 <androidx.appcompat.widget.AppCompatImageView

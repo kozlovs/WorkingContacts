@@ -8,7 +8,7 @@ interface OnInteractionListener {
     fun onShare(event: Event)
     fun onRemove(event: Event)
     fun onEdit(event: Event)
-    fun onPlayVideo(event: Event)
+    fun onToVideo(event: Event)
     fun onSwitchAudio(event: Event)
     fun onToEvent(event: Event)
     fun onToUser(event: Event)

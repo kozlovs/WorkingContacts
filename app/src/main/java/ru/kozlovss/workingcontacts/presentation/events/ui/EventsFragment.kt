@@ -23,6 +23,7 @@ import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionList
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
 import ru.kozlovss.workingcontacts.presentation.events.ui.EventFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
+import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class EventsFragment : Fragment() {
@@ -70,7 +71,11 @@ class EventsFragment : Fragment() {
                 } else DialogManager.errorAuthDialog(this@EventsFragment)
             }
 
-            override fun onPlayVideo(event: Event) {
+            override fun onToVideo(event: Event) {
+                event.attachment?.let {
+                    findNavController().navigate(R.id.action_eventsFragment_to_videoFragment,
+                    Bundle().apply { url = it.url  })
+                }
 //                if (event.video.isNullOrBlank()) return
 //                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.video))
 //                startActivity(intent)

@@ -2,7 +2,9 @@ package ru.kozlovss.workingcontacts.presentation.feed.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.net.Uri
 import android.view.View
+import android.widget.MediaController
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +14,7 @@ import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.CardPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
+import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 class PostViewHolder(
     private val binding: CardPostBinding,
@@ -65,6 +68,9 @@ class PostViewHolder(
                     }
                     Attachment.Type.VIDEO -> {
                         videoLayout.visibility = View.VISIBLE
+                        val uri = Uri.parse(attachment.url)
+                        video.setVideoURI(uri)
+                        video.seekTo(1)
                         image.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
@@ -107,6 +113,9 @@ class PostViewHolder(
         payload.content?.let {
             binding.content.text = it
         }
+        payload.isPlay?.let {
+            binding.switchButton.isChecked = it
+        }
     }
 
     private fun setListeners(binding: CardPostBinding, post: Post) = with(binding) {
@@ -119,7 +128,7 @@ class PostViewHolder(
         }
 
         video.setOnClickListener {
-            onInteractionListener.onPlayVideo(post)
+            onInteractionListener.onToVideo(post)
         }
 
         switchButton.setOnClickListener {

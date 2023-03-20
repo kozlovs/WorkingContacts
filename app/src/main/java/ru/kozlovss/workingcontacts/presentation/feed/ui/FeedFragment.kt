@@ -23,6 +23,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
+import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
@@ -71,10 +72,11 @@ class FeedFragment : Fragment() {
                 } else DialogManager.errorAuthDialog(this@FeedFragment)
             }
 
-            override fun onPlayVideo(post: Post) {
-//                if (post.video.isNullOrBlank()) return
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-//                startActivity(intent)
+            override fun onToVideo(post: Post) {
+                post.attachment?.let {
+                    findNavController().navigate(R.id.action_feedFragment_to_videoFragment,
+                    Bundle().apply { url = it.url  })
+                }
             }
 
             override fun onSwitchAudio(post: Post) {
