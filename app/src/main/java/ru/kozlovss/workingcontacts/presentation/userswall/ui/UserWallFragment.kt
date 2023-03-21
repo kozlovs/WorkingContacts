@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +23,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
+import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 
 @AndroidEntryPoint
@@ -55,10 +57,11 @@ class UserWallFragment : Fragment() {
                 startActivity(shareIntent)
             }
 
-            override fun onPlayVideo(post: Post) {
-//                if (post.video.isNullOrBlank()) return
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-//                startActivity(intent)
+            override fun onToVideo(post: Post) {
+                post.attachment?.let {
+                    findNavController().navigate(R.id.action_userWallFragment_to_videoFragment,
+                        Bundle().apply { url = it.url  })
+                }
             }
 
             override fun onSwitchAudio(post: Post) {

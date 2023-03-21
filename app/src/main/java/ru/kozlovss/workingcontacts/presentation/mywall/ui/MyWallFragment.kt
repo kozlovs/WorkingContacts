@@ -25,6 +25,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
+import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class MyWallFragment : Fragment() {
@@ -65,10 +66,11 @@ class MyWallFragment : Fragment() {
                 myWallViewModel.edit(post)
             }
 
-            override fun onPlayVideo(post: Post) {
-//                if (post.video.isNullOrBlank()) return
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-//                startActivity(intent)
+            override fun onToVideo(post: Post) {
+                post.attachment?.let {
+                    findNavController().navigate(R.id.action_myWallFragment_to_videoFragment,
+                        Bundle().apply { url = it.url  })
+                }
             }
 
             override fun onSwitchAudio(post: Post) {

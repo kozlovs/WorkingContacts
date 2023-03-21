@@ -20,7 +20,8 @@
             android:src="@drawable/baseline_person_outline_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImageView" />
+            app:shapeAppearanceOverlay="@style/roundedImageView"
+            tools:ignore="ImageContrastCheck" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/author"
@@ -73,14 +74,15 @@
             <FrameLayout
                 android:id="@+id/video_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_marginTop="8dp">
 
                 <VideoView
                     android:id="@+id/video"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:adjustViewBounds="true" />
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"

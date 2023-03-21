@@ -76,9 +76,6 @@ class EventsFragment : Fragment() {
                     findNavController().navigate(R.id.action_eventsFragment_to_videoFragment,
                     Bundle().apply { url = it.url  })
                 }
-//                if (event.video.isNullOrBlank()) return
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.video))
-//                startActivity(intent)
             }
 
             override fun onSwitchAudio(event: Event) {

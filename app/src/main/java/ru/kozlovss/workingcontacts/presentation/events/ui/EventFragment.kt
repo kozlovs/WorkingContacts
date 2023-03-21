@@ -1,6 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.events.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
+import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class EventFragment : Fragment() {
@@ -120,6 +122,9 @@ class EventFragment : Fragment() {
                     }
                     Attachment.Type.VIDEO -> {
                         videoLayout.visibility = View.VISIBLE
+                        val uri = Uri.parse(attachment.url)
+                        video.setVideoURI(uri)
+                        video.seekTo(1)
                         image.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
@@ -182,9 +187,10 @@ class EventFragment : Fragment() {
             }
 
             video.setOnClickListener {
-                if (event.attachment == null) return@setOnClickListener
-                //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.video))
-                //startActivity(intent)
+                event.attachment?.let {
+                    findNavController().navigate(R.id.action_eventFragment_to_videoFragment,
+                        Bundle().apply { url = it.url  })
+                }
             }
         }
     }
