@@ -32,7 +32,6 @@ import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.ur
 
 @AndroidEntryPoint
 class PostFragment : Fragment() {
-
     private val feedViewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private val postViewModel: PostViewModel by viewModels()
@@ -80,12 +79,11 @@ class PostFragment : Fragment() {
         }
 
         feedViewModel.edited.observe(viewLifecycleOwner) {
-            if (it.id == 0L) {
-                return@observe
+            if (it.id != 0L) {
+                findNavController().navigate(
+                    R.id.action_postFragment_to_newPostFragment
+                )
             }
-            findNavController().navigate(
-                R.id.action_postFragment_to_newPostFragment,
-            )
         }
     }
 

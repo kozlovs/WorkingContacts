@@ -44,7 +44,7 @@ private var empty = Event(
 )
 
 @HiltViewModel
-class EventViewModel @Inject constructor(
+class EventsViewModel @Inject constructor(
     private val repository: EventRepository,
     appAuth: AppAuth,
     private val audioPlayer: AudioPlayer

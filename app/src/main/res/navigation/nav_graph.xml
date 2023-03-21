@@ -238,7 +238,7 @@
     </fragment>
     <fragment
         android:id="@+id/eventFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.events.ui.EventFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment"
         android:label="fragment_event"
         tools:layout="@layout/fragment_event">
         <action

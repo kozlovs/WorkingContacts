@@ -18,11 +18,11 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
-import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
+import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
 
 @AndroidEntryPoint
 class NewEventFragment : Fragment() {
-    private val viewModel: EventViewModel by activityViewModels()
+    private val viewModel: EventsViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewEventBinding
     lateinit var event: Event

@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.presentation.events.ui.EventFragment
+import ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment
 import ru.kozlovss.workingcontacts.presentation.events.ui.EventsFragment
 import ru.kozlovss.workingcontacts.presentation.events.ui.NewEventFragment
 import ru.kozlovss.workingcontacts.presentation.feed.ui.FeedFragment

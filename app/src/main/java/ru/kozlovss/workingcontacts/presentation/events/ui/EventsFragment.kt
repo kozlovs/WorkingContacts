@@ -20,14 +20,14 @@ import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
-import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventViewModel
-import ru.kozlovss.workingcontacts.presentation.events.ui.EventFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
+import ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class EventsFragment : Fragment() {
-    private val viewModel: EventViewModel by activityViewModels()
+    private val viewModel: EventsViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
