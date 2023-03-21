@@ -10,7 +10,7 @@ import ru.kozlovss.workingcontacts.presentation.events.ui.EventsFragment
 import ru.kozlovss.workingcontacts.presentation.events.ui.NewEventFragment
 import ru.kozlovss.workingcontacts.presentation.feed.ui.FeedFragment
 import ru.kozlovss.workingcontacts.presentation.feed.ui.NewPostFragment
-import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment
+import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment
 
 object DialogManager {
 
@@ -33,25 +33,6 @@ object DialogManager {
                 setTitle("Error")
                 setMessage("Passwords are different")
                 setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
-                    dismiss()
-                }
-            }
-            .show()
-
-    fun logoutDialog(fragment: Fragment) =
-        MaterialAlertDialogBuilder(fragment.requireContext())
-            .create().apply {
-                setTitle("Authentication")
-                setMessage("You are not authenticated")
-                setButton(AlertDialog.BUTTON_POSITIVE, "Log in") { _, _ ->
-                    fragment.findNavController()
-                        .navigate(R.id.action_myWallFragment_to_authorizationFragment)
-                }
-                setButton(AlertDialog.BUTTON_NEUTRAL, "Sign up") { _, _ ->
-                    fragment.findNavController()
-                        .navigate(R.id.action_myWallFragment_to_registrationFragment)
-                }
-                setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
                     dismiss()
                 }
             }

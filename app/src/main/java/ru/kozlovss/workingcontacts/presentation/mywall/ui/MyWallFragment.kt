@@ -23,7 +23,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.OnInteractionList
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
-import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
@@ -88,13 +88,13 @@ class MyWallFragment : Fragment() {
             header = PostLoadingStateAdapter { adapter.retry() },
             footer = PostLoadingStateAdapter { adapter.retry() }
         )
-        subscribe(binding, adapter)
-        setListeners(binding, adapter)
+        subscribe(adapter)
+        setListeners(adapter)
 
         return binding.root
     }
 
-    private fun subscribe(binding: FragmentMyWallBinding, adapter: PostsAdapter) {
+    private fun subscribe(adapter: PostsAdapter) {
         lifecycleScope.launchWhenStarted {
             myWallViewModel.myData.collect {
                 it?.let {
@@ -149,7 +149,7 @@ class MyWallFragment : Fragment() {
         }
     }
 
-    private fun setListeners(binding: FragmentMyWallBinding, adapter: PostsAdapter) = with(binding) {
+    private fun setListeners(adapter: PostsAdapter) = with(binding) {
         add.setOnClickListener {
             if (myWallViewModel.isLogin()) findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
             else DialogManager.errorAuthDialog(this@MyWallFragment)

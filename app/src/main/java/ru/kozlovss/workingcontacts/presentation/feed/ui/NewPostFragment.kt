@@ -1,37 +1,28 @@
 package ru.kozlovss.workingcontacts.presentation.feed.ui
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.inputmethod.InputMethodManager
-import android.widget.ScrollView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.net.toFile
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
-import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
+import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
 
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
-    private val viewModel: PostViewModel by activityViewModels()
+    private val viewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewPostBinding
     lateinit var post: Post

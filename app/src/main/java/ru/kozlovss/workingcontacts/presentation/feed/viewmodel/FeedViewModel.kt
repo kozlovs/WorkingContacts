@@ -41,7 +41,7 @@ private var empty = Post(
 )
 
 @HiltViewModel
-class PostViewModel @Inject constructor(
+class FeedViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth,
     private val audioPlayer: AudioPlayer
@@ -62,8 +62,7 @@ class PostViewModel @Inject constructor(
         }.flowOn(Dispatchers.Default)
 
     private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
-    val state: StateFlow<FeedModel.FeedModelState>
-        get() = _state
+    val state = _state.asStateFlow()
 
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>

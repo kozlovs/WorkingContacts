@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.feed.ui
+package ru.kozlovss.workingcontacts.presentation.post.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -24,15 +25,17 @@ import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
-import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
+import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
+import ru.kozlovss.workingcontacts.presentation.post.model.PostModel
+import ru.kozlovss.workingcontacts.presentation.post.viewmodel.PostViewModel
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class PostFragment : Fragment() {
 
-    private val viewModel: PostViewModel by activityViewModels()
+    private val feedViewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    lateinit var post: Post
+    private val postViewModel: PostViewModel by viewModels()
     private lateinit var binding: FragmentPostBinding
     private var id: Long? = null
 
@@ -51,22 +54,32 @@ class PostFragment : Fragment() {
 
         subscribe()
         setListeners()
+        postViewModel.updateData(id)
 
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        postViewModel.clearData()
+    }
+
     private fun subscribe() {
         lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest {
-                val requestPost = id?.let { viewModel.getById(it) }
-                requestPost?.let {
-                    post = requestPost
-                    updateView()
-                } ?: findNavController().navigateUp()
+            postViewModel.data.collect { post ->
+                post?.let { updateUi(it) }
             }
         }
 
-        viewModel.edited.observe(viewLifecycleOwner) {
+        lifecycleScope.launchWhenCreated {
+            postViewModel.state.collectLatest { state ->
+                binding.progress.isVisible = state is PostModel.State.Loading
+                binding.cardLayout.isVisible = state is PostModel.State.Idle
+                binding.errorLayout.isVisible = state is PostModel.State.Error
+            }
+        }
+
+        feedViewModel.edited.observe(viewLifecycleOwner) {
             if (it.id == 0L) {
                 return@observe
             }
@@ -76,7 +89,7 @@ class PostFragment : Fragment() {
         }
     }
 
-    private fun updateView() {
+    private fun updateUi(post: Post) {
         binding.apply {
             author.text = post.author
             authorJob.text = post.authorJob
@@ -143,59 +156,65 @@ class PostFragment : Fragment() {
         }
     }
 
-    private fun setListeners() {
-        binding.apply {
+    private fun setListeners() = with(binding) {
 
-            like.setOnClickListener {
-                if (userViewModel.isLogin()) {
-                    viewModel.likeById(post.id)
-                } else DialogManager.errorAuthDialog(this@PostFragment)
-            }
-
-            share.setOnClickListener {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
+        like.setOnClickListener {
+            if (userViewModel.isLogin()) {
+                id?.let { id ->
+                    feedViewModel.likeById(id)
                 }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
+            } else DialogManager.errorAuthDialog(this@PostFragment)
+        }
 
-            menu.setOnClickListener {
-                PopupMenu(it.context, it).apply {
-                    inflate(R.menu.options_post_menu)
-                    setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.remove -> {
-                                if (userViewModel.isLogin()) {
-                                    viewModel.removeById(post.id)
-                                } else DialogManager.errorAuthDialog(this@PostFragment)
-                                true
-                            }
-                            R.id.edit -> {
-                                if (userViewModel.isLogin()) {
-                                    viewModel.edit(post)
-                                } else DialogManager.errorAuthDialog(this@PostFragment)
-                                true
-                            }
-                            else -> false
+        share.setOnClickListener {
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, postViewModel.data.value?.content)
+                type = "text/plain"
+            }
+            val shareIntent =
+                Intent.createChooser(intent, getString(R.string.chooser_share_post))
+            startActivity(shareIntent)
+        }
+
+        menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options_post_menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.remove -> {
+                            if (userViewModel.isLogin()) {
+                                id?.let { id ->
+                                    feedViewModel.removeById(id)
+                                }
+                            } else DialogManager.errorAuthDialog(this@PostFragment)
+                            true
                         }
-
+                        R.id.edit -> {
+                            if (userViewModel.isLogin()) {
+                                postViewModel.data.value?.let { post ->
+                                    feedViewModel.edit(post)
+                                }
+                            } else DialogManager.errorAuthDialog(this@PostFragment)
+                            true
+                        }
+                        else -> false
                     }
-                }.show()
-            }
 
-            video.setOnClickListener {
-                post.attachment?.let {
-                    findNavController().navigate(R.id.action_postFragment_to_videoFragment,
-                        Bundle().apply { url = it.url  })
                 }
-            }
+            }.show()
+        }
 
-            switchButton.setOnClickListener {
-                viewModel.switchAudio(post)
+        video.setOnClickListener {
+            postViewModel.data.value?.attachment?.let {
+                findNavController().navigate(R.id.action_postFragment_to_videoFragment,
+                    Bundle().apply { url = it.url })
+            }
+        }
+
+        switchButton.setOnClickListener {
+            postViewModel.data.value?.let { post ->
+                feedViewModel.switchAudio(post)
             }
         }
     }

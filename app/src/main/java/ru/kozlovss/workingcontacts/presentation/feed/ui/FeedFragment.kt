@@ -20,15 +20,15 @@ import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
-import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.PostViewModel
-import ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
+import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
 
-    private val viewModel: PostViewModel by activityViewModels()
+    private val viewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(

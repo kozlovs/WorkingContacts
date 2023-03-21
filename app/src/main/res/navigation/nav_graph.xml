@@ -190,7 +190,7 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.feed.ui.PostFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment"
         android:label="fragment_post"
         tools:layout="@layout/fragment_post">
         <action
