@@ -107,7 +107,7 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
-    fun clearMyData() {
+    fun clearMyData() = viewModelScope.launch {
         try {
             _state.value = MyWallModel.MyWallModelState.Loading
             _myData.value = null

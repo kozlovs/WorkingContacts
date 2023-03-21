@@ -36,12 +36,24 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    fun clearData() {
+    fun clearData() = viewModelScope.launch {
         try {
             _data.value = null
         } catch (e: Exception) {
             _state.value = EventModel.State.Error
             e.printStackTrace()
+        }
+    }
+
+    fun likeById(id: Long?) = viewModelScope.launch {
+        try {
+            id?.let {
+                eventRepository.likeById(it)
+                _data.value = eventRepository.getById(it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _state.value = EventModel.State.Error
         }
     }
 }

@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.net.Uri
 import android.view.View
-import android.widget.MediaController
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +13,6 @@ import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.CardPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 class PostViewHolder(
     private val binding: CardPostBinding,
@@ -93,19 +91,11 @@ class PostViewHolder(
     fun bind(payload: Payload) {
         payload.likedByMe?.let {
             binding.like.isChecked = it
-            if (it) {
-                ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
-                ).start()
-            } else {
-                ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
-                ).start()
-            }
+            ObjectAnimator.ofPropertyValuesHolder(
+                binding.like,
+                PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+            ).start()
         }
         payload.likes?.let {
             binding.like.text = Formatter.numberToShortFormat(it)

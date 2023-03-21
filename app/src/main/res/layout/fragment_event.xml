@@ -180,11 +180,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/share"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="@string/share_button"
                 app:icon="@drawable/baseline_share_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierContent" />

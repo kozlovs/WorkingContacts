@@ -37,12 +37,24 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun clearData() {
+    fun clearData() = viewModelScope.launch {
         try {
             _data.value = null
         } catch (e: Exception) {
             _state.value = PostModel.State.Error
             e.printStackTrace()
+        }
+    }
+
+    fun likeById(id: Long?) = viewModelScope.launch {
+        try {
+            id?.let {
+                postsRepository.likeById(it)
+                _data.value = postsRepository.getById(it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _state.value = PostModel.State.Error
         }
     }
 }

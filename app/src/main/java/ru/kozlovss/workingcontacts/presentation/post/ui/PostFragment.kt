@@ -1,5 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.post.ui
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -158,9 +160,12 @@ class PostFragment : Fragment() {
 
         like.setOnClickListener {
             if (userViewModel.isLogin()) {
-                id?.let { id ->
-                    feedViewModel.likeById(id)
-                }
+                postViewModel.likeById(id)
+                ObjectAnimator.ofPropertyValuesHolder(
+                    binding.like,
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+                ).start()
             } else DialogManager.errorAuthDialog(this@PostFragment)
         }
 
