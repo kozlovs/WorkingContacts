@@ -11,7 +11,7 @@
         style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/card_margin_side"
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,17 +20,19 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_margin="@dimen/card_margin_side">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/avatar"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:background="@color/material_dynamic_neutral_variant70"
+                android:scaleType="center"
                 android:src="@drawable/baseline_person_outline_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView" />
+                app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView"
+                tools:ignore="ImageContrastCheck" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/name"
@@ -58,6 +60,72 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/job_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_card">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/job_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_margin_side"
+            android:layout_marginTop="@dimen/card_margin_side"
+            android:layout_marginBottom="@dimen/card_margin_between"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/jobs_selector_icon"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:checkable="true"
+                app:icon="@drawable/job_selector_arrow"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/card_margin_between"
+                android:text="@string/jobs"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/jobs_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/card_margin_side"
+                android:textSize="20sp"
+                tools:text="0" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/job_list"
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_margin_side"
+            android:layout_marginTop="@dimen/card_margin_between"
+            android:layout_marginEnd="@dimen/card_margin_side"
+            app:cardCornerRadius="@dimen/card_corner_radius">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_margin_side" />
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="0dp"
@@ -65,7 +133,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_card">
+        app:layout_constraintTop_toBottomOf="@id/job_layout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"

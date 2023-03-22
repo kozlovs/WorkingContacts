@@ -25,7 +25,8 @@
             android:src="@drawable/baseline_person_outline_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedImageView" />
+            app:shapeAppearanceOverlay="@style/roundedImageView"
+            tools:ignore="ImageContrastCheck" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/author"

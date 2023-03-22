@@ -27,6 +27,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:background="@color/material_dynamic_neutral_variant70"
+                android:scaleType="center"
                 android:src="@drawable/baseline_person_outline_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

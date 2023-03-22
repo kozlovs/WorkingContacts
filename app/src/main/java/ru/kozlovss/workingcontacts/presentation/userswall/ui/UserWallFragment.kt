@@ -2,11 +2,11 @@ package ru.kozlovss.workingcontacts.presentation.userswall.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -109,7 +109,6 @@ class UserWallFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.postsData.collectLatest {
-                Log.d("MyLog", "set data ${it.size}")
                 adapter.submitList(it)
             }
         }
@@ -126,11 +125,24 @@ class UserWallFragment : Fragment() {
                 }
             }
         }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.showJobs.collectLatest {
+                with(binding) {
+                    jobList.isVisible = it
+                    jobsSelectorIcon.isChecked = it
+                }
+            }
+        }
     }
 
     private fun setListeners(binding: FragmentUserWallBinding) {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.getPosts(arguments?.userId!!)
+        }
+
+        binding.jobSelector.setOnClickListener {
+            viewModel.switchJobList()
         }
     }
 
