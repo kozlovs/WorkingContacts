@@ -69,7 +69,7 @@ class MyWallFragment : Fragment() {
             override fun onToVideo(post: Post) {
                 post.attachment?.let {
                     findNavController().navigate(R.id.action_myWallFragment_to_videoFragment,
-                        Bundle().apply { url = it.url  })
+                        Bundle().apply { url = it.url })
                 }
             }
 
@@ -106,6 +106,8 @@ class MyWallFragment : Fragment() {
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)
                             .into(binding.avatar)
+                    } else {
+                        binding.avatar.setImageResource(R.drawable.baseline_person_outline_24)
                     }
                 }
             }

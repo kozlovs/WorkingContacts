@@ -42,6 +42,8 @@ class EventViewHolder(
                     .error(R.drawable.baseline_error_outline_24)
                     .timeout(10_000)
                     .into(binding.avatar)
+            } else {
+                avatar.setImageResource(R.drawable.baseline_person_outline_24)
             }
 
             val attachment = event.attachment

@@ -105,12 +105,14 @@ class EventFragment : Fragment() {
         menu.isVisible = event.ownedByMe
 
         if (event.authorAvatar != null) {
-            Glide.with(binding.avatar)
+            Glide.with(avatar)
                 .load(event.authorAvatar)
                 .placeholder(R.drawable.baseline_update_24)
                 .error(R.drawable.baseline_error_outline_24)
                 .timeout(10_000)
-                .into(binding.avatar)
+                .into(avatar)
+        } else {
+            avatar.setImageResource(R.drawable.baseline_person_outline_24)
         }
 
         val attachment = event.attachment
@@ -154,70 +156,67 @@ class EventFragment : Fragment() {
         }
     }
 
-    private fun setListeners() {
-        binding.apply {
+    private fun setListeners() = with(binding) {
+        like.setOnClickListener {
+            if (userViewModel.isLogin()) {
+                eventViewModel.likeById(id)
+                ObjectAnimator.ofPropertyValuesHolder(
+                    binding.like,
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+                ).start()
+            } else DialogManager.errorAuthDialog(this@EventFragment)
+        }
 
-            like.setOnClickListener {
-                if (userViewModel.isLogin()) {
-                    eventViewModel.likeById(id)
-                    ObjectAnimator.ofPropertyValuesHolder(
-                        binding.like,
-                        PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
-                        PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
-                    ).start()
-                } else DialogManager.errorAuthDialog(this@EventFragment)
+        share.setOnClickListener {
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, eventViewModel.data.value?.content)
+                type = "text/plain"
             }
+            val shareIntent =
+                Intent.createChooser(intent, getString(R.string.chooser_share_event))
+            startActivity(shareIntent)
+        }
 
-            share.setOnClickListener {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, eventViewModel.data.value?.content)
-                    type = "text/plain"
-                }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_event))
-                startActivity(shareIntent)
-            }
-
-            menu.setOnClickListener {
-                PopupMenu(it.context, it).apply {
-                    inflate(R.menu.options_event_menu)
-                    setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.remove -> {
-                                if (userViewModel.isLogin()) {
-                                    id?.let { id ->
-                                        eventsViewModel.removeById(id)
-                                    }
-                                } else DialogManager.errorAuthDialog(this@EventFragment)
-                                true
-                            }
-                            R.id.edit -> {
-                                if (userViewModel.isLogin()) {
-                                    eventViewModel.data.value?.let { event ->
-                                        eventsViewModel.edit(event)
-                                    }
-                                } else DialogManager.errorAuthDialog(this@EventFragment)
-                                true
-                            }
-                            else -> false
+        menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options_event_menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.remove -> {
+                            if (userViewModel.isLogin()) {
+                                id?.let { id ->
+                                    eventsViewModel.removeById(id)
+                                }
+                            } else DialogManager.errorAuthDialog(this@EventFragment)
+                            true
                         }
-
+                        R.id.edit -> {
+                            if (userViewModel.isLogin()) {
+                                eventViewModel.data.value?.let { event ->
+                                    eventsViewModel.edit(event)
+                                }
+                            } else DialogManager.errorAuthDialog(this@EventFragment)
+                            true
+                        }
+                        else -> false
                     }
-                }.show()
-            }
 
-            video.setOnClickListener {
-                eventViewModel.data.value?.attachment?.let {
-                    findNavController().navigate(R.id.action_eventFragment_to_videoFragment,
-                        Bundle().apply { url = it.url })
                 }
-            }
+            }.show()
+        }
 
-            switchButton.setOnClickListener {
-                eventViewModel.data.value?.let { event ->
-                    eventsViewModel.switchAudio(event)
-                }
+        video.setOnClickListener {
+            eventViewModel.data.value?.attachment?.let {
+                findNavController().navigate(R.id.action_eventFragment_to_videoFragment,
+                    Bundle().apply { url = it.url })
+            }
+        }
+
+        switchButton.setOnClickListener {
+            eventViewModel.data.value?.let { event ->
+                eventsViewModel.switchAudio(event)
             }
         }
     }

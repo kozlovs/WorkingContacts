@@ -28,7 +28,6 @@
                 android:layout_height="64dp"
                 android:background="@color/material_dynamic_neutral_variant70"
                 android:scaleType="center"
-                android:src="@drawable/baseline_person_outline_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView"
@@ -85,6 +84,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:checkable="true"
+                android:clickable="false"
                 app:icon="@drawable/job_selector_arrow"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 

@@ -89,70 +89,70 @@ class PostFragment : Fragment() {
         }
     }
 
-    private fun updateUi(post: Post) {
-        binding.apply {
-            author.text = post.author
-            authorJob.text = post.authorJob
-            published.text = post.published
-            if (post.link != null) {
-                link.visibility = View.VISIBLE
-                link.text = post.link
-            } else {
-                link.visibility = View.GONE
-            }
-            content.text = post.content
-            like.isChecked = post.likedByMe
-            like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
-            menu.isVisible = post.ownedByMe
+    private fun updateUi(post: Post) = with(binding) {
+        author.text = post.author
+        authorJob.text = post.authorJob
+        published.text = post.published
+        if (post.link != null) {
+            link.visibility = View.VISIBLE
+            link.text = post.link
+        } else {
+            link.visibility = View.GONE
+        }
+        content.text = post.content
+        like.isChecked = post.likedByMe
+        like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
+        menu.isVisible = post.ownedByMe
 
-            if (post.authorAvatar != null) {
-                Glide.with(binding.avatar)
-                    .load(post.authorAvatar)
-                    .placeholder(R.drawable.baseline_update_24)
-                    .error(R.drawable.baseline_error_outline_24)
-                    .timeout(10_000)
-                    .into(binding.avatar)
-            }
+        if (post.authorAvatar != null) {
+            Glide.with(avatar)
+                .load(post.authorAvatar)
+                .placeholder(R.drawable.baseline_update_24)
+                .error(R.drawable.baseline_error_outline_24)
+                .timeout(10_000)
+                .into(avatar)
+        } else {
+            avatar.setImageResource(R.drawable.baseline_person_outline_24)
+        }
 
-            val attachment = post.attachment
-            if (attachment != null) {
-                when (attachment.type) {
-                    Attachment.Type.IMAGE -> {
-                        image.visibility = View.VISIBLE
-                        Glide.with(image)
-                            .load(attachment.url)
-                            .transform(RoundedCorners(30))
-                            .placeholder(R.drawable.baseline_update_24)
-                            .error(R.drawable.baseline_error_outline_24)
-                            .timeout(10_000)
-                            .into(image)
-                        videoLayout.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
-                    Attachment.Type.AUDIO -> {
-                        audio.visibility = View.VISIBLE
-                        image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
-                    }
-                    Attachment.Type.VIDEO -> {
-                        videoLayout.visibility = View.VISIBLE
-                        val uri = Uri.parse(attachment.url)
-                        video.setVideoURI(uri)
-                        video.seekTo(1)
-                        image.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
-                    else -> {
-                        image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
+        val attachment = post.attachment
+        if (attachment != null) {
+            when (attachment.type) {
+                Attachment.Type.IMAGE -> {
+                    image.visibility = View.VISIBLE
+                    Glide.with(image)
+                        .load(attachment.url)
+                        .transform(RoundedCorners(30))
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(image)
+                    videoLayout.visibility = View.GONE
+                    audio.visibility = View.GONE
                 }
-            } else {
-                image.visibility = View.GONE
-                videoLayout.visibility = View.GONE
-                audio.visibility = View.GONE
+                Attachment.Type.AUDIO -> {
+                    audio.visibility = View.VISIBLE
+                    image.visibility = View.GONE
+                    videoLayout.visibility = View.GONE
+                }
+                Attachment.Type.VIDEO -> {
+                    videoLayout.visibility = View.VISIBLE
+                    val uri = Uri.parse(attachment.url)
+                    video.setVideoURI(uri)
+                    video.seekTo(1)
+                    image.visibility = View.GONE
+                    audio.visibility = View.GONE
+                }
+                else -> {
+                    image.visibility = View.GONE
+                    videoLayout.visibility = View.GONE
+                    audio.visibility = View.GONE
+                }
             }
+        } else {
+            image.visibility = View.GONE
+            videoLayout.visibility = View.GONE
+            audio.visibility = View.GONE
         }
     }
 
@@ -162,7 +162,7 @@ class PostFragment : Fragment() {
             if (userViewModel.isLogin()) {
                 postViewModel.likeById(id)
                 ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
+                    like,
                     PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
                 ).start()
