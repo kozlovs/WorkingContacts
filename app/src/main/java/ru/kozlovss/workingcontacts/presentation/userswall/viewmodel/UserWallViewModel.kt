@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
@@ -26,13 +27,13 @@ class UserWallViewModel @Inject constructor(
     private val _postsData = MutableStateFlow<List<Post>>(emptyList())
     val postsData = _postsData.asStateFlow()
 
+    private val _jobsData = MutableStateFlow<List<Job>>(emptyList())
+    val jobsData = _jobsData.asStateFlow()
+
     val userData = userRepository.userData
 
     private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
     val state = _state.asStateFlow()
-
-    private val _showJobs = MutableStateFlow(false)
-    val showJobs = _showJobs.asStateFlow()
 
     fun getPosts(id: Long) {
         try {
@@ -82,17 +83,5 @@ class UserWallViewModel @Inject constructor(
         if (post.attachment?.type == Attachment.Type.AUDIO) {
             audioPlayer.switch(post.attachment)
         }
-    }
-
-    fun switchJobList() {
-        if (showJobs.value) hideJobs() else showJobs()
-    }
-
-    private fun hideJobs() {
-        _showJobs.value = false
-    }
-
-    private fun showJobs() {
-        _showJobs.value = true
     }
 }

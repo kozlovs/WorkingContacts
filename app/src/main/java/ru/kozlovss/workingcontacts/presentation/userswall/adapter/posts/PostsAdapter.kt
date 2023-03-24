@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.userswall.adapter
+package ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

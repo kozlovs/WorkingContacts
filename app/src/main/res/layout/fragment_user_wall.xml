@@ -59,89 +59,35 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/job_layout"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginTop="@dimen/card_margin_between"
+        android:layout_marginHorizontal="@dimen/card_margin_side"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_card">
+        app:layout_constraintTop_toBottomOf="@+id/user_card">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/job_selector"
+        <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/card_margin_side"
-            android:layout_marginTop="@dimen/card_margin_side"
-            android:layout_marginBottom="@dimen/card_margin_between"
-            android:orientation="horizontal">
+            tools:text="Posts" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/jobs_selector_icon"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:checkable="true"
-                android:clickable="false"
-                app:icon="@drawable/job_selector_arrow"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/card_margin_between"
-                android:text="@string/jobs"
-                android:textSize="20sp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/jobs_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/card_margin_side"
-                android:textSize="20sp"
-                tools:text="0" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/job_list"
-            style="@style/Widget.Material3.CardView.Filled"
-            android:layout_width="match_parent"
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/card_margin_side"
-            android:layout_marginTop="@dimen/card_margin_between"
-            android:layout_marginEnd="@dimen/card_margin_side"
-            app:cardCornerRadius="@dimen/card_corner_radius">
+            tools:text="Jobs" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/card_margin_side" />
+    </com.google.android.material.tabs.TabLayout>
 
-        </androidx.cardview.widget.CardView>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/job_layout">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/card_wall_post" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

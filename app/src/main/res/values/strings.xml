@@ -32,4 +32,7 @@
     <string name="skip">Skip</string>
     <string name="error_loading">loading error</string>
     <string name="jobs">Jobs</string>
+    <string name="empty_jobs">jobs is empty</string>
+    <string name="to">to</string>
+    <string name="from">from</string>
 </resources>

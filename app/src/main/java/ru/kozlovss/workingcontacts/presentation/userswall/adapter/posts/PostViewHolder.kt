@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.userswall.adapter
+package ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -66,7 +66,7 @@ class PostViewHolder  (
             }
         }
 
-        setListeners(binding, post)
+        setListeners(post)
     }
 
     fun bind(payload: Payload) {
@@ -94,7 +94,7 @@ class PostViewHolder  (
         }
     }
 
-    private fun setListeners(binding: CardWallPostBinding, post: Post) = with(binding) {
+    private fun setListeners(post: Post) = with(binding) {
         like.setOnClickListener {
             onInteractionListener.onLike(post)
         }
