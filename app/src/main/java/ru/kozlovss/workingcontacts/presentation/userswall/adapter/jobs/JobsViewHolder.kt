@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.CardJobBinding
+import ru.kozlovss.workingcontacts.domain.util.Formatter
 
 class JobsViewHolder(
     private val binding: CardJobBinding,
@@ -17,12 +18,11 @@ class JobsViewHolder(
         binding.apply {
             name.text = job.name
             position.text = job.position
-            start.text = job.start
+            start.text = Formatter.localDateTimeToJobDateFormat(job.start)
             if (job.finish != null) {
-                finish.text = job.finish
-                finish.isVisible = true
+                finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
             } else {
-                finish.isVisible = false
+                finish.text = "until now"
             }
             if (job.link != null) {
                 link.text = job.link

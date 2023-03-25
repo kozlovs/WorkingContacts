@@ -20,7 +20,7 @@ class PostViewHolder  (
 
     fun bind(post: Post) {
         binding.apply {
-            published.text = post.published
+            published.text = Formatter.localDateTimeToPostDateFormat(post.published)
             content.text = post.content
             like.isChecked = post.likedByMe
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)

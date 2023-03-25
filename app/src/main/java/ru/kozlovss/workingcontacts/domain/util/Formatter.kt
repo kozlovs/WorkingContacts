@@ -1,15 +1,14 @@
 package ru.kozlovss.workingcontacts.domain.util
 
-import android.icu.text.SimpleDateFormat
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.time.OffsetDateTime
-import java.util.*
+import android.util.Log
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 object Formatter {
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private val POST_DATE_FORMAT = SimpleDateFormat("HH:mm dd.MM.yyyy", Locale.ROOT)
+    private val POST_DATE_FORMAT = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy")
+    private val JOB_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
     fun numberToShortFormat(number: Int): String {
         return when {
@@ -23,42 +22,42 @@ object Formatter {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun dateMilliToPostDateFormat(published: Long): String {
-        val secondsAgo = OffsetDateTime.now().toEpochSecond() - published
+    fun localDateTimeToPostDateFormat(published: String): String {
+        val dateTime = LocalDateTime.parse(published.substring(0, 19))
+        val now = LocalDateTime.now()
+        val secondsAgo = dateTime.until(now, ChronoUnit.SECONDS)
+        Log.d("MyLog", "$secondsAgo")
         return when (secondsAgo) {
             in 0..60 -> "только что"
-            in 61..(60 * 60) -> "${minutesToText(secondsAgo)} назад"
-            in (60 * 60 + 1)..(24 * 60 * 60) -> "${hoursToText(secondsAgo)} назад"
-            else -> milliToDate(published)
+            in 61..(60 * 60) -> "${minutesToText(dateTime.minute)} назад"
+            in (60 * 60 + 1)..(24 * 60 * 60) -> "${hoursToText(dateTime.hour)} назад"
+            else -> dateTimeToFormatString(dateTime)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun milliToDate(published: Long): String {
-        val date = Date(published * 1000)
-        return POST_DATE_FORMAT.format(date)
-    }
-
-    private fun minutesToText(seconds: Long): String {
-        val minutes = seconds / 60
+    private fun dateTimeToFormatString(published: LocalDateTime) = published.format(POST_DATE_FORMAT)
+    private fun minutesToText(minutes: Int): String {
         if (minutes in 11..14)
             return "$minutes минут"
         return when(minutes % 10) {
-            1L -> "$minutes минуту"
-            2L, 3L, 4L -> "$minutes минуты"
+            1 -> "$minutes минуту"
+            2, 3, 4 -> "$minutes минуты"
             else -> "$minutes минут"
         }
     }
 
-    private fun hoursToText(seconds: Long): String {
-        val hours = seconds / (60 * 60)
+    private fun hoursToText(hours: Int): String {
         if (hours in 11..14)
             return "$hours часов"
         return when(hours % 10) {
-            1L -> "$hours час"
-            2L, 3L, 4L -> "$hours часа"
+            1 -> "$hours час"
+            2, 3, 4 -> "$hours часа"
             else -> "$hours часов"
         }
+    }
+
+    fun localDateTimeToJobDateFormat(published: String): String {
+        val dateTime = LocalDateTime.parse(published.substring(0, 19))
+        return dateTime.format(JOB_DATE_FORMAT)
     }
 }
