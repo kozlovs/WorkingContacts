@@ -31,14 +31,6 @@ class JobsViewHolder(
                 link.isVisible = false
             }
         }
-
-        setListeners(job)
-    }
-
-    private fun setListeners(job: Job) = with(binding) {
-        menu.setOnClickListener { view ->
-            showMenu(view, job)
-        }
     }
 
     private fun showMenu(v: View, job: Job) {

@@ -15,6 +15,6 @@ interface JobApiService {
     @DELETE("my/jobs/{id}")
     suspend fun deleteMyJobById(@Path("id") id: Long): Response<Unit>
 
-    @GET("events/{id}")
-    suspend fun getUserJobsById(@Path("id") id: Long): Response<Job>
+    @GET("{id}/jobs")
+    suspend fun getJobsByUserId(@Path("id") id: Long): Response<List<Job>>
 }

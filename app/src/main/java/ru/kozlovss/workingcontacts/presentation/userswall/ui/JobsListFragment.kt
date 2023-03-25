@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +48,7 @@ class JobsListFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.jobsData.collect {
                 adapter.submitList(it)
+                binding.empty.isVisible = it.isEmpty()
             }
         }
 

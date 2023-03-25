@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepositoryImpl
+import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
+import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepositoryImpl
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepositoryImpl
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
@@ -39,4 +41,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsUserWallRepository(impl: UserWallRepositoryImpl): UserWallRepository
+
+    @Singleton
+    @Binds
+    fun bindsJobsRepository(impl: JobRepositoryImpl): JobRepository
 }

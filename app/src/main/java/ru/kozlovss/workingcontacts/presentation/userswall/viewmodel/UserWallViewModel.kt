@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class UserWallViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val wallRepository: UserWallRepository,
+    private val jobRepository: JobRepository,
     private val appAuth: AppAuth,
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
@@ -48,8 +50,25 @@ class UserWallViewModel @Inject constructor(
         }
     }
 
-    fun cleanPosts() {
+    fun clearPosts() {
         _postsData.value = emptyList()
+    }
+
+    fun getJobs(id: Long) {
+        try {
+            viewModelScope.launch {
+               // _state.value = FeedModel.FeedModelState.Refreshing
+                _jobsData.value = jobRepository.getJobsByUserId(id)
+            //    _state.value = FeedModel.FeedModelState.Idle
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            //_state.value = FeedModel.FeedModelState.Error
+        }
+    }
+
+    fun clearJobs() {
+        _jobsData.value = emptyList()
     }
 
     fun getUserData(userId: Long) = viewModelScope.launch {

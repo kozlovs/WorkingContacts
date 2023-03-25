@@ -24,7 +24,7 @@ class UserWallFragment : Fragment() {
     private lateinit var binding: FragmentUserWallBinding
     private val fragmentsList = listOf(
         PostsListFragment.newInstance(),
-        PostsListFragment.newInstance()
+        JobsListFragment.newInstance()
     )
     private val tabList = listOf("Posts", "Jobs")
 
@@ -35,18 +35,29 @@ class UserWallFragment : Fragment() {
     ): View {
         binding = FragmentUserWallBinding.inflate(inflater, container, false)
         init()
-        viewModel.getUserData(arguments?.userId!!)
-        viewModel.getPosts(arguments?.userId!!)
+        getUserData(arguments?.userId!!)
+
 
         subscribe()
 
         return binding.root
     }
 
+    private fun getUserData(userId: Long) {
+        viewModel.getUserData(userId)
+        viewModel.getPosts(userId)
+        viewModel.getJobs(userId)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        clearUserData()
+    }
+
+    private fun clearUserData() {
         viewModel.clearUserData()
-        viewModel.cleanPosts()
+        viewModel.clearPosts()
+        viewModel.clearJobs()
     }
 
     private fun subscribe() {

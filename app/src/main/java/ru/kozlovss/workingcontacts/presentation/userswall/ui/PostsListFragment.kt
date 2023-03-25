@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,7 +23,6 @@ import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.OnIntera
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
-import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 
 @AndroidEntryPoint
@@ -53,6 +53,7 @@ class PostsListFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.postsData.collect {
                 adapter.submitList(it)
+                binding.empty.isVisible = it.isEmpty()
             }
         }
 
@@ -102,9 +103,9 @@ class PostsListFragment : Fragment() {
             }
 
             override fun onToPost(post: Post) {
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
-                    Bundle().apply { id = post.id })
+//                findNavController().navigate(
+//                    R.id.action_feedFragment_to_postFragment,
+//                    Bundle().apply { id = post.id })
             }
         })
         list.adapter = adapter
