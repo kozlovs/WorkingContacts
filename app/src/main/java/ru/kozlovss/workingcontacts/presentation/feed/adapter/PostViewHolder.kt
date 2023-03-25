@@ -23,7 +23,7 @@ class PostViewHolder(
         binding.apply {
             author.text = post.author
             authorJob.text = post.authorJob
-            published.text = post.published
+            published.text = Formatter.localDateTimeToPostDateFormat(post.published)
             if (post.link != null) {
                 link.visibility = View.VISIBLE
                 link.text = post.link

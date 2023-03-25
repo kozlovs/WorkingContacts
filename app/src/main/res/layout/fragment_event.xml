@@ -164,6 +164,53 @@
                 app:barrierMargin="16dp"
                 app:constraint_referenced_ids="contentLayout" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_speakers"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:barrierDirection="bottom"
+                app:barrierMargin="16dp"
+                app:constraint_referenced_ids="like, share, speakers_selector" />
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/speakers_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/like"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrierContent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/jobs_selector_icon"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:checkable="true"
+                    android:clickable="false"
+                    app:icon="@drawable/job_selector_arrow"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/card_margin_between"
+                    android:text="@string/speakers"
+                    android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/jobs_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/card_margin_side"
+                    android:textSize="20sp"
+                    tools:text="0" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/like"
@@ -187,8 +234,34 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierContent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/speakers_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_speakers">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/job_list"
+                    style="@style/Widget.Material3.CardView.Filled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/card_margin_side"
+                    android:layout_marginEnd="@dimen/card_margin_side"
+                    app:cardCornerRadius="@dimen/card_corner_radius">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/card_margin_side" />
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <ProgressBar

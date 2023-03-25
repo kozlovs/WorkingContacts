@@ -6,9 +6,8 @@
     style="@style/Widget.Material3.CardView.Filled"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/card_margin_side"
+    android:layout_marginHorizontal="@dimen/card_margin_side"
     android:layout_marginTop="@dimen/card_margin_between"
-    android:layout_marginEnd="@dimen/card_margin_side"
     app:cardCornerRadius="@dimen/card_corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout

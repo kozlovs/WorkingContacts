@@ -35,4 +35,5 @@
     <string name="empty_jobs">jobs is empty</string>
     <string name="to">to</string>
     <string name="from">from</string>
+    <string name="speakers">speakers</string>
 </resources>

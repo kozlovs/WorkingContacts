@@ -92,7 +92,7 @@ class EventFragment : Fragment() {
     private fun updateUi(event: Event) = with(binding) {
         author.text = event.author
         authorJob.text = event.authorJob
-        published.text = event.published
+        published.text = Formatter.localDateTimeToPostDateFormat(event.published)
         if (event.link != null) {
             link.visibility = View.VISIBLE
             link.text = event.link
