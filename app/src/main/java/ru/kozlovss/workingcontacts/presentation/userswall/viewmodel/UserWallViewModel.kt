@@ -14,7 +14,7 @@ import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
+import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,44 +34,58 @@ class UserWallViewModel @Inject constructor(
 
     val userData = userRepository.userData
 
-    private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
+    private val _state = MutableStateFlow<UserWallModel.State>(UserWallModel.State.Idle)
     val state = _state.asStateFlow()
 
-    fun getPosts(id: Long) {
+    fun getPosts(id: Long? = null) {
         try {
             viewModelScope.launch {
-                _state.value = FeedModel.FeedModelState.Refreshing
-                _postsData.value = wallRepository.getAll(id)
-                _state.value = FeedModel.FeedModelState.Idle
+                _postsData.value = if (id != null) {
+                    _state.value = UserWallModel.State.Loading
+                    wallRepository.getAll(id)
+                } else if (userData.value != null) {
+                    _state.value = UserWallModel.State.RefreshingPosts
+                    wallRepository.getAll(userData.value!!.id)
+                } else {
+                    emptyList()
+                }
+                _state.value = UserWallModel.State.Idle
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            _state.value = FeedModel.FeedModelState.Error
+            _state.value = UserWallModel.State.Error
         }
     }
 
-    fun clearPosts() {
+    private fun clearPosts() {
         _postsData.value = emptyList()
     }
 
-    fun getJobs(id: Long) {
+    fun getJobs(id: Long? = null) {
         try {
             viewModelScope.launch {
-               // _state.value = FeedModel.FeedModelState.Refreshing
-                _jobsData.value = jobRepository.getJobsByUserId(id)
-            //    _state.value = FeedModel.FeedModelState.Idle
+                _jobsData.value = if (id != null) {
+                    _state.value = UserWallModel.State.Loading
+                    jobRepository.getJobsByUserId(id)
+                } else if (userData.value != null) {
+                    _state.value = UserWallModel.State.RefreshingJobs
+                    jobRepository.getJobsByUserId(userData.value!!.id)
+                } else {
+                    emptyList()
+                }
+                _state.value = UserWallModel.State.Idle
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            //_state.value = FeedModel.FeedModelState.Error
+            _state.value = UserWallModel.State.Error
         }
     }
 
-    fun clearJobs() {
+    private fun clearJobs() {
         _jobsData.value = emptyList()
     }
 
-    fun getUserData(userId: Long) = viewModelScope.launch {
+    private fun getUserData(userId: Long) = viewModelScope.launch {
         try {
             userRepository.getUserInfoById(userId)
         } catch (e: Exception) {
@@ -79,12 +93,18 @@ class UserWallViewModel @Inject constructor(
         }
     }
 
-    fun clearUserData() = viewModelScope.launch {
+    private fun clearUserData() = viewModelScope.launch {
         try {
             userRepository.clearUserInfo()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun clearData() {
+        clearJobs()
+        clearPosts()
+        clearUserData()
     }
 
 
@@ -102,5 +122,11 @@ class UserWallViewModel @Inject constructor(
         if (post.attachment?.type == Attachment.Type.AUDIO) {
             audioPlayer.switch(post.attachment)
         }
+    }
+
+    fun getData(userId: Long) {
+        getUserData(userId)
+        getPosts(userId)
+        getJobs(userId)
     }
 }

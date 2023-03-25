@@ -11,19 +11,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentPostsListBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
-import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.PostsAdapter
+import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
-import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
@@ -59,14 +57,7 @@ class PostsListFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest { state ->
-                binding.swipeRefresh.isRefreshing = state is FeedModel.FeedModelState.Refreshing
-                if (state is FeedModel.FeedModelState.Error) {
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.retry_loading) {
-                            viewModel.getPosts(arguments?.userId!!)
-                        }
-                        .show()
-                }
+                binding.swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingPosts
             }
         }
     }
@@ -113,7 +104,9 @@ class PostsListFragment : Fragment() {
 
     private fun setListeners() {
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getPosts(arguments?.userId!!)
+            viewModel.userData.value?.let {
+                viewModel.getPosts()
+            }
         }
     }
 

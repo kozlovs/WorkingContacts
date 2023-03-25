@@ -61,7 +61,7 @@ class FeedViewModel @Inject constructor(
                 }
         }.flowOn(Dispatchers.Default)
 
-    private val _state = MutableStateFlow<FeedModel.FeedModelState>(FeedModel.FeedModelState.Idle)
+    private val _state = MutableStateFlow<FeedModel.State>(FeedModel.State.Idle)
     val state = _state.asStateFlow()
 
     private val _postCreated = SingleLiveEvent<Unit>()
@@ -105,7 +105,7 @@ class FeedViewModel @Inject constructor(
                         clearPhoto()
                     } ?: repository.save(post)
                 } catch (e: Exception) {
-                    _state.value = FeedModel.FeedModelState.Error
+                    _state.value = FeedModel.State.Error
                 }
             }
         }
@@ -129,7 +129,7 @@ class FeedViewModel @Inject constructor(
             repository.likeById(id)
         } catch (e: Exception) {
             e.printStackTrace()
-            _state.value = FeedModel.FeedModelState.Error
+            _state.value = FeedModel.State.Error
         }
     }
 
@@ -137,7 +137,7 @@ class FeedViewModel @Inject constructor(
         try {
             repository.removeById(id)
         } catch (e: Exception) {
-            _state.value = FeedModel.FeedModelState.Error
+            _state.value = FeedModel.State.Error
         }
     }
 

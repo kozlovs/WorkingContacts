@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.userswall.adapter.jobs
+package ru.kozlovss.workingcontacts.presentation.mywall
 
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 

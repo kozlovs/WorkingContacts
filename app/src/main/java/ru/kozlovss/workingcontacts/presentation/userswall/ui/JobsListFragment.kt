@@ -9,16 +9,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.FragmentJobsListBinding
-import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.jobs.JobsAdapter
-import ru.kozlovss.workingcontacts.presentation.userswall.adapter.jobs.OnInteractionListener
-import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
+import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 
 @AndroidEntryPoint
@@ -54,36 +49,20 @@ class JobsListFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest { state ->
-                binding.swipeRefresh.isRefreshing = state is FeedModel.FeedModelState.Refreshing
-                if (state is FeedModel.FeedModelState.Error) {
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.retry_loading) {
-                            viewModel.getPosts(arguments?.userId!!)
-                        }
-                        .show()
-                }
+                binding.swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingJobs
             }
         }
     }
 
     private fun init() = with(binding) {
         list.layoutManager = LinearLayoutManager(activity)
-        adapter = JobsAdapter(object : OnInteractionListener {
-            override fun onRemove(job: Job) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onEdit(job: Job) {
-                TODO("Not yet implemented")
-            }
-
-        })
+        adapter = JobsAdapter()
         list.adapter = adapter
     }
 
     private fun setListeners() {
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getPosts(arguments?.userId!!)
+            viewModel.getJobs()
         }
     }
 

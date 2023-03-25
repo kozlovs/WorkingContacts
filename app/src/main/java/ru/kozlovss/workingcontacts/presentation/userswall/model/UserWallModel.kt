@@ -1,15 +1,15 @@
-package ru.kozlovss.workingcontacts.presentation.feed.model
+package ru.kozlovss.workingcontacts.presentation.userswall.model
 
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 
-data class FeedModel(
-    val posts: List<Post> = emptyList(),
-    val empty: Boolean = false,
+class UserWallModel (
+    val post: Post
 ) {
     sealed interface State {
         object Idle : State
         object Error : State
         object Loading : State
-        object Refreshing : State
+        object RefreshingJobs: State
+        object RefreshingPosts: State
     }
 }

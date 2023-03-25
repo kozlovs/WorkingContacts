@@ -5,16 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentUserWallBinding
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.vp.VpAdapter
+import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 
 
@@ -35,29 +38,15 @@ class UserWallFragment : Fragment() {
     ): View {
         binding = FragmentUserWallBinding.inflate(inflater, container, false)
         init()
-        getUserData(arguments?.userId!!)
-
-
+        viewModel.getData(arguments?.userId!!)
         subscribe()
 
         return binding.root
     }
 
-    private fun getUserData(userId: Long) {
-        viewModel.getUserData(userId)
-        viewModel.getPosts(userId)
-        viewModel.getJobs(userId)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        clearUserData()
-    }
-
-    private fun clearUserData() {
-        viewModel.clearUserData()
-        viewModel.clearPosts()
-        viewModel.clearJobs()
+        viewModel.clearData()
     }
 
     private fun subscribe() {
@@ -77,6 +66,14 @@ class UserWallFragment : Fragment() {
                         binding.avatar.setImageResource(R.drawable.baseline_person_outline_24)
                     }
                 }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.state.collectLatest { state ->
+                binding.progress.isVisible = state is UserWallModel.State.Loading
+                binding.wallLayout.isVisible = (state is UserWallModel.State.Idle) || (state is UserWallModel.State.RefreshingJobs) || (state is UserWallModel.State.RefreshingPosts)
+                binding.errorLayout.isVisible = state is UserWallModel.State.Error
             }
         }
     }
