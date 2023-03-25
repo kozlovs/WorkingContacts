@@ -2,7 +2,9 @@ package ru.kozlovss.workingcontacts.data.walldata.repository
 
 import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
+import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.walldata.api.UserWallApiService
 import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
@@ -11,7 +13,8 @@ import javax.inject.Inject
 
 class UserWallRepositoryImpl @Inject constructor(
     private val wallApiService: UserWallApiService,
-    private val postApiService: PostApiService
+    private val postApiService: PostApiService,
+    private val dao: PostDao
 ) : UserWallRepository {
     override suspend fun getById(id: Long): Post {
         try {
@@ -45,7 +48,9 @@ class UserWallRepositoryImpl @Inject constructor(
 
     private suspend fun makeRequestLikeById(id: Long) {
         try {
-            postApiService.likePostById(id)
+            val response = postApiService.likePostById(id)
+            val body = checkResponse(response)
+            if (dao.containsPostWithId(id)) dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -55,7 +60,9 @@ class UserWallRepositoryImpl @Inject constructor(
 
     private suspend fun makeRequestDislikeById(id: Long) {
         try {
-            postApiService.dislikePostById(id)
+            val response = postApiService.dislikePostById(id)
+            val body = checkResponse(response)
+            if (dao.containsPostWithId(id)) dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {

@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -11,7 +10,6 @@ import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
 import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
-import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.error.ApiError
@@ -23,8 +21,6 @@ class UserRepositoryImpl @Inject constructor(
     private val apiService: UserApiService,
     private val appAuth: AppAuth
 ) : UserRepository {
-
-    override val userData = MutableStateFlow<User?>(null)
 
     override suspend fun register(
         login: String,
@@ -80,15 +76,9 @@ class UserRepositoryImpl @Inject constructor(
         appAuth.removeAuth()
     }
 
-    override suspend fun getMyData(id: Long)  = checkResponse(apiService.getUserById(id))
+    override suspend fun getMyData(id: Long) = checkResponse(apiService.getUserById(id))
 
-    override suspend fun getUserInfoById(id: Long) {
-        userData.value = checkResponse(apiService.getUserById(id))
-    }
-
-    override suspend fun clearUserInfo() {
-        userData.value = null
-    }
+    override suspend fun getUserInfoById(id: Long) = checkResponse(apiService.getUserById(id))
 
     private fun <T> checkResponse(response: Response<T>): T {
         if (!response.isSuccessful) throw ApiError(response.code(), response.message())

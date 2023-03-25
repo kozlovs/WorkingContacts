@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
@@ -32,7 +33,8 @@ class UserWallViewModel @Inject constructor(
     private val _jobsData = MutableStateFlow<List<Job>>(emptyList())
     val jobsData = _jobsData.asStateFlow()
 
-    val userData = userRepository.userData
+    private val _userData = MutableStateFlow<User?>(null)
+    val userData = _userData.asStateFlow()
 
     private val _state = MutableStateFlow<UserWallModel.State>(UserWallModel.State.Idle)
     val state = _state.asStateFlow()
@@ -65,7 +67,6 @@ class UserWallViewModel @Inject constructor(
         try {
             viewModelScope.launch {
                 _jobsData.value = if (id != null) {
-                    _state.value = UserWallModel.State.Loading
                     jobRepository.getJobsByUserId(id)
                 } else if (userData.value != null) {
                     _state.value = UserWallModel.State.RefreshingJobs
@@ -87,7 +88,7 @@ class UserWallViewModel @Inject constructor(
 
     private fun getUserData(userId: Long) = viewModelScope.launch {
         try {
-            userRepository.getUserInfoById(userId)
+            _userData.value = userRepository.getUserInfoById(userId)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -95,7 +96,7 @@ class UserWallViewModel @Inject constructor(
 
     private fun clearUserData() = viewModelScope.launch {
         try {
-            userRepository.clearUserInfo()
+            _userData.value = null
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -110,9 +111,13 @@ class UserWallViewModel @Inject constructor(
 
     fun likeById(id: Long) = viewModelScope.launch {
         try {
-            wallRepository.likeById(id)
+            userData.value?.let {
+                wallRepository.likeById(id)
+                _postsData.value = wallRepository.getAll(it.id)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
+            _state.value = UserWallModel.State.Error
         }
     }
 
@@ -125,6 +130,7 @@ class UserWallViewModel @Inject constructor(
     }
 
     fun getData(userId: Long) {
+        _state.value = UserWallModel.State.Loading
         getUserData(userId)
         getPosts(userId)
         getJobs(userId)

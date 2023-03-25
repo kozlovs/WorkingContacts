@@ -1,14 +1,10 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
-import kotlinx.coroutines.flow.MutableStateFlow
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
 interface UserRepository {
-
-    val userData: MutableStateFlow<User?>
-
     suspend fun register(
         login: String,
         password: String,
@@ -24,7 +20,5 @@ interface UserRepository {
 
     suspend fun clearTokenOfUser()
 
-    suspend fun getUserInfoById(id: Long)
-
-    suspend fun clearUserInfo()
+    suspend fun getUserInfoById(id: Long): User
 }

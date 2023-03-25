@@ -13,7 +13,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
-class PostViewHolder  (
+class PostViewHolder(
     private val binding: CardWallPostBinding,
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -72,25 +72,20 @@ class PostViewHolder  (
     fun bind(payload: Payload) {
         payload.likedByMe?.let {
             binding.like.isChecked = it
-            if (it) {
-                ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
-                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
-                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
-                ).start()
-            } else {
-                ObjectAnimator.ofFloat(
-                    binding.like,
-                    View.ROTATION,
-                    0F, 360F
-                ).start()
-            }
+            ObjectAnimator.ofPropertyValuesHolder(
+                binding.like,
+                PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+            ).start()
         }
         payload.likes?.let {
             binding.like.text = Formatter.numberToShortFormat(it)
         }
         payload.content?.let {
             binding.content.text = it
+        }
+        payload.isPlay?.let {
+            binding.switchButton.isChecked = it
         }
     }
 

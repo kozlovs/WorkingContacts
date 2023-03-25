@@ -26,7 +26,7 @@ object Formatter {
         val dateTime = LocalDateTime.parse(published.substring(0, 19))
         val now = LocalDateTime.now()
         val secondsAgo = dateTime.until(now, ChronoUnit.SECONDS)
-        Log.d("MyLog", "$secondsAgo")
+        Log.d("MyLog", "secondsAgo $secondsAgo")
         return when (secondsAgo) {
             in 0..60 -> "только что"
             in 61..(60 * 60) -> "${minutesToText(dateTime.minute)} назад"
