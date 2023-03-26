@@ -38,7 +38,6 @@ class UserWallFragment : Fragment() {
     ): View {
         binding = FragmentUserWallBinding.inflate(inflater, container, false)
         init()
-        viewModel.getData(arguments?.userId!!)
         subscribe()
 
         return binding.root
@@ -79,6 +78,7 @@ class UserWallFragment : Fragment() {
     }
 
     private fun init() = with(binding) {
+        viewModel.getData(arguments?.userId!!)
         val adapter = VpAdapter(activity as FragmentActivity, fragmentsList)
         vp.adapter = adapter
         TabLayoutMediator(tabLayout, vp) { tab, pos ->

@@ -7,10 +7,12 @@ data class MyWallModel(
     val posts: List<Post> = emptyList(),
     val user: User? = null
 ) {
-    sealed interface MyWallModelState {
-        object Idle : MyWallModelState
-        object Error : MyWallModelState
-        object Loading : MyWallModelState
-        object NoLogin : MyWallModelState
+    sealed interface State {
+        object Idle : State
+        object Error : State
+        object Loading : State
+        object NoLogin : State
+        object RefreshingPosts : State
+        object RefreshingJobs : State
     }
 }

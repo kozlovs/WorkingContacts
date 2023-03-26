@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.mywall.adapter
+package ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts
 
 import androidx.recyclerview.widget.DiffUtil
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post

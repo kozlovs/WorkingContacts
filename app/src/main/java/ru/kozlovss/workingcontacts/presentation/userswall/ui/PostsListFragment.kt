@@ -47,17 +47,17 @@ class PostsListFragment : Fragment() {
         setListeners()
     }
 
-    private fun subscribe() {
+    private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenStarted {
             viewModel.postsData.collect {
                 adapter.submitList(it)
-                binding.empty.isVisible = it.isEmpty()
+                empty.isVisible = it.isEmpty()
             }
         }
 
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest { state ->
-                binding.swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingPosts
+                swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingPosts
             }
         }
     }
@@ -102,8 +102,8 @@ class PostsListFragment : Fragment() {
         list.adapter = adapter
     }
 
-    private fun setListeners() {
-        binding.swipeRefresh.setOnRefreshListener {
+    private fun setListeners() = with(binding) {
+        swipeRefresh.setOnRefreshListener {
             viewModel.userData.value?.let {
                 viewModel.getPosts()
             }

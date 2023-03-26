@@ -39,17 +39,17 @@ class JobsListFragment : Fragment() {
         setListeners()
     }
 
-    private fun subscribe() {
+    private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenStarted {
             viewModel.jobsData.collect {
                 adapter.submitList(it)
-                binding.empty.isVisible = it.isEmpty()
+                empty.isVisible = it.isEmpty()
             }
         }
 
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest { state ->
-                binding.swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingJobs
+                swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingJobs
             }
         }
     }
@@ -60,8 +60,8 @@ class JobsListFragment : Fragment() {
         list.adapter = adapter
     }
 
-    private fun setListeners() {
-        binding.swipeRefresh.setOnRefreshListener {
+    private fun setListeners() = with(binding) {
+        swipeRefresh.setOnRefreshListener {
             viewModel.getJobs()
         }
     }

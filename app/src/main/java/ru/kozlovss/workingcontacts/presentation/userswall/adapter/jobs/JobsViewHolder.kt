@@ -10,22 +10,20 @@ class JobsViewHolder(
     private val binding: CardJobBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(job: Job) {
-        binding.apply {
-            name.text = job.name
-            position.text = job.position
-            start.text = Formatter.localDateTimeToJobDateFormat(job.start)
-            if (job.finish != null) {
-                finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
-            } else {
-                finish.text = "until now"
-            }
-            if (job.link != null) {
-                link.text = job.link
-                link.isVisible = true
-            } else {
-                link.isVisible = false
-            }
+    fun bind(job: Job) = with(binding) {
+        name.text = job.name
+        position.text = job.position
+        start.text = Formatter.localDateTimeToJobDateFormat(job.start)
+        if (job.finish != null) {
+            finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
+        } else {
+            finish.text = "until now"
+        }
+        if (job.link != null) {
+            link.text = job.link
+            link.isVisible = true
+        } else {
+            link.isVisible = false
         }
     }
 }

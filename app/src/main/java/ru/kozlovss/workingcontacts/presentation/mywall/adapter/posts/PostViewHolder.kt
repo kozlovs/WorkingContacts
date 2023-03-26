@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.mywall.adapter
+package ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder

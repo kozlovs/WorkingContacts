@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.PhotoModel
 import ru.kozlovss.workingcontacts.data.dto.User
+import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
@@ -45,20 +47,24 @@ private var empty = Post(
 class MyWallViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val wallRepository: MyWallRepository,
+    private val jobRepository: JobRepository,
     private val appAuth: AppAuth,
     private val audioPlayer: AudioPlayer
 ) : ViewModel() {
 
-    val data: Flow<PagingData<Post>> = wallRepository.posts
+    val postData: Flow<PagingData<Post>> = wallRepository.posts
         .flowOn(Dispatchers.Default)
+
+    private val _jobData = MutableStateFlow<List<Job>>(emptyList())
+    val jobData = _jobData.asStateFlow()
 
     private val _myData = MutableStateFlow<User?>(null)
     val myData: StateFlow<User?>
         get() = _myData
 
     private val _state =
-        MutableStateFlow<MyWallModel.MyWallModelState>(MyWallModel.MyWallModelState.Idle)
-    val state: StateFlow<MyWallModel.MyWallModelState>
+        MutableStateFlow<MyWallModel.State>(MyWallModel.State.Idle)
+    val state: StateFlow<MyWallModel.State>
         get() = _state
 
     private val _postCreated = SingleLiveEvent<Unit>()
@@ -94,26 +100,26 @@ class MyWallViewModel @Inject constructor(
 
     fun updateMyData(token: Token?) = viewModelScope.launch {
         try {
-            _state.value = MyWallModel.MyWallModelState.Loading
+            _state.value = MyWallModel.State.Loading
             if (token == null) {
-                _state.value = MyWallModel.MyWallModelState.NoLogin
+                _state.value = MyWallModel.State.NoLogin
             } else {
                 _myData.value = userRepository.getMyData(token.id)
-                _state.value = MyWallModel.MyWallModelState.Idle
+                _state.value = MyWallModel.State.Idle
             }
         } catch (e: Exception) {
-            _state.value = MyWallModel.MyWallModelState.Error
+            _state.value = MyWallModel.State.Error
             e.printStackTrace()
         }
     }
 
     fun clearMyData() = viewModelScope.launch {
         try {
-            _state.value = MyWallModel.MyWallModelState.Loading
+            _state.value = MyWallModel.State.Loading
             _myData.value = null
-            _state.value = MyWallModel.MyWallModelState.NoLogin
+            _state.value = MyWallModel.State.NoLogin
         } catch (e: Exception) {
-            _state.value = MyWallModel.MyWallModelState.Error
+            _state.value = MyWallModel.State.Error
             e.printStackTrace()
         }
     }
@@ -128,7 +134,7 @@ class MyWallViewModel @Inject constructor(
                         clearPhoto()
                     } ?: wallRepository.save(post)
                 } catch (e: Exception) {
-                    _state.value = MyWallModel.MyWallModelState.Error
+                    _state.value = MyWallModel.State.Error
                 }
             }
         }
@@ -150,7 +156,7 @@ class MyWallViewModel @Inject constructor(
             wallRepository.likeById(id)
         } catch (e: Exception) {
             e.printStackTrace()
-            _state.value = MyWallModel.MyWallModelState.Error
+            _state.value = MyWallModel.State.Error
         }
     }
 
@@ -158,7 +164,7 @@ class MyWallViewModel @Inject constructor(
         try {
             wallRepository.removeById(id)
         } catch (e: Exception) {
-            _state.value = MyWallModel.MyWallModelState.Error
+            _state.value = MyWallModel.State.Error
         }
     }
 
@@ -176,5 +182,13 @@ class MyWallViewModel @Inject constructor(
         if (post.attachment?.type == Attachment.Type.AUDIO) {
             audioPlayer.switch(post.attachment)
         }
+    }
+
+    fun removeJobById(id: Long) {
+
+    }
+
+    fun editJob(job: Job) {
+
     }
 }
