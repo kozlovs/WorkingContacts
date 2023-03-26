@@ -55,8 +55,8 @@ class MyWallViewModel @Inject constructor(
     val postData: Flow<PagingData<Post>> = wallRepository.posts
         .flowOn(Dispatchers.Default)
 
-    private val _jobData = MutableStateFlow<List<Job>>(emptyList())
-    val jobData = _jobData.asStateFlow()
+    private val _jobsData = MutableStateFlow<List<Job>>(emptyList())
+    val jobsData = _jobsData.asStateFlow()
 
     private val _myData = MutableStateFlow<User?>(null)
     val myData = _myData.asStateFlow()
@@ -76,8 +76,18 @@ class MyWallViewModel @Inject constructor(
     val edited: LiveData<Post>
         get() = _edited
 
-
     val draftContent = MutableLiveData("")
+
+    fun getJobs() = viewModelScope.launch {
+        try {
+            _state.value = MyWallModel.State.RefreshingJobs
+            _jobsData.value = jobRepository.getMyJobs()
+            _state.value = MyWallModel.State.Idle
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _state.value = MyWallModel.State.Error
+        }
+    }
 
     fun changeContentAndSave(content: String) {
         changeContent(content)
@@ -114,6 +124,7 @@ class MyWallViewModel @Inject constructor(
         try {
             _state.value = MyWallModel.State.Loading
             _myData.value = null
+            _jobsData.value = emptyList()
             _state.value = MyWallModel.State.NoLogin
         } catch (e: Exception) {
             _state.value = MyWallModel.State.Error
@@ -121,18 +132,16 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
-    private fun save() {
+    private fun save() = viewModelScope.launch {
         _edited.value?.let { post ->
             _postCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    photo.value?.let {
-                        wallRepository.saveWithAttachment(post, it)
-                        clearPhoto()
-                    } ?: wallRepository.save(post)
-                } catch (e: Exception) {
-                    _state.value = MyWallModel.State.Error
-                }
+            try {
+                photo.value?.let {
+                    wallRepository.saveWithAttachment(post, it)
+                    clearPhoto()
+                } ?: wallRepository.save(post)
+            } catch (e: Exception) {
+                _state.value = MyWallModel.State.Error
             }
         }
         clearEdited()

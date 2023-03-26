@@ -18,6 +18,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.JobsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
+
 @AndroidEntryPoint
 class MyJobsListFragment : Fragment() {
 
@@ -44,24 +45,22 @@ class MyJobsListFragment : Fragment() {
 
     private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenCreated {
-            viewModel.jobData.collectLatest {
+            viewModel.jobsData.collectLatest {
                 adapter.submitList(it)
-                empty.isVisible = adapter.itemCount < 1
+                empty.isVisible = it.isEmpty()
             }
         }
 
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest { state ->
                 errorLayout.isVisible = state is MyWallModel.State.Error
-                swipeRefresh.isVisible = state is MyWallModel.State.RefreshingJobs
+                swipeRefresh.isRefreshing = state is MyWallModel.State.RefreshingJobs
             }
         }
 
         lifecycleScope.launchWhenCreated {
             userViewModel.token.collect { token ->
-//                token?.let {
-//                    adapter.refresh()
-//                } ?: viewModel.clearMyData()
+                token?.let { viewModel.getJobs() }
             }
         }
     }
@@ -82,9 +81,9 @@ class MyJobsListFragment : Fragment() {
     }
 
     private fun setListeners() = with(binding) {
-//        swipeRefresh.setOnRefreshListener {
-//            adapter.refresh()
-//        }
+        swipeRefresh.setOnRefreshListener {
+            viewModel.getJobs()
+        }
     }
 
     companion object {

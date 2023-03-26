@@ -78,7 +78,7 @@ class MyWallFragment : Fragment() {
             myWallViewModel.state.collectLatest { state ->
                 binding.authButtons.isVisible = state is MyWallModel.State.NoLogin
                 binding.progress.isVisible = state is MyWallModel.State.Loading
-                binding.myCard.isVisible = state is MyWallModel.State.Idle
+                binding.myCard.isVisible = state is MyWallModel.State.Idle || state is MyWallModel.State.RefreshingJobs
                 binding.add.isVisible = state is MyWallModel.State.Idle
             }
         }
