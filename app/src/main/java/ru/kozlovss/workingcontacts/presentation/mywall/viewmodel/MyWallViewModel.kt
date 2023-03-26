@@ -59,21 +59,18 @@ class MyWallViewModel @Inject constructor(
     val jobData = _jobData.asStateFlow()
 
     private val _myData = MutableStateFlow<User?>(null)
-    val myData: StateFlow<User?>
-        get() = _myData
+    val myData = _myData.asStateFlow()
 
     private val _state =
         MutableStateFlow<MyWallModel.State>(MyWallModel.State.Idle)
-    val state: StateFlow<MyWallModel.State>
-        get() = _state
+    val state = _state.asStateFlow()
 
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
     private val _photo = MutableStateFlow<PhotoModel?>(null)
-    val photo: StateFlow<PhotoModel?>
-        get() = _photo
+    val photo = _photo.asStateFlow()
 
     private val _edited = MutableLiveData(empty)
     val edited: LiveData<Post>

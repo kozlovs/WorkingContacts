@@ -55,20 +55,20 @@ class MyPostsListFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.postData.collectLatest {
                 adapter.submitData(it)
-                empty.isVisible = adapter.itemCount < 1
             }
         }
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest {
                 swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+                empty.isVisible = adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
             }
         }
 
         lifecycleScope.launchWhenCreated {
             viewModel.state.collectLatest { state ->
                 errorLayout.isVisible = state is MyWallModel.State.Error
-                swipeRefresh.isVisible = state is MyWallModel.State.RefreshingPosts
+                empty.isVisible = adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
             }
         }
 

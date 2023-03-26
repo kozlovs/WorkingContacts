@@ -19,54 +19,51 @@ class PostViewHolder(
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(post: Post) {
-        binding.apply {
-            published.text = Formatter.localDateTimeToPostDateFormat(post.published)
-            content.text = post.content
-            like.isChecked = post.likedByMe
-            like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
+    fun bind(post: Post) = with(binding) {
+        published.text = Formatter.localDateTimeToPostDateFormat(post.published)
+        content.text = post.content
+        like.isChecked = post.likedByMe
+        like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
 
-            val attachment = post.attachment
-            if (attachment != null) {
-                when (attachment.type) {
-                    Attachment.Type.IMAGE -> {
-                        image.visibility = View.VISIBLE
-                        Glide.with(image)
-                            .load(attachment.url)
-                            .transform(RoundedCorners(30))
-                            .placeholder(R.drawable.baseline_update_24)
-                            .error(R.drawable.baseline_error_outline_24)
-                            .timeout(10_000)
-                            .into(image)
-                        videoLayout.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
-                    Attachment.Type.AUDIO -> {
-                        audio.visibility = View.VISIBLE
-                        image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
-                    }
-                    Attachment.Type.VIDEO -> {
-                        videoLayout.visibility = View.VISIBLE
-                        val uri = Uri.parse(attachment.url)
-                        video.setVideoURI(uri)
-                        video.seekTo(1)
-                        image.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
-                    else -> {
-                        image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
+        val attachment = post.attachment
+        if (attachment != null) {
+            when (attachment.type) {
+                Attachment.Type.IMAGE -> {
+                    image.visibility = View.VISIBLE
+                    Glide.with(image)
+                        .load(attachment.url)
+                        .transform(RoundedCorners(30))
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(image)
+                    videoLayout.visibility = View.GONE
+                    audio.visibility = View.GONE
                 }
-            } else {
-                image.visibility = View.GONE
-                videoLayout.visibility = View.GONE
-                audio.visibility = View.GONE
+                Attachment.Type.AUDIO -> {
+                    audio.visibility = View.VISIBLE
+                    image.visibility = View.GONE
+                    videoLayout.visibility = View.GONE
+                }
+                Attachment.Type.VIDEO -> {
+                    videoLayout.visibility = View.VISIBLE
+                    val uri = Uri.parse(attachment.url)
+                    video.setVideoURI(uri)
+                    video.seekTo(1)
+                    image.visibility = View.GONE
+                    audio.visibility = View.GONE
+                }
+                else -> {
+                    image.visibility = View.GONE
+                    videoLayout.visibility = View.GONE
+                    audio.visibility = View.GONE
+                }
             }
+        } else {
+            image.visibility = View.GONE
+            videoLayout.visibility = View.GONE
+            audio.visibility = View.GONE
         }
-
         setListeners(binding, post)
     }
 
