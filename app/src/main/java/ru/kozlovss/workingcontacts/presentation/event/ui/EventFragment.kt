@@ -5,6 +5,7 @@ import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.event.adapter.SpeakersAdapter
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import ru.kozlovss.workingcontacts.presentation.event.viewmodel.EventViewModel
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
@@ -39,6 +41,7 @@ class EventFragment : Fragment() {
     private val eventViewModel: EventViewModel by viewModels()
     private lateinit var binding: FragmentEventBinding
     private var id: Long? = null
+    private lateinit var adapter: SpeakersAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +56,9 @@ class EventFragment : Fragment() {
 
         id = arguments?.id
 
+
+        adapter = SpeakersAdapter()
+        binding.speakersList.adapter = adapter
         subscribe()
         setListeners()
         eventViewModel.updateData(id)
@@ -65,18 +71,21 @@ class EventFragment : Fragment() {
         eventViewModel.clearData()
     }
 
-    private fun subscribe() {
+    private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenCreated {
             eventViewModel.data.collect { event ->
-                event?.let { updateUi(it) }
+                event?.let {
+                    updateUi(it)
+                    eventViewModel.getSpeakers(it.speakerIds)
+                }
             }
         }
 
         lifecycleScope.launchWhenCreated {
             eventViewModel.state.collectLatest { state ->
-                binding.progress.isVisible = state is EventModel.State.Loading
-                binding.cardLayout.isVisible = state is EventModel.State.Idle
-                binding.errorLayout.isVisible = state is EventModel.State.Error
+                progress.isVisible = state is EventModel.State.Loading
+                cardLayout.isVisible = state is EventModel.State.Idle
+                errorLayout.isVisible = state is EventModel.State.Error
             }
         }
 
@@ -85,6 +94,20 @@ class EventFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_eventFragment_to_newEventFragment
                 )
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            eventViewModel.speakersVisibility.collect {
+                speakersCard.isVisible = it && eventViewModel.speakers.value.isNotEmpty()
+                speakersSelectorIcon.isChecked = it
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            eventViewModel.speakers.collect {
+                it.forEach { Log.d("MyLog", it.toString()) }
+                adapter.submitList(it)
             }
         }
     }
@@ -100,9 +123,15 @@ class EventFragment : Fragment() {
             link.visibility = View.GONE
         }
         content.text = event.content
+        type.text = event.type.toString()
+        datetime.text = Formatter.localDateTimeToPostDateFormat(event.datetime)
+        coords.text = "lat: ${event.coords?.lat} long: ${event.coords?.lon}"
+        coords.isVisible = event.coords != null
+        speakersCount.text = event.speakerIds.size.toString()
         like.isChecked = event.likedByMe
         like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
         menu.isVisible = event.ownedByMe
+        speakersSelectorIcon.isVisible = event.speakerIds.isNotEmpty()
 
         if (event.authorAvatar != null) {
             Glide.with(avatar)
@@ -218,6 +247,10 @@ class EventFragment : Fragment() {
             eventViewModel.data.value?.let { event ->
                 eventsViewModel.switchAudio(event)
             }
+        }
+
+        speakersSelector.setOnClickListener {
+            eventViewModel.switchSpeakersVisibility()
         }
     }
 

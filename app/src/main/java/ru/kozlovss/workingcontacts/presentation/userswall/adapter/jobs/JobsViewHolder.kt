@@ -17,7 +17,7 @@ class JobsViewHolder(
         if (job.finish != null) {
             finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
         } else {
-            finish.text = "until now"
+            finish.text = "till now"
         }
         if (job.link != null) {
             link.text = job.link

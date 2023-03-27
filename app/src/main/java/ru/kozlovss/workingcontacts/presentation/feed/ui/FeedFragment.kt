@@ -26,23 +26,25 @@ import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Co
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
-class FeedFragment : Fragment() {
+class  FeedFragment : Fragment() {
 
     private val viewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
+    private lateinit var adapter: PostsAdapter
+    private lateinit var binding: FragmentFeedBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentFeedBinding.inflate(
+        binding = FragmentFeedBinding.inflate(
             inflater,
             container,
             false
         )
 
-        val adapter = PostsAdapter(object : OnInteractionListener {
+        adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
                 if (userViewModel.isLogin()) {
                     viewModel.likeById(post.id)
@@ -101,21 +103,20 @@ class FeedFragment : Fragment() {
             footer = PostLoadingStateAdapter { adapter.retry() }
         )
 
-        subscribe(binding, adapter)
-        setListeners(binding, adapter)
+        subscribe()
+        setListeners()
 
         return binding.root
     }
 
-    private fun subscribe(binding: FragmentFeedBinding, adapter: PostsAdapter) {
+    private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenCreated {
             viewModel.data.collectLatest(adapter::submitData)
         }
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.collectLatest {
-                binding.swipeRefresh.isRefreshing =
-                    it.refresh is LoadState.Loading
+                swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
             }
         }
 
@@ -132,20 +133,18 @@ class FeedFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             viewModel.audioPlayerState.collect {
-                viewModel.stopAudio()
+                viewModel.stopAudio() // todo тут надо что то сделать
             }
         }
     }
 
-    private fun setListeners(binding: FragmentFeedBinding, adapter: PostsAdapter) {
-        binding.add.setOnClickListener {
+    private fun setListeners() = with(binding) {
+        add.setOnClickListener {
             if (userViewModel.isLogin()) {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-            } else DialogManager.errorAuthDialog(this)
+            } else DialogManager.errorAuthDialog(this@FeedFragment)
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
-        }
+        swipeRefresh.setOnRefreshListener(adapter::refresh)
     }
 }

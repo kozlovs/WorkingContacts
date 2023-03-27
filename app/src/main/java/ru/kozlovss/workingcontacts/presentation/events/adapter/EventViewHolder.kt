@@ -34,6 +34,7 @@ class EventViewHolder(
             like.isChecked = event.likedByMe
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
             menu.isVisible = event.ownedByMe
+            speakersCount.text = event.speakerIds.size.toString()
 
             if (event.authorAvatar != null) {
                 Glide.with(binding.avatar)
