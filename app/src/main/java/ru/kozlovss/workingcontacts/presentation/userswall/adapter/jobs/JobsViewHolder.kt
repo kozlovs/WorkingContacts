@@ -14,6 +14,7 @@ class JobsViewHolder(
         name.text = job.name
         position.text = job.position
         start.text = Formatter.localDateTimeToJobDateFormat(job.start)
+        finishCaption.isVisible = job.finish != null
         if (job.finish != null) {
             finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
         } else {

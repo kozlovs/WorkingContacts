@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.FragmentNewJobBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.newjob.model.NewJobModel
 import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel
 import java.time.Instant
 import java.time.ZoneId
@@ -58,6 +61,21 @@ class NewJobFragment : Fragment() {
             viewModel.jobData.collect {
                 updateUi(it)
             }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.state.collect { state ->
+                with(binding) {
+                    cardJob.isVisible = state is NewJobModel.State.Idle || state is NewJobModel.State.Error
+                    save.isVisible = state is NewJobModel.State.Idle || state is NewJobModel.State.Error
+                    progress.isVisible = state is NewJobModel.State.Loading
+                }
+                if (state is NewJobModel.State.Error) Toast.makeText(context, "Error upload", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.jobCreated.observe(viewLifecycleOwner) {
+            findNavController().navigateUp()
         }
     }
 

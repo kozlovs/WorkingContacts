@@ -8,6 +8,7 @@
     tools:context=".presentation.newjob.ui.NewJobFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_job"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical">
@@ -105,6 +106,8 @@
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -113,5 +116,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:text="@string/save" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
 </FrameLayout>
