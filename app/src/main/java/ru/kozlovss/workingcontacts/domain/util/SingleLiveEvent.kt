@@ -10,7 +10,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
         require(!hasActiveObservers()) {
-            error("Multiply observers registered but only one will be notified of changes.")
+             error("Multiply observers registered but only one will be notified of changes.")
         }
 
         super.observe(owner) {

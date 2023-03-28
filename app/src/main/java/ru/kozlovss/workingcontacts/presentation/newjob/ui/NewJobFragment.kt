@@ -1,6 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.newjob.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -66,16 +67,31 @@ class NewJobFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             viewModel.state.collect { state ->
                 with(binding) {
-                    cardJob.isVisible = state is NewJobModel.State.Idle || state is NewJobModel.State.Error
-                    save.isVisible = state is NewJobModel.State.Idle || state is NewJobModel.State.Error
+                    cardJob.isVisible =
+                        state is NewJobModel.State.Idle || state is NewJobModel.State.Error
+                    save.isVisible =
+                        state is NewJobModel.State.Idle || state is NewJobModel.State.Error
                     progress.isVisible = state is NewJobModel.State.Loading
                 }
-                if (state is NewJobModel.State.Error) Toast.makeText(context, "Error upload", Toast.LENGTH_LONG).show()
+                if (state is NewJobModel.State.Error) Toast.makeText(
+                    context,
+                    "Error upload",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
-        viewModel.jobCreated.observe(viewLifecycleOwner) {
-            findNavController().navigateUp()
+        lifecycleScope.launchWhenCreated {
+            viewModel.events.collect {
+                Log.d("MyLog", "Event $it")
+                when (it) {
+                    NewJobViewModel.Event.CreateNewItem -> {
+
+                        findNavController().navigateUp()
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 

@@ -18,6 +18,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.JobsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
+import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel
 
 @AndroidEntryPoint
 class MyJobsListFragment : Fragment() {
@@ -25,6 +26,7 @@ class MyJobsListFragment : Fragment() {
     private lateinit var binding: FragmentMyJobsListBinding
     private val viewModel: MyWallViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
+    private val newJobViewModel: NewJobViewModel by activityViewModels()
     private lateinit var adapter: JobsAdapter
 
     override fun onCreateView(
@@ -63,6 +65,17 @@ class MyJobsListFragment : Fragment() {
                 token?.let { viewModel.getJobs() }
             }
         }
+
+        lifecycleScope.launchWhenCreated {
+            newJobViewModel.events.collect {
+                when (it) {
+                    NewJobViewModel.Event.CreateNewItem -> {
+                        viewModel.getJobs()
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     private fun init() = with(binding) {
@@ -70,10 +83,6 @@ class MyJobsListFragment : Fragment() {
         adapter = JobsAdapter(object : OnInteractionListener {
             override fun onRemove(job: Job) {
                 viewModel.removeJobById(job.id)
-            }
-
-            override fun onEdit(job: Job) {
-//                viewModel.editJob(job)
             }
         })
 

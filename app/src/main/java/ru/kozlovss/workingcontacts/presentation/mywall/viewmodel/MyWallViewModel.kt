@@ -193,5 +193,6 @@ class MyWallViewModel @Inject constructor(
 
     fun removeJobById(id: Long) = viewModelScope.launch {
         jobRepository.removeJobById(id)
+        _jobsData.value = jobRepository.getMyJobs()
     }
 }
