@@ -73,7 +73,7 @@ class MyJobsListFragment : Fragment() {
             }
 
             override fun onEdit(job: Job) {
-                viewModel.editJob(job)
+//                viewModel.editJob(job)
             }
         })
 

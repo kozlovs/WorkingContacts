@@ -69,8 +69,7 @@ class FeedViewModel @Inject constructor(
         get() = _postCreated
 
     private val _photo = MutableStateFlow<PhotoModel?>(null)
-    val photo: StateFlow<PhotoModel?>
-        get() = _photo
+    val photo = _photo.asStateFlow()
 
     private val _edited = MutableLiveData(empty)
     val edited: LiveData<Post>
@@ -95,18 +94,16 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun save() {
+    private fun save() = viewModelScope.launch {
         _edited.value?.let { post ->
             _postCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    photo.value?.let {
-                        repository.saveWithAttachment(post, it)
-                        clearPhoto()
-                    } ?: repository.save(post)
-                } catch (e: Exception) {
-                    _state.value = FeedModel.State.Error
-                }
+            try {
+                photo.value?.let {
+                    repository.saveWithAttachment(post, it)
+                    clearPhoto()
+                } ?: repository.save(post)
+            } catch (e: Exception) {
+                _state.value = FeedModel.State.Error
             }
         }
         clearEdited()

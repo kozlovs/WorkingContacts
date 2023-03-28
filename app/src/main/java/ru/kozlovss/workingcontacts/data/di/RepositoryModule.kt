@@ -44,5 +44,5 @@ interface RepositoryModule {
 
     @Singleton
     @Binds
-    fun bindsJobsRepository(impl: JobRepositoryImpl): JobRepository
+    fun bindsJobRepository(impl: JobRepositoryImpl): JobRepository
 }

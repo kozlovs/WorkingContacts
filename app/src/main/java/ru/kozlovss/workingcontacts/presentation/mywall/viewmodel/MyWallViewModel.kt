@@ -105,6 +105,20 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
+    private fun save() = viewModelScope.launch {
+        _edited.value?.let { post ->
+            _postCreated.value = Unit
+            try {
+                photo.value?.let {
+                    wallRepository.saveWithAttachment(post, it)
+                    clearPhoto()
+                } ?: wallRepository.save(post)
+            } catch (e: Exception) {
+                _state.value = MyWallModel.State.Error
+            }
+        }
+        clearEdited()
+    }
     fun updateMyData(token: Token?) = viewModelScope.launch {
         try {
             _state.value = MyWallModel.State.Loading
@@ -132,20 +146,7 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
-    private fun save() = viewModelScope.launch {
-        _edited.value?.let { post ->
-            _postCreated.value = Unit
-            try {
-                photo.value?.let {
-                    wallRepository.saveWithAttachment(post, it)
-                    clearPhoto()
-                } ?: wallRepository.save(post)
-            } catch (e: Exception) {
-                _state.value = MyWallModel.State.Error
-            }
-        }
-        clearEdited()
-    }
+
 
     fun edit(post: Post) {
         _edited.value = post
@@ -190,11 +191,7 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
-    fun removeJobById(id: Long) {
-
-    }
-
-    fun editJob(job: Job) {
-
+    fun removeJobById(id: Long) = viewModelScope.launch {
+        jobRepository.removeJobById(id)
     }
 }

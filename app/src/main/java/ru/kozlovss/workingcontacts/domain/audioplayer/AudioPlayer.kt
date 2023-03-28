@@ -4,17 +4,16 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 
 class AudioPlayer {
     private val _isPlaying = MutableStateFlow(false)
-    val isPlaying: StateFlow<Boolean>
-        get() = _isPlaying
+    val isPlaying = _isPlaying.asStateFlow()
 
     private val _track = MutableStateFlow<Attachment?>(null)
-    val track: StateFlow<Attachment?>
-        get() = _track
+    val track = _track.asStateFlow()
+
     private var mediaPlayer: MediaPlayer? = null
 
     init {

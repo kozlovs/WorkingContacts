@@ -36,4 +36,11 @@
     <string name="to">to</string>
     <string name="from">from</string>
     <string name="speakers">speakers</string>
+    <string name="job">Job</string>
+    <string name="name_job">name</string>
+    <string name="position">position</string>
+    <string name="start">start</string>
+    <string name="finish">finish</string>
+    <string name="link">link</string>
+    <string name="save">save</string>
 </resources>
