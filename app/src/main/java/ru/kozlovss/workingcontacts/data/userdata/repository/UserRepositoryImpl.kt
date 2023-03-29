@@ -9,7 +9,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
 import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.error.ApiError
@@ -26,14 +26,14 @@ class UserRepositoryImpl @Inject constructor(
         login: String,
         password: String,
         name: String,
-        photoModel: PhotoModel?
+        mediaModel: MediaModel?
     ): Token {
         val mediaType = "text/plain".toMediaType()
         try {
             val loginRequestBody = login.toRequestBody(mediaType)
             val passwordRequestBody = password.toRequestBody(mediaType)
             val nameRequestBody = name.toRequestBody(mediaType)
-            val file = photoModel?.let {
+            val file = mediaModel?.let {
                 MultipartBody.Part.createFormData(
                     "file",
                     it.file?.name,

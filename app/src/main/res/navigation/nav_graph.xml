@@ -177,7 +177,7 @@
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.feed.ui.NewPostFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment"
         android:label="fragment_new_post"
         tools:layout="@layout/fragment_new_post">
         <action
@@ -286,7 +286,7 @@
     </fragment>
     <fragment
         android:id="@+id/newEventFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.events.ui.NewEventFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment"
         android:label="fragment_new_event"
         tools:layout="@layout/fragment_new_event">
         <action

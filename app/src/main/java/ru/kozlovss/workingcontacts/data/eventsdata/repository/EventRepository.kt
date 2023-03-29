@@ -2,7 +2,7 @@ package ru.kozlovss.workingcontacts.data.eventsdata.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 
 interface EventRepository {
@@ -11,5 +11,5 @@ interface EventRepository {
     suspend fun likeById(id: Long)
     suspend fun removeById(id: Long)
     suspend fun save(post: Event)
-    suspend fun saveWithAttachment(post: Event, photo: PhotoModel)
+    suspend fun saveWithAttachment(post: Event, photo: MediaModel)
 }

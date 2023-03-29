@@ -7,9 +7,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment
 import ru.kozlovss.workingcontacts.presentation.events.ui.EventsFragment
-import ru.kozlovss.workingcontacts.presentation.events.ui.NewEventFragment
+import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment
 import ru.kozlovss.workingcontacts.presentation.feed.ui.FeedFragment
-import ru.kozlovss.workingcontacts.presentation.feed.ui.NewPostFragment
+import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment
 
 object DialogManager {

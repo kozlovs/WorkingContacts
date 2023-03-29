@@ -1,31 +1,31 @@
-package ru.kozlovss.workingcontacts.presentation.feed.ui
+package ru.kozlovss.workingcontacts.presentation.newevent.ui
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
+import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
-import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
-
+import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
 
 @AndroidEntryPoint
-class NewPostFragment : Fragment() {
-    private val viewModel: FeedViewModel by activityViewModels()
+class NewEventFragment : Fragment() {
+    private val viewModel: EventsViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var binding: FragmentNewPostBinding
-    lateinit var post: Post
+    private lateinit var binding: FragmentNewEventBinding
+    lateinit var event: Event
 
     val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         // Callback is invoked after the user selects a media item or closes the
@@ -58,7 +58,7 @@ class NewPostFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewPostBinding.inflate(
+        binding = FragmentNewEventBinding.inflate(
             inflater,
             container,
             false
@@ -101,9 +101,9 @@ class NewPostFragment : Fragment() {
                 viewModel.draftContent.value.let(binding.content::setText)
             }
         } else {
-            post = viewModel.edited.value!!
+            event = viewModel.edited.value!!
             with(binding) {
-                content.setText(post.content)
+                content.setText(event.content)
 //                post.attachment?.let {
 //                    //todo необходимо выяснить, как выгрузить картинку из сервера в photo
 //                        ImagePicker.Builder(this)
@@ -119,7 +119,7 @@ class NewPostFragment : Fragment() {
 //                        val uri = it.url
 //                        viewModel.savePhoto(uri, uri?.toFile())
 //                }
-                if (post.attachment != null) {
+                if (event.attachment != null) {
                     preview.visibility = View.VISIBLE
                 } else {
                     preview.visibility = View.GONE
@@ -129,7 +129,7 @@ class NewPostFragment : Fragment() {
     }
 
     private fun subscribe() {
-        viewModel.postCreated.observe(viewLifecycleOwner) {
+        viewModel.eventCreated.observe(viewLifecycleOwner) {
             findNavController().navigateUp()
         }
 
@@ -152,7 +152,7 @@ class NewPostFragment : Fragment() {
         }
 
         addPhoto.setOnClickListener {
-            if (isPhotoPickerAvailable()) {
+            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
 //            ImagePicker.Builder(this@NewPostFragment)
@@ -162,7 +162,7 @@ class NewPostFragment : Fragment() {
         }
 
         addVideo.setOnClickListener {
-            if (isPhotoPickerAvailable()) {
+            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable()) {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
             }
         }
@@ -176,7 +176,7 @@ class NewPostFragment : Fragment() {
             if (content.isNotBlank()) {
                 if (userViewModel.isLogin()) {
                     viewModel.changeContentAndSave(content)
-                } else DialogManager.errorAuthDialog(this@NewPostFragment)
+                } else DialogManager.errorAuthDialog(this@NewEventFragment)
             } else {
                 viewModel.clearEdited()
             }

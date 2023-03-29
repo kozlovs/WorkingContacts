@@ -2,7 +2,7 @@ package ru.kozlovss.workingcontacts.data.mywalldata.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 
 interface MyWallRepository {
@@ -11,5 +11,5 @@ interface MyWallRepository {
     suspend fun likeById(id: Long)
     suspend fun removeById(id: Long)
     suspend fun save(post: Post)
-    suspend fun saveWithAttachment(post: Post, photo: PhotoModel)
+    suspend fun saveWithAttachment(post: Post, photo: MediaModel)
 }

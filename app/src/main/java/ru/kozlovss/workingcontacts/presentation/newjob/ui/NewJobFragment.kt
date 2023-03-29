@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.newjob.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,19 +11,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.FragmentNewJobBinding
-import ru.kozlovss.workingcontacts.domain.util.Formatter
-import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.newjob.model.NewJobModel
 import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel
+import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel.Event.*
 import java.time.Instant
 import java.time.ZoneId
 
 @AndroidEntryPoint
 class NewJobFragment : Fragment() {
-    private var jobId: Long? = null
     private lateinit var binding: FragmentNewJobBinding
     private val viewModel: NewJobViewModel by activityViewModels()
     private lateinit var datePicker: MaterialDatePicker<Long>
@@ -34,22 +31,15 @@ class NewJobFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        jobId = arguments?.jobId
-        jobId?.let { viewModel.getData(it) }
         binding = FragmentNewJobBinding.inflate(inflater, container, false)
-        initDataPiker()
+        initDatePiker()
         subscribe()
         setListeners()
 
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.clearData()
-    }
-
-    private fun initDataPiker() {
+    private fun initDatePiker() {
         datePicker = MaterialDatePicker.Builder
             .datePicker()
             .setTitleText("Select date")
@@ -57,54 +47,28 @@ class NewJobFragment : Fragment() {
             .build()
     }
 
-    private fun subscribe() {
-        lifecycleScope.launchWhenCreated {
-            viewModel.jobData.collect {
-                updateUi(it)
-            }
-        }
-
+    private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenCreated {
             viewModel.state.collect { state ->
-                with(binding) {
-                    cardJob.isVisible =
-                        state is NewJobModel.State.Idle || state is NewJobModel.State.Error
-                    save.isVisible =
-                        state is NewJobModel.State.Idle || state is NewJobModel.State.Error
-                    progress.isVisible = state is NewJobModel.State.Loading
-                }
-                if (state is NewJobModel.State.Error) Toast.makeText(
-                    context,
-                    "Error upload",
-                    Toast.LENGTH_LONG
-                ).show()
+                cardJob.isVisible =
+                    state is NewJobModel.State.Idle
+                save.isVisible =
+                    state is NewJobModel.State.Idle
+                progress.isVisible = state is NewJobModel.State.Loading
             }
         }
 
         lifecycleScope.launchWhenCreated {
             viewModel.events.collect {
-                Log.d("MyLog", "Event $it")
                 when (it) {
-                    NewJobViewModel.Event.CreateNewItem -> {
-
-                        findNavController().navigateUp()
-                    }
-                    else -> {}
+                    CreateNewItem -> findNavController().navigateUp()
+                    is ShowSnackBar -> Snackbar.make(binding.root, it.text, Snackbar.LENGTH_LONG)
+                        .show()
+                    is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
-
-    private fun updateUi(job: Job?) = with(binding) {
-        job?.let {
-            nameField.setText(job.name)
-            positionField.setText(job.position)
-            startField.setText(Formatter.localDateTimeToJobDateFormat(job.start))
-            job.finish?.let { finishField.setText(Formatter.localDateTimeToJobDateFormat(it)) }
-            job.link?.let { linkField.setText(it) }
-        }
-    }
-
 
     private fun setListeners() = with(binding) {
         startField.setOnClickListener {
@@ -149,7 +113,6 @@ class NewJobFragment : Fragment() {
     }
 
     companion object {
-        var Bundle.jobId: Long by LongArg
         private const val START_TAG = "start"
         private const val FINISH_TAG = "finish"
     }

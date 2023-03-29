@@ -1,9 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs
 
-import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.CardMyJobBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
@@ -41,23 +39,8 @@ class JobViewHolder(
     }
 
     private fun setListeners(job: Job) = with(binding) {
-        menu.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.options_post_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.remove -> {
-                            onInteractionListener.onRemove(job)
-                            true
-                        }
-                        R.id.edit -> {
-                            onInteractionListener.onEdit(job)
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
+        remove.setOnClickListener {
+            onInteractionListener.onRemove(job)
         }
     }
 }

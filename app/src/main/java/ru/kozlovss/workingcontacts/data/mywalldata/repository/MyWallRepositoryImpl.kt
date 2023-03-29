@@ -7,7 +7,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
 import ru.kozlovss.workingcontacts.data.mywalldata.api.MyWallApiService
@@ -120,7 +120,7 @@ class MyWallRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(post: Post, photo: PhotoModel) {
+    override suspend fun saveWithAttachment(post: Post, photo: MediaModel) {
         try {
             val media = upload(photo)
             val newPostId = dao.insert(PostEntity.fromDto(post))
@@ -143,7 +143,7 @@ class MyWallRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun upload(photo: PhotoModel): Media {
+    private suspend fun upload(photo: MediaModel): Media {
         try {
             val media = MultipartBody.Part.createFormData(
                 "file",

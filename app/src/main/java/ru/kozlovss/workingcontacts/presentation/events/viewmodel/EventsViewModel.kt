@@ -13,7 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
@@ -70,8 +70,8 @@ class EventsViewModel @Inject constructor(
     val eventCreated: LiveData<Unit>
         get() = _eventCreated
 
-    private val _photo = MutableStateFlow<PhotoModel?>(null)
-    val photo: StateFlow<PhotoModel?>
+    private val _photo = MutableStateFlow<MediaModel?>(null)
+    val photo: StateFlow<MediaModel?>
         get() = _photo
 
     private val _edited = MutableLiveData(empty)
@@ -148,7 +148,7 @@ class EventsViewModel @Inject constructor(
     }
 
     fun savePhoto(uri: Uri?, toFile: File?) {
-        _photo.value = PhotoModel(uri, toFile)
+        _photo.value = MediaModel(uri, toFile, MediaModel.Type.PHOTO)
     }
 
     suspend fun getById(id: Long) = repository.getById(id)

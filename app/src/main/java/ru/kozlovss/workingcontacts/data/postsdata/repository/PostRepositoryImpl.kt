@@ -13,10 +13,11 @@ import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
+import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
@@ -106,12 +107,12 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun save(post: Post) {
+    override suspend fun save(post: PostRequest) {
         try {
-            val newPostId = dao.insert(PostEntity.fromDto(post))
-            val response = apiService.savePost(post.toRequest())
+            val response = apiService.savePost(post)
+            Log.d("MyLog", "repository response ${response.isSuccessful}")
             val body = checkResponse(response)
-            dao.removeById(newPostId)
+            Log.d("MyLog", "repository post body $body")
             dao.save(PostEntity.fromDto(body))
             myWallDao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -121,7 +122,7 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(post: Post, photo: PhotoModel) {
+    override suspend fun saveWithAttachment(post: Post, photo: MediaModel) {
         try {
             val media = upload(photo)
             val newPostId = dao.insert(PostEntity.fromDto(post))
@@ -158,7 +159,7 @@ class PostRepositoryImpl @Inject constructor(
         dao.stopPlayer()
     }
 
-    private suspend fun upload(photo: PhotoModel): Media {
+    private suspend fun upload(photo: MediaModel): Media {
         try {
             val media = MultipartBody.Part.createFormData(
                 "file",

@@ -24,6 +24,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 
 @AndroidEntryPoint
 class  FeedFragment : Fragment() {
@@ -70,7 +71,8 @@ class  FeedFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 if (userViewModel.isLogin()) {
-                    viewModel.edit(post)
+                    findNavController().navigate(R.id.action_feedFragment_to_newPostFragment,
+                    Bundle().apply { postId = post.id })
                 } else DialogManager.errorAuthDialog(this@FeedFragment)
             }
 
@@ -118,11 +120,6 @@ class  FeedFragment : Fragment() {
             adapter.loadStateFlow.collectLatest {
                 swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
             }
-        }
-
-        viewModel.edited.observe(viewLifecycleOwner) { post ->
-            if (post.id == 0L) return@observe
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
 
         lifecycleScope.launchWhenCreated {

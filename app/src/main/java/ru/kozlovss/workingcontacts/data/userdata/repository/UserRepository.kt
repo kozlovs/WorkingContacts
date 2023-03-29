@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
@@ -9,7 +9,7 @@ interface UserRepository {
         login: String,
         password: String,
         name: String,
-        photoModel: PhotoModel?
+        mediaModel: MediaModel?
     ): Token
 
     suspend fun login(login: String, password: String): Token

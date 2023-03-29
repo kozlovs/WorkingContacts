@@ -24,7 +24,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textSize="17sp"
-            app:layout_constraintEnd_toStartOf="@+id/menu"
+            app:layout_constraintEnd_toStartOf="@+id/remove"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +38,7 @@
             android:layout_marginEnd="@dimen/card_margin_side"
             android:ellipsize="end"
             android:singleLine="true"
-            app:layout_constraintEnd_toStartOf="@+id/menu"
+            app:layout_constraintEnd_toStartOf="@+id/remove"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/name"
@@ -51,7 +51,7 @@
             android:layout_marginTop="@dimen/card_margin_between"
             app:layout_constraintEnd_toStartOf="@+id/finish_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/menu">
+            app:layout_constraintTop_toBottomOf="@id/remove">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/start_caption"
@@ -74,7 +74,7 @@
             android:layout_marginTop="@dimen/card_margin_between"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/start_layout"
-            app:layout_constraintTop_toBottomOf="@id/menu">
+            app:layout_constraintTop_toBottomOf="@id/remove">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/finish_caption"
@@ -104,11 +104,11 @@
             tools:text="https://ya.ru/" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/menu"
+            android:id="@+id/remove"
             style="@style/Widget.Material3.Button.IconButton.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/baseline_more_vert_24"
+            app:icon="@drawable/baseline_delete_outline_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpeakableTextPresentCheck" />

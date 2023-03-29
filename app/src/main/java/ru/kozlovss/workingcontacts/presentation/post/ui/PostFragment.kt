@@ -28,6 +28,7 @@ import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
+import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 import ru.kozlovss.workingcontacts.presentation.post.model.PostModel
 import ru.kozlovss.workingcontacts.presentation.post.viewmodel.PostViewModel
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
@@ -77,14 +78,6 @@ class PostFragment : Fragment() {
                 binding.progress.isVisible = state is PostModel.State.Loading
                 binding.cardLayout.isVisible = state is PostModel.State.Idle
                 binding.errorLayout.isVisible = state is PostModel.State.Error
-            }
-        }
-
-        feedViewModel.edited.observe(viewLifecycleOwner) {
-            if (it.id != 0L) {
-                findNavController().navigate(
-                    R.id.action_postFragment_to_newPostFragment
-                )
             }
         }
     }
@@ -196,7 +189,8 @@ class PostFragment : Fragment() {
                         R.id.edit -> {
                             if (userViewModel.isLogin()) {
                                 postViewModel.data.value?.let { post ->
-                                    feedViewModel.edit(post)
+                                    findNavController().navigate(R.id.action_postFragment_to_newPostFragment,
+                                    Bundle().apply { postId = post.id })
                                 }
                             } else DialogManager.errorAuthDialog(this@PostFragment)
                             true

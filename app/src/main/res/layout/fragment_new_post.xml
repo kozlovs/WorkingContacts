@@ -4,125 +4,175 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.feed.ui.NewPostFragment">
+    tools:context=".presentation.newpost.ui.NewPostFragment">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        app:liftOnScroll="true"
+        android:layout_gravity="top">
 
-        <FrameLayout
-            android:id="@+id/image_group"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/baseline_close_24"
+            app:title="@string/post" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/preview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                tools:srcCompat="@tools:sample/avatars" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/clear"
-                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="@dimen/min_spacing"
-                android:layout_marginBottom="@dimen/min_spacing"
-                app:icon="@drawable/baseline_close_24"
-                tools:ignore="SpeakableTextPresentCheck" />
-        </FrameLayout>
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/card_post"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/content"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="start|top"
-            android:background="@android:color/transparent"
-            android:gravity="top"
-            android:hint="@string/post_text"
-            android:importantForAutofill="no"
-            android:inputType="textMultiLine"
-            android:padding="@dimen/common_spacing" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:layout_gravity="center_vertical"
+            android:padding="@dimen/card_margin_side">
 
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/bottomAppBar"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_between"
+                android:hint="@string/content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/content_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_between"
+                android:hint="@string/link"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/link_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_between"
+                android:hint="@string/latitude"
+                app:layout_constraintEnd_toStartOf="@id/lon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/link">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lat_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/card_margin_between"
+                android:layout_marginTop="@dimen/card_margin_between"
+                android:clickable="false"
+                android:hint="@string/longitude"
+                app:layout_constraintEnd_toStartOf="@+id/add_place"
+                app:layout_constraintStart_toEndOf="@id/lat"
+                app:layout_constraintTop_toBottomOf="@id/link">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lon_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_place"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/baseline_place_24"
+                app:layout_constraintBottom_toBottomOf="@id/lon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/lon"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <FrameLayout
+                android:id="@+id/media_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_side"
+                app:layout_constraintTop_toBottomOf="@id/lat">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/preview"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:adjustViewBounds="true"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/clear"
+                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    app:icon="@drawable/baseline_close_24"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mentions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_side"
+                app:layout_constraintTop_toBottomOf="@id/media_group"
+                tools:listitem="@layout/card_user_item"
+                tools:itemCount="3"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="14dp"
-        android:backgroundTint="@android:color/transparent"
-        android:orientation="horizontal">
-
-        <HorizontalScrollView
-            android:id="@+id/button_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/take_photo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/card_margin_side"
-                    android:padding="@dimen/common_spacing"
-                    android:text="@string/take_a_photo"
-                    app:icon="@drawable/baseline_add_a_photo_24" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/add_photo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/min_spacing"
-                    android:padding="@dimen/common_spacing"
-                    android:text="@string/add_photo"
-                    app:icon="@drawable/baseline_insert_photo_24" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/add_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/min_spacing"
-                    android:padding="@dimen/common_spacing"
-                    android:text="@string/add_video"
-                    app:icon="@drawable/baseline_video_call_24" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/add_audio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/min_spacing"
-                    android:layout_marginEnd="32dp"
-                    android:padding="@dimen/common_spacing"
-                    android:text="@string/add_audio"
-                    app:icon="@drawable/baseline_audio_file_24" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-        </HorizontalScrollView>
-
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        style="@style/Widget.Material3.BottomAppBar"
+        app:menu="@menu/bottom_new_post_menu"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/done"
+        android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/card_margin_side"
-        android:layout_marginBottom="@dimen/fab_margin"
+        app:layout_anchor="@id/bottom_app_bar"
+        app:elevation="0dp"
         android:contentDescription="@string/add_post_button_description"
         app:srcCompat="@drawable/baseline_done_24"
         tools:ignore="RedundantDescriptionCheck" />
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

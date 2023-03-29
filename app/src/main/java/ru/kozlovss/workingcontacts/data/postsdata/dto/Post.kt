@@ -30,7 +30,6 @@ data class Post(
             coords,
             link,
             attachment,
-            ownedByMe,
             mentionIds
         )
     }

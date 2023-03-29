@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
@@ -69,7 +69,7 @@ class MyWallViewModel @Inject constructor(
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
-    private val _photo = MutableStateFlow<PhotoModel?>(null)
+    private val _photo = MutableStateFlow<MediaModel?>(null)
     val photo = _photo.asStateFlow()
 
     private val _edited = MutableLiveData(empty)
@@ -180,7 +180,7 @@ class MyWallViewModel @Inject constructor(
     }
 
     fun savePhoto(uri: Uri?, toFile: File?) {
-        _photo.value = PhotoModel(uri, toFile)
+        _photo.value = MediaModel(uri, toFile, MediaModel.Type.PHOTO)
     }
 
     fun isLogin() = appAuth.isAuthenticated()

@@ -43,4 +43,8 @@
     <string name="finish">finish</string>
     <string name="link">link</string>
     <string name="save">save</string>
+    <string name="post">Post</string>
+    <string name="content">Content</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
 </resources>

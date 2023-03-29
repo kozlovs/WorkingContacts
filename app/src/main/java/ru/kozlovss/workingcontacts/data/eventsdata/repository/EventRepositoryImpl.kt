@@ -1,6 +1,5 @@
 package ru.kozlovss.workingcontacts.data.eventsdata.repository
 
-import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,7 +10,7 @@ import ru.kozlovss.workingcontacts.BuildConfig
 import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.eventsdata.api.EventApiService
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventRemoteKeyDao
@@ -114,7 +113,7 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(event: Event, photo: PhotoModel) {
+    override suspend fun saveWithAttachment(event: Event, photo: MediaModel) {
         try {
             val media = upload(photo)
             val newEventId = dao.insert(EventEntity.fromDto(event))
@@ -136,7 +135,7 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun upload(photo: PhotoModel): Media {
+    private suspend fun upload(photo: MediaModel): Media {
         try {
             val media = MultipartBody.Part.createFormData(
                 "file",

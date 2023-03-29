@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.kozlovss.workingcontacts.data.dto.PhotoModel
+import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
@@ -23,8 +23,8 @@ class UserViewModel @Inject constructor(
 ): ViewModel() {
     val token: StateFlow<Token?> = appAuth.authStateFlow
 
-    private val _avatar = MutableStateFlow<PhotoModel?>(null)
-    val avatar: StateFlow<PhotoModel?>
+    private val _avatar = MutableStateFlow<MediaModel?>(null)
+    val avatar: StateFlow<MediaModel?>
         get() = _avatar
 
     fun isLogin() = appAuth.isAuthenticated()
@@ -53,7 +53,7 @@ class UserViewModel @Inject constructor(
     }
 
     fun saveAvatar(uri: Uri?, toFile: File?) {
-        _avatar.value = PhotoModel(uri, toFile)
+        _avatar.value = MediaModel(uri, toFile, MediaModel.Type.PHOTO)
     }
 
     fun clearAvatar() {
