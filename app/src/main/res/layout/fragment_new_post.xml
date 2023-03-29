@@ -10,8 +10,8 @@
         android:id="@+id/top_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:liftOnScroll="true"
-        android:layout_gravity="top">
+        android:layout_gravity="top"
+        app:liftOnScroll="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_app_bar"
@@ -81,7 +81,8 @@
                     android:id="@+id/lat_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="false" />
+                    android:focusable="false"
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -100,7 +101,8 @@
                     android:id="@+id/lon_field"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="false" />
+                    android:focusable="false"
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -144,8 +146,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_margin_side"
                 app:layout_constraintTop_toBottomOf="@id/media_group"
-                tools:listitem="@layout/card_user_item"
-                tools:itemCount="3"/>
+                tools:itemCount="3"
+                tools:listitem="@layout/card_user_item" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -153,19 +155,19 @@
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
+        style="@style/Widget.Material3.BottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        style="@style/Widget.Material3.BottomAppBar"
-        app:menu="@menu/bottom_new_post_menu"/>
+        app:menu="@menu/bottom_new_post_menu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_anchor="@id/bottom_app_bar"
-        app:elevation="0dp"
         android:contentDescription="@string/add_post_button_description"
+        app:elevation="0dp"
+        app:layout_anchor="@id/bottom_app_bar"
         app:srcCompat="@drawable/baseline_done_24"
         tools:ignore="RedundantDescriptionCheck" />
 

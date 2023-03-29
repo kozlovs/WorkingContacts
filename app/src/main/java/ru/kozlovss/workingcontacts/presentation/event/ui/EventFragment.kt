@@ -125,7 +125,7 @@ class EventFragment : Fragment() {
         content.text = event.content
         type.text = event.type.toString()
         datetime.text = Formatter.localDateTimeToPostDateFormat(event.datetime)
-        coords.text = "lat: ${event.coords?.lat} long: ${event.coords?.lon}"
+        coords.text = "lat: ${event.coords?.lat} long: ${event.coords?.longitude}"
         coords.isVisible = event.coords != null
         speakersCount.text = event.speakerIds.size.toString()
         like.isChecked = event.likedByMe

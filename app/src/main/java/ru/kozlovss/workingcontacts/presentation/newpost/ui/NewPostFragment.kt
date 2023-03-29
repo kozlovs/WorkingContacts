@@ -23,6 +23,7 @@ import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.map.viewmodel.MapViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel.Event.*
@@ -32,6 +33,7 @@ import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewMod
 class NewPostFragment : Fragment() {
     private val viewModel: NewPostViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
+    private val mapViewModel: MapViewModel by activityViewModels()
     private lateinit var binding: FragmentNewPostBinding
     private var postId: Long? = null
 
@@ -129,14 +131,14 @@ class NewPostFragment : Fragment() {
     private fun updateUi(post: Post?) = with(binding) {
         post?.let {
             contentField.setText(post.content)
-                post.attachment?.let {
-                          Glide.with(preview)
-                            .load(post.attachment.url)
-                            .placeholder(R.drawable.baseline_update_24)
-                            .error(R.drawable.baseline_error_outline_24)
-                            .timeout(10_000)
-                            .into(preview)
-                }
+            post.attachment?.let {
+                Glide.with(preview)
+                    .load(post.attachment.url)
+                    .placeholder(R.drawable.baseline_update_24)
+                    .error(R.drawable.baseline_error_outline_24)
+                    .timeout(10_000)
+                    .into(preview)
+            }
 
             if (post.attachment != null) {
                 preview.visibility = View.VISIBLE
@@ -193,8 +195,15 @@ class NewPostFragment : Fragment() {
             viewModel.clearPhoto()
         }
 
+        addPlace.setOnClickListener {
+            findNavController().navigate(R.id.action_newPostFragment_to_mapFragment)
+        }
+
         save.setOnClickListener {
-            if (checkFields()) {
+            val coordinates =
+                if (latField.text.isNullOrBlank() || lonField.text.isNullOrBlank()) null
+                else Coordinates(latField.text?.trim().toString(), lonField.text?.trim().toString())
+            if (checkFields() && checkCoordinate(coordinates)) {
                 if (userViewModel.isLogin()) {
                     viewModel.save(
                         contentField.text.toString(),
@@ -210,9 +219,28 @@ class NewPostFragment : Fragment() {
     }
 
     private fun checkFields(): Boolean = with(binding) {
-        return !contentField.text.isNullOrBlank()
+        return (!contentField.text.isNullOrBlank())
     }
+
+    private fun checkCoordinate(coordinates: Coordinates?): Boolean {
+        if (coordinates == null) return true
+        try {
+            val lat = coordinates.lat.trim().toDouble()
+            val lon = coordinates.longitude.trim().toDouble()
+            if (lat > MAX_LATITUDE || lat < MIN_LATITUDE) return false
+            if (lon > MAX_LONGITUDE || lon < MIN_LONGITUDE) return false
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     companion object {
         var Bundle.postId: Long by LongArg
+        const val MAX_LATITUDE = 90.0
+        const val MIN_LATITUDE = -90.0
+        const val MAX_LONGITUDE = 180.0
+        const val MIN_LONGITUDE = -180.0
     }
 }

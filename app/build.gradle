@@ -17,6 +17,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def properties = new Properties()
+        def file = project.rootProject.file("local.properties")
+        properties.load(file.newDataInputStream())
+        def mapsApiKey = properties.getProperty('maps.api.key')
+        resValue "string", "MAPS_API_KEY", mapsApiKey
     }
 
     buildTypes {
@@ -64,6 +70,7 @@ dependencies {
     def junit_version = "4.13.2"
     def ext_junit_version = "1.1.5"
     def espresso_version = "3.5.1"
+    def yandex_map_version = "4.2.2-lite"
 
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -101,6 +108,8 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    implementation "com.yandex.android:maps.mobile:$yandex_map_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"

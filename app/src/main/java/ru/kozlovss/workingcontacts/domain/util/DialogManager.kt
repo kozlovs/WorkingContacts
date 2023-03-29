@@ -109,6 +109,5 @@ object DialogManager {
 //        clear.setOnClickListener {
 //            viewModel.clearAvatar()
 //        }//todo добавить механизм загрузки фото
-
     private fun makeErrorMessage(e: Exception) = e.message.toString()
 }

@@ -47,4 +47,8 @@
     <string name="content">Content</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
+    <string name="need_permission">need permission</string>
+    <string name="zoom_in">zoom in</string>
+    <string name="zoom_out">zoom out</string>
+    <string name="search_my_location">search my location</string>
 </resources>
