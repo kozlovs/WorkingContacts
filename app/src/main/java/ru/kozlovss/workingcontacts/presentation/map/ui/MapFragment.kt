@@ -70,16 +70,18 @@ class MapFragment : Fragment() {
             override fun onMapTap(map: Map, point: Point) = Unit
 
             override fun onMapLongTap(map: Map, point: Point) {
+                val latitude = point.latitude.toString().substring(0, 9)
+                val longitude = point.longitude.toString().substring(0, 9)
                 MaterialAlertDialogBuilder(requireContext())
                     .create().apply {
                         setTitle("Coordinates")
-                        setMessage("latitude: ${point.latitude}\nlongitude: ${point.longitude}")
+                        setMessage("latitude: ${latitude}\nlongitude: ${longitude}")
                         setIcon(R.drawable.baseline_place_24)
                         setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok)) { _, _ ->
                             viewModel.setPlace(
                                 Coordinates(
-                                    point.latitude.toString(),
-                                    point.longitude.toString()
+                                    latitude,
+                                    longitude
                                 )
                             )
                         }

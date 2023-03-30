@@ -110,6 +110,7 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun save(post: PostRequest, model: MediaModel?) {
         try {
             val media = model?.let { upload(it) }
+            Log.d("MyLog", "repository media $media")
             val response = media?.let {
                 apiService.savePost(
                     post.copy(
@@ -120,6 +121,7 @@ class PostRepositoryImpl @Inject constructor(
                     )
                 ) } ?: apiService.savePost(post)
             Log.d("MyLog", "repository response ${response.isSuccessful}")
+            Log.d("MyLog", "repository body ${response.errorBody()}")
             val body = checkResponse(response)
             Log.d("MyLog", "repository post body $body")
             dao.save(PostEntity.fromDto(body))

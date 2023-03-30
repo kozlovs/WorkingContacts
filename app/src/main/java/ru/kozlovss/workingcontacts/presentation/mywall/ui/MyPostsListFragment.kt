@@ -24,6 +24,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.PostLoading
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
+import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
@@ -105,7 +106,10 @@ class MyPostsListFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                viewModel.edit(post)
+                if (userViewModel.isLogin()) {
+                    findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment,
+                        Bundle().apply { postId = post.id })
+                } else DialogManager.errorAuthDialog(this@MyPostsListFragment)
             }
 
             override fun onToVideo(post: Post) {

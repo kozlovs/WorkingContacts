@@ -1,6 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.newpost.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -71,6 +72,7 @@ class NewPostViewModel @Inject constructor(
                 null,
                 mentionIds.takeIf { it != null }
             )
+            Log.d("MyLog", "viewModel request $postRequest")
             repository.save(postRequest, attachment.value)
             clearData()
             _events.emit(Event.CreateNewItem)
