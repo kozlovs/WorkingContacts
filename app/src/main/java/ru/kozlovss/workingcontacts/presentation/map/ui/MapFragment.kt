@@ -75,7 +75,7 @@ class MapFragment : Fragment() {
                 MaterialAlertDialogBuilder(requireContext())
                     .create().apply {
                         setTitle("Coordinates")
-                        setMessage("latitude: ${latitude}\nlongitude: ${longitude}")
+                        setMessage("latitude: $latitude\nlongitude: $longitude")
                         setIcon(R.drawable.baseline_place_24)
                         setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok)) { _, _ ->
                             viewModel.setPlace(
