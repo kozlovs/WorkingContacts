@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentMyPostsListBinding
@@ -53,31 +56,41 @@ class MyPostsListFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenCreated {
-            viewModel.postData.collectLatest {
-                adapter.submitData(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.postData.collectLatest {
+                    adapter.submitData(it)
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
-                swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
-                empty.isVisible = adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collectLatest {
+                    swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+                    empty.isVisible =
+                        adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.state.collectLatest { state ->
-                errorLayout.isVisible = state is MyWallModel.State.Error
-                empty.isVisible = adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    errorLayout.isVisible = state is MyWallModel.State.Error
+                    empty.isVisible =
+                        adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            userViewModel.token.collect { token ->
-                token?.let {
-                    adapter.refresh()
-                } ?: viewModel.clearMyData()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.token.collect { token ->
+                    token?.let {
+                        adapter.refresh()
+                    } ?: viewModel.clearMyData()
+                }
             }
         }
     }

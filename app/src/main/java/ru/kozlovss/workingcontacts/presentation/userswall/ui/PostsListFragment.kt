@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentPostsListBinding
@@ -48,16 +51,20 @@ class PostsListFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenStarted {
-            viewModel.postsData.collect {
-                adapter.submitList(it)
-                empty.isVisible = it.isEmpty()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.postsData.collect {
+                    adapter.submitList(it)
+                    empty.isVisible = it.isEmpty()
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.state.collectLatest { state ->
-                swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingPosts
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingPosts
+                }
             }
         }
     }

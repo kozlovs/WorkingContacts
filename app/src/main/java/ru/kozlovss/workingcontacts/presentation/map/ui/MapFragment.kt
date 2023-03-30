@@ -12,7 +12,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yandex.mapkit.Animation
@@ -26,6 +28,7 @@ import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
 import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.databinding.FragmentMapBinding
@@ -187,11 +190,13 @@ class MapFragment : Fragment() {
 
 
     private fun subscribe() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.coordinates.collect {
-                it?.let {
-                    newPostViewModel.setCoordinates(it)
-                    findNavController().navigateUp()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED)  {
+                viewModel.coordinates.collect {
+                    it?.let {
+                        newPostViewModel.setCoordinates(it)
+                        findNavController().navigateUp()
+                    }
                 }
             }
         }

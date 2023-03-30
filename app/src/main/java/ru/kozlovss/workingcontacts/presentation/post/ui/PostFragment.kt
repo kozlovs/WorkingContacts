@@ -13,12 +13,15 @@ import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
@@ -67,17 +70,21 @@ class PostFragment : Fragment() {
     }
 
     private fun subscribe() {
-        lifecycleScope.launchWhenCreated {
-            postViewModel.data.collect { post ->
-                post?.let { updateUi(it) }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                postViewModel.data.collect { post ->
+                    post?.let { updateUi(it) }
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            postViewModel.state.collectLatest { state ->
-                binding.progress.isVisible = state is PostModel.State.Loading
-                binding.cardLayout.isVisible = state is PostModel.State.Idle
-                binding.errorLayout.isVisible = state is PostModel.State.Error
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                postViewModel.state.collectLatest { state ->
+                    binding.progress.isVisible = state is PostModel.State.Loading
+                    binding.cardLayout.isVisible = state is PostModel.State.Idle
+                    binding.errorLayout.isVisible = state is PostModel.State.Error
+                }
             }
         }
     }

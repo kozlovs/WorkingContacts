@@ -14,12 +14,15 @@ import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
@@ -72,20 +75,24 @@ class EventFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenCreated {
-            eventViewModel.data.collect { event ->
-                event?.let {
-                    updateUi(it)
-                    eventViewModel.getSpeakers(it.speakerIds)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventViewModel.data.collect { event ->
+                    event?.let {
+                        updateUi(it)
+                        eventViewModel.getSpeakers(it.speakerIds)
+                    }
                 }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            eventViewModel.state.collectLatest { state ->
-                progress.isVisible = state is EventModel.State.Loading
-                cardLayout.isVisible = state is EventModel.State.Idle
-                errorLayout.isVisible = state is EventModel.State.Error
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventViewModel.state.collectLatest { state ->
+                    progress.isVisible = state is EventModel.State.Loading
+                    cardLayout.isVisible = state is EventModel.State.Idle
+                    errorLayout.isVisible = state is EventModel.State.Error
+                }
             }
         }
 
@@ -97,17 +104,21 @@ class EventFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            eventViewModel.speakersVisibility.collect {
-                speakersCard.isVisible = it && eventViewModel.speakers.value.isNotEmpty()
-                speakersSelectorIcon.isChecked = it
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventViewModel.speakersVisibility.collect {
+                    speakersCard.isVisible = it && eventViewModel.speakers.value.isNotEmpty()
+                    speakersSelectorIcon.isChecked = it
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            eventViewModel.speakers.collect {
-                it.forEach { Log.d("MyLog", it.toString()) }
-                adapter.submitList(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                eventViewModel.speakers.collect {
+                    it.forEach { Log.d("MyLog", it.toString()) }
+                    adapter.submitList(it)
+                }
             }
         }
     }

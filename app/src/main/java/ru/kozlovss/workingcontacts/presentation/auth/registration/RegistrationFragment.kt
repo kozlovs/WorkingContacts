@@ -10,8 +10,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentRegistrationBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
@@ -85,13 +88,15 @@ class RegistrationFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.avatar.collect {
-                with(binding) {
-                    if (it == null) {
-                        avatar.setImageResource(R.drawable.baseline_person_outline_24)
-                    } else {
-                        avatar.setImageURI(it.uri)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.avatar.collect {
+                    with(binding) {
+                        if (it == null) {
+                            avatar.setImageResource(R.drawable.baseline_person_outline_24)
+                        } else {
+                            avatar.setImageURI(it.uri)
+                        }
                     }
                 }
             }

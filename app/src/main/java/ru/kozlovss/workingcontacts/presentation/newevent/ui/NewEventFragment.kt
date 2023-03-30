@@ -11,9 +11,12 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
@@ -133,11 +136,13 @@ class NewEventFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.photo.collect {
-                with(binding) {
-                    imageGroup.isVisible = it?.uri != null
-                    preview.setImageURI(it?.uri)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.photo.collect {
+                    with(binding) {
+                        imageGroup.isVisible = it?.uri != null
+                        preview.setImageURI(it?.uri)
+                    }
                 }
             }
         }

@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.databinding.FragmentJobsListBinding
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.jobs.JobsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
@@ -40,16 +43,20 @@ class JobsListFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenStarted {
-            viewModel.jobsData.collect {
-                adapter.submitList(it)
-                empty.isVisible = it.isEmpty()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.jobsData.collect {
+                    adapter.submitList(it)
+                    empty.isVisible = it.isEmpty()
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.state.collectLatest { state ->
-                swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingJobs
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    swipeRefresh.isRefreshing = state is UserWallModel.State.RefreshingJobs
+                }
             }
         }
     }

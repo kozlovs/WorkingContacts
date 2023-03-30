@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.FragmentMyJobsListBinding
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
@@ -46,33 +49,41 @@ class MyJobsListFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenCreated {
-            viewModel.jobsData.collectLatest {
-                adapter.submitList(it)
-                empty.isVisible = it.isEmpty()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.jobsData.collectLatest {
+                    adapter.submitList(it)
+                    empty.isVisible = it.isEmpty()
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.state.collectLatest { state ->
-                errorLayout.isVisible = state is MyWallModel.State.Error
-                swipeRefresh.isRefreshing = state is MyWallModel.State.RefreshingJobs
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    errorLayout.isVisible = state is MyWallModel.State.Error
+                    swipeRefresh.isRefreshing = state is MyWallModel.State.RefreshingJobs
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            userViewModel.token.collect { token ->
-                token?.let { viewModel.getJobs() }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.token.collect { token ->
+                    token?.let { viewModel.getJobs() }
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            newJobViewModel.events.collect {
-                when (it) {
-                    NewJobViewModel.Event.CreateNewItem -> {
-                        viewModel.getJobs()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newJobViewModel.events.collect {
+                    when (it) {
+                        NewJobViewModel.Event.CreateNewItem -> {
+                            viewModel.getJobs()
+                        }
+                        else -> {}
                     }
-                    else -> {}
                 }
             }
         }

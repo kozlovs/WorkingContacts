@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentEventsBinding
@@ -107,14 +110,18 @@ class EventsFragment : Fragment() {
     }
 
     private fun subscribe(binding: FragmentEventsBinding, adapter: EventsAdapter) {
-        lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest(adapter::submitData)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.data.collectLatest(adapter::submitData)
+            }
         }
 
-        lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest {
-                binding.swipeRefresh.isRefreshing =
-                    it.refresh is LoadState.Loading
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collectLatest {
+                    binding.swipeRefresh.isRefreshing =
+                        it.refresh is LoadState.Loading
+                }
             }
         }
 
@@ -123,9 +130,11 @@ class EventsFragment : Fragment() {
             findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment)
         }
 
-        lifecycleScope.launchWhenCreated {
-            userViewModel.token.collect {
-                adapter.refresh()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.token.collect {
+                    adapter.refresh()
+                }
             }
         }
     }

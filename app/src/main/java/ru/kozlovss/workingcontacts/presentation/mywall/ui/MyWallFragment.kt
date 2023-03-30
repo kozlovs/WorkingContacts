@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentMyWallBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
@@ -56,30 +59,35 @@ class MyWallFragment : Fragment() {
     }
 
     private fun subscribe() {
-        lifecycleScope.launchWhenStarted {
-            myWallViewModel.myData.collect {
-                it?.let {
-                    binding.name.text = it.name
-                    if (it.avatar != null) {
-                        Glide.with(binding.avatar)
-                            .load(it.avatar)
-                            .placeholder(R.drawable.baseline_update_24)
-                            .error(R.drawable.baseline_error_outline_24)
-                            .timeout(10_000)
-                            .into(binding.avatar)
-                    } else {
-                        binding.avatar.setImageResource(R.drawable.baseline_person_outline_24)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                myWallViewModel.myData.collect {
+                    it?.let {
+                        binding.name.text = it.name
+                        if (it.avatar != null) {
+                            Glide.with(binding.avatar)
+                                .load(it.avatar)
+                                .placeholder(R.drawable.baseline_update_24)
+                                .error(R.drawable.baseline_error_outline_24)
+                                .timeout(10_000)
+                                .into(binding.avatar)
+                        } else {
+                            binding.avatar.setImageResource(R.drawable.baseline_person_outline_24)
+                        }
                     }
                 }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            myWallViewModel.state.collectLatest { state ->
-                binding.authButtons.isVisible = state is MyWallModel.State.NoLogin
-                binding.progress.isVisible = state is MyWallModel.State.Loading
-                binding.myCard.isVisible = state is MyWallModel.State.Idle || state is MyWallModel.State.RefreshingJobs
-                binding.add.isVisible = state is MyWallModel.State.Idle
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                myWallViewModel.state.collectLatest { state ->
+                    binding.authButtons.isVisible = state is MyWallModel.State.NoLogin
+                    binding.progress.isVisible = state is MyWallModel.State.Loading
+                    binding.myCard.isVisible =
+                        state is MyWallModel.State.Idle || state is MyWallModel.State.RefreshingJobs
+                    binding.add.isVisible = state is MyWallModel.State.Idle
+                }
             }
         }
 
@@ -88,9 +96,11 @@ class MyWallFragment : Fragment() {
             findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
         }
 
-        lifecycleScope.launchWhenCreated {
-            userViewModel.token.collect { token ->
-                myWallViewModel.updateMyData(token)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.token.collect { token ->
+                    myWallViewModel.updateMyData(token)
+                }
             }
         }
     }

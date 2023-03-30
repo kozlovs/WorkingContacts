@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.databinding.FragmentNewJobBinding
 import ru.kozlovss.workingcontacts.presentation.newjob.model.NewJobModel
 import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel
@@ -48,23 +51,31 @@ class NewJobFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenCreated {
-            viewModel.state.collect { state ->
-                cardJob.isVisible =
-                    state is NewJobModel.State.Idle
-                save.isVisible =
-                    state is NewJobModel.State.Idle
-                progress.isVisible = state is NewJobModel.State.Loading
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    cardJob.isVisible =
+                        state is NewJobModel.State.Idle
+                    save.isVisible =
+                        state is NewJobModel.State.Idle
+                    progress.isVisible = state is NewJobModel.State.Loading
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.events.collect {
-                when (it) {
-                    CreateNewItem -> findNavController().navigateUp()
-                    is ShowSnackBar -> Snackbar.make(binding.root, it.text, Snackbar.LENGTH_LONG)
-                        .show()
-                    is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect {
+                    when (it) {
+                        CreateNewItem -> findNavController().navigateUp()
+                        is ShowSnackBar -> Snackbar.make(
+                            binding.root,
+                            it.text,
+                            Snackbar.LENGTH_LONG
+                        )
+                            .show()
+                        is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

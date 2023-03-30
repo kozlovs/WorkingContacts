@@ -19,11 +19,14 @@ import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
@@ -124,78 +127,94 @@ class NewPostFragment : Fragment() {
     }
 
     private fun subscribe() = with(binding) {
-        lifecycleScope.launchWhenCreated {
-            viewModel.content.collect {
-                it?.let { contentField.setText(it) }
-            }
-        }
-
-        lifecycleScope.launchWhenCreated {
-            viewModel.link.collect {
-                it?.let { linkField.setText(it) }
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.coordinates.collect {
-                it?.let {
-                    latField.setText(it.lat)
-                    lonField.setText(it.longitude)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.content.collect {
+                    it?.let { contentField.setText(it) }
                 }
             }
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.attachment.collect {
-                attachmentGroup.isVisible = it != null
-                it?.let {
-                    attachmentType.text = it.type.toString()
-                    when (it.type) {
-                        Attachment.Type.IMAGE -> {
-                            Glide.with(preview)
-                                .load(it.uri)
-                                .placeholder(R.drawable.baseline_update_24)
-                                .error(R.drawable.baseline_error_outline_24)
-                                .timeout(10_000)
-                                .into(preview)
-                            preview.isVisible = true
-                            audioIcon.isVisible = false
-                        }
-                        Attachment.Type.VIDEO -> {
-                            Glide.with(preview)
-                                .load(it.uri)
-                                .placeholder(R.drawable.baseline_update_24)
-                                .error(R.drawable.baseline_error_outline_24)
-                                .timeout(10_000)
-                                .into(preview)
-                            preview.isVisible = true
-                            audioIcon.isVisible = false
-                        }
-                        Attachment.Type.AUDIO -> {
-                            preview.isVisible = false
-                            audioIcon.isVisible = true
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.link.collect {
+                    it?.let { linkField.setText(it) }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.coordinates.collect {
+                    it?.let {
+                        latField.setText(it.lat)
+                        lonField.setText(it.longitude)
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.attachment.collect {
+                    attachmentGroup.isVisible = it != null
+                    it?.let {
+                        attachmentType.text = it.type.toString()
+                        when (it.type) {
+                            Attachment.Type.IMAGE -> {
+                                Glide.with(preview)
+                                    .load(it.uri)
+                                    .placeholder(R.drawable.baseline_update_24)
+                                    .error(R.drawable.baseline_error_outline_24)
+                                    .timeout(10_000)
+                                    .into(preview)
+                                preview.isVisible = true
+                                audioIcon.isVisible = false
+                            }
+                            Attachment.Type.VIDEO -> {
+                                Glide.with(preview)
+                                    .load(it.uri)
+                                    .placeholder(R.drawable.baseline_update_24)
+                                    .error(R.drawable.baseline_error_outline_24)
+                                    .timeout(10_000)
+                                    .into(preview)
+                                preview.isVisible = true
+                                audioIcon.isVisible = false
+                            }
+                            Attachment.Type.AUDIO -> {
+                                preview.isVisible = false
+                                audioIcon.isVisible = true
+                            }
                         }
                     }
                 }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.state.collect { state ->
-                cardPost.isVisible = state is NewPostModel.State.Idle
-                bottomAppBar.isVisible = state is NewPostModel.State.Idle
-                save.isVisible = state is NewPostModel.State.Idle
-                progress.isVisible = state is NewPostModel.State.Loading
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    cardPost.isVisible = state is NewPostModel.State.Idle
+                    bottomAppBar.isVisible = state is NewPostModel.State.Idle
+                    save.isVisible = state is NewPostModel.State.Idle
+                    progress.isVisible = state is NewPostModel.State.Loading
+                }
             }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.events.collect {
-                when (it) {
-                    CreateNewItem -> findNavController().navigateUp()
-                    is ShowSnackBar -> Snackbar.make(binding.root, it.text, Snackbar.LENGTH_LONG)
-                        .show()
-                    is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect {
+                    when (it) {
+                        CreateNewItem -> findNavController().navigateUp()
+                        is ShowSnackBar -> Snackbar.make(
+                            binding.root,
+                            it.text,
+                            Snackbar.LENGTH_LONG
+                        )
+                            .show()
+                        is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -345,7 +364,8 @@ class NewPostFragment : Fragment() {
         else storage_permissions
 
     private fun makePermissionToast() {
-        Toast.makeText(requireContext(), getString(R.string.need_permission), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.need_permission), Toast.LENGTH_SHORT)
+            .show()
     }
 
     companion object {
