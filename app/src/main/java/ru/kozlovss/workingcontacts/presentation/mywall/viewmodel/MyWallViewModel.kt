@@ -180,7 +180,7 @@ class MyWallViewModel @Inject constructor(
     }
 
     fun savePhoto(uri: Uri?, toFile: File?) {
-        _photo.value = MediaModel(uri, toFile, MediaModel.Type.PHOTO)
+        _photo.value = MediaModel(uri, toFile, Attachment.Type.IMAGE)
     }
 
     fun isLogin() = appAuth.isAuthenticated()

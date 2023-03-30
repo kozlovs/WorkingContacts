@@ -11,5 +11,5 @@ interface MediaApiService {
 
     @Multipart
     @POST("media")
-    suspend fun createMedia(@Part file: MultipartBody.Part): Response<Media>//todo не уверен в правильности
+    suspend fun createMedia(@Part file: MultipartBody.Part): Response<Media> // todo не уверен в правильности
 }

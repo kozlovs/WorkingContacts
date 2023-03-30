@@ -12,6 +12,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
@@ -28,9 +30,11 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.databinding.FragmentMapBinding
 import ru.kozlovss.workingcontacts.presentation.map.viewmodel.MapViewModel
+import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 
 class MapFragment : Fragment() {
     private val viewModel: MapViewModel by activityViewModels()
+    private val newPostViewModel: NewPostViewModel by activityViewModels()
     private var mapView: MapView? = null
     private lateinit var userLocation: UserLocationLayer
     private lateinit var binding: FragmentMapBinding
@@ -56,6 +60,7 @@ class MapFragment : Fragment() {
         initPermissionLauncher()
         initMapView()
         setListeners()
+        subscribe()
 
         return binding.root
     }
@@ -178,8 +183,21 @@ class MapFragment : Fragment() {
         }
     }
 
+
+    private fun subscribe() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.coordinates.collect {
+                it?.let {
+                    newPostViewModel.setCoordinates(it)
+                    findNavController().navigateUp()
+                }
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.clearPlace()
         mapView = null
     }
 

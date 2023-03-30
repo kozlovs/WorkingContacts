@@ -13,12 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
@@ -80,30 +78,70 @@ class NewPostFragment : Fragment() {
     }
 
     private fun addBackPressedAction() {
-        val callbackNoEdit = object : OnBackPressedCallback(viewModel.postData.value?.id != 0L) {
+        val callbackNoEdit = object : OnBackPressedCallback(viewModel.postId.value != null) {
             override fun handleOnBackPressed() {
-                viewModel.clearDraft()
                 viewModel.clearData()
+                Log.d("MyLog", "clear data")
                 findNavController().navigateUp()
             }
         }
-        val callbackWithDraft = object : OnBackPressedCallback(viewModel.postData.value?.id == 0L) {
+        val callbackWithDraft = object : OnBackPressedCallback(viewModel.postId.value == null) {
             override fun handleOnBackPressed() {
-                if (binding.content.toString().trim().isNotBlank()) {
-                    viewModel.draftContent.value = binding.contentField.toString()
-                }
+                val content = binding.contentField.text?.trim().toString()
+                val link = binding.linkField.text?.trim().toString()
+                if (content.isNotBlank()) {
+                    viewModel.makeDraft(
+                        content,
+                        getCoordsData(),
+                        link.ifBlank { null }
+                    )
+                } else viewModel.clearData()
                 findNavController().navigateUp()
             }
         }
         val backPressedDispatcher = requireActivity().onBackPressedDispatcher
-//        backPressedDispatcher.addCallback(viewLifecycleOwner, callbackNoEdit)
-//        backPressedDispatcher.addCallback(viewLifecycleOwner, callbackWithDraft)
+        backPressedDispatcher.addCallback(viewLifecycleOwner, callbackNoEdit)
+        backPressedDispatcher.addCallback(viewLifecycleOwner, callbackWithDraft)
     }
 
     private fun subscribe() = with(binding) {
         lifecycleScope.launchWhenCreated {
-            viewModel.postData.collect {
-                updateUi(it)
+            viewModel.content.collect {
+                it?.let { contentField.setText(it) }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.link.collect {
+                it?.let { linkField.setText(it) }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.coordinates.collect {
+                it?.let {
+                    latField.setText(it.lat)
+                    lonField.setText(it.longitude)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.attachment.collect {
+                attachmentGroup.isVisible = it != null
+                it?.let {
+//                    when (it.type) {
+//                        MediaModel.Type.PHOTO -> {
+////                            Glide.with(preview)
+////                                .load(it.url)
+////                                .placeholder(R.drawable.baseline_update_24)
+////                                .error(R.drawable.baseline_error_outline_24)
+////                                .timeout(10_000)
+////                                .into(preview)
+//                        }
+
+//                    }
+                }
             }
         }
 
@@ -124,31 +162,6 @@ class NewPostFragment : Fragment() {
                         .show()
                     is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
                 }
-            }
-        }
-    }
-
-    private fun updateUi(post: Post?) = with(binding) {
-        post?.let {
-            contentField.setText(post.content)
-            post.attachment?.let {
-                Glide.with(preview)
-                    .load(post.attachment.url)
-                    .placeholder(R.drawable.baseline_update_24)
-                    .error(R.drawable.baseline_error_outline_24)
-                    .timeout(10_000)
-                    .into(preview)
-            }
-
-            if (post.attachment != null) {
-                preview.visibility = View.VISIBLE
-            } else {
-                preview.visibility = View.GONE
-            }
-        }
-        if (post == null) {
-            if (viewModel.draftContent.value.toString().isNotBlank()) {
-                viewModel.draftContent.value.let(contentField::setText)
             }
         }
     }
@@ -192,7 +205,7 @@ class NewPostFragment : Fragment() {
         }
 
         clear.setOnClickListener {
-            viewModel.clearPhoto()
+            viewModel.clearAttachment()
         }
 
         addPlace.setOnClickListener {
@@ -200,14 +213,12 @@ class NewPostFragment : Fragment() {
         }
 
         save.setOnClickListener {
-            val coordinates =
-                if (latField.text.isNullOrBlank() || lonField.text.isNullOrBlank()) null
-                else Coordinates(latField.text?.trim().toString(), lonField.text?.trim().toString())
+            val coordinates = getCoordsData()
             if (checkFields() && checkCoordinate(coordinates)) {
                 if (userViewModel.isLogin()) {
                     viewModel.save(
                         contentField.text.toString(),
-                        null,
+                        coordinates,
                         linkField.text.toString().ifBlank { null },
                     )
                 } else DialogManager.errorAuthDialog(this@NewPostFragment)
@@ -235,6 +246,12 @@ class NewPostFragment : Fragment() {
             return false
         }
     }
+
+    private fun getCoordsData(): Coordinates? = with(binding) {
+        return if (latField.text.isNullOrBlank() || lonField.text.isNullOrBlank()) null
+            else Coordinates(latField.text?.trim().toString(), lonField.text?.trim().toString())
+    }
+
 
     companion object {
         var Bundle.postId: Long by LongArg

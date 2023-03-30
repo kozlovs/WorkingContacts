@@ -107,9 +107,18 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun save(post: PostRequest) {
+    override suspend fun save(post: PostRequest, model: MediaModel?) {
         try {
-            val response = apiService.savePost(post)
+            val media = model?.let { upload(it) }
+            val response = media?.let {
+                apiService.savePost(
+                    post.copy(
+                        attachment = Attachment(
+                            media.url,
+                            model.type
+                        )
+                    )
+                ) } ?: apiService.savePost(post)
             Log.d("MyLog", "repository response ${response.isSuccessful}")
             val body = checkResponse(response)
             Log.d("MyLog", "repository post body $body")
@@ -119,29 +128,6 @@ class PostRepositoryImpl @Inject constructor(
             throw NetworkError()
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    override suspend fun saveWithAttachment(post: Post, photo: MediaModel) {
-        try {
-            val media = upload(photo)
-            val newPostId = dao.insert(PostEntity.fromDto(post))
-            val response = apiService.savePost(
-                post.copy(
-                    attachment = Attachment(
-                        media.url,
-                        Attachment.Type.IMAGE
-                    )
-                ).toRequest()
-            )
-            val body = checkResponse(response)
-            dao.removeById(newPostId)
-            dao.save(PostEntity.fromDto(body))
-            myWallDao.save(PostEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            throw UnknownError()
         }
     }
 
@@ -159,19 +145,19 @@ class PostRepositoryImpl @Inject constructor(
         dao.stopPlayer()
     }
 
-    private suspend fun upload(photo: MediaModel): Media {
+    private suspend fun upload(mediaModel: MediaModel): Media {
         try {
             val media = MultipartBody.Part.createFormData(
                 "file",
-                photo.file?.name,
-                requireNotNull(photo.file?.asRequestBody())
+                mediaModel.file?.name,
+                requireNotNull(mediaModel.file?.asRequestBody())
             )
-
             val response = mediaApiService.createMedia(media)
             return checkResponse(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }

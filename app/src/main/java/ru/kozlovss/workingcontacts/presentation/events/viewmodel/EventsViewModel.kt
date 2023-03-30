@@ -148,7 +148,7 @@ class EventsViewModel @Inject constructor(
     }
 
     fun savePhoto(uri: Uri?, toFile: File?) {
-        _photo.value = MediaModel(uri, toFile, MediaModel.Type.PHOTO)
+        _photo.value = MediaModel(uri, toFile, Attachment.Type.IMAGE)
     }
 
     suspend fun getById(id: Long) = repository.getById(id)
