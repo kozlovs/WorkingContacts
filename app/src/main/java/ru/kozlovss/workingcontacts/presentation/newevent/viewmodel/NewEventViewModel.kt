@@ -63,7 +63,6 @@ class NewEventViewModel @Inject constructor(
         content: String,
         dateTime: String?,
         coords: Coordinates?,
-        type: Event.Type,
         link: String?
     ) = viewModelScope.launch {
         try {
@@ -77,7 +76,7 @@ class NewEventViewModel @Inject constructor(
                 content = content,
                 datetime = dateTime,
                 coords = coords,
-                type = type,
+                type = type.value,
                 attachment = null,
                 link = link,
                 speakerIds = speakerIds.takeIf { it != null }
@@ -94,14 +93,12 @@ class NewEventViewModel @Inject constructor(
     fun makeDraft(
         content: String?,
         dataTime: String?,
-        coord: Coordinates?,
-        type: Event.Type,
+        coords: Coordinates?,
         link: String?
     ) = viewModelScope.launch {
-        _coordinates.value = coord
+        _coordinates.value = coords
         _dateTime.value = dataTime
         _content.value = content
-        _type.value = type
         _link.value = link
     }
 
@@ -157,6 +154,10 @@ class NewEventViewModel @Inject constructor(
 
     fun clearCoordinates() = viewModelScope.launch {
         _coordinates.value = null
+    }
+
+    fun setType(type: Event.Type) {
+        _type.value = type
     }
 
     sealed class LocalEvent {

@@ -1,8 +1,5 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.ui
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,8 +10,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -22,7 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.timepicker.MaterialTimePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
@@ -32,38 +29,31 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.domain.util.PermissionManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel.LocalEvent.*
-
-var storage_permissions = arrayOf(
-    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    Manifest.permission.READ_EXTERNAL_STORAGE
-)
-
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-var image_permissions_33 = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-var video_permissions_33 = arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
-
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-var audio_permissions_33 = arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
+import java.time.*
 
 @AndroidEntryPoint
 class NewEventFragment : Fragment() {
     private val viewModel: NewEventViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewEventBinding
+    private lateinit var datePicker: MaterialDatePicker<Long>
+    private lateinit var timePicker: MaterialTimePicker
 
-    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            Log.d("MyLog", "Selected URI: $uri")
-        } else {
-            Log.d("MyLog", "No media selected")
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                Log.d("MyLog", "Selected URI: $uri")
+            } else {
+                Log.d("MyLog", "No media selected")
+            }
         }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,11 +62,24 @@ class NewEventFragment : Fragment() {
     ): View {
         arguments?.eventId?.let { viewModel.getData(it) }
         binding = FragmentNewEventBinding.inflate(inflater, container, false)
+        initDatePiker()
         subscribe()
         addBackPressedAction()
         setListeners()
 
         return binding.root
+    }
+
+    private fun initDatePiker() {
+        datePicker = MaterialDatePicker.Builder
+            .datePicker()
+            .setTitleText("Select date")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .build()
+        timePicker = MaterialTimePicker.Builder()
+            .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+            .setTitleText("Select time")
+            .build()
     }
 
     private fun addBackPressedAction() {
@@ -86,15 +89,13 @@ class NewEventFragment : Fragment() {
                     viewModel.clearData()
                 } else {
                     val content = binding.contentField.text?.trim().toString()
-                    val dataTime = "datatime" // todo затягивать данные с макета
+                    val dataTime = getDataTimeData()
                     val link = binding.linkField.text?.trim().toString()
-                    val type = Event.Type.ONLINE // todo затягивать данные с макета
                     if (content.isNotBlank()) {
                         viewModel.makeDraft(
                             content,
                             dataTime,
                             getCoordsData(),
-                            type,
                             link.ifBlank { null }
                         )
                     } else viewModel.clearData()
@@ -130,6 +131,18 @@ class NewEventFragment : Fragment() {
                     it?.let {
                         latField.setText(it.lat)
                         lonField.setText(it.longitude)
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.dateTime.collect {
+                    it?.let {
+                        val dateTime = LocalDateTime.parse(it)
+                        dateField.setText("") // todo сделать правильное форматирование
+                        timeField.setText("")
                     }
                 }
             }
@@ -208,20 +221,20 @@ class NewEventFragment : Fragment() {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
-                    if (checkImagePermission()) {
+                    if (PermissionManager.checkImagePermission(requireActivity())) {
                         //            ImagePicker.Builder(this@NewPostFragment)
 //                .cameraOnly()
 //                .maxResultSize(2048, 2048)
 //                .createIntent(imageLauncher::launch)
                         true
                     } else {
-                        requestImagePermission()
+                        PermissionManager.requestImagePermission(requireActivity())
                         true
                     }
 
                 }
                 R.id.add_photo -> {
-                    if (checkImagePermission()) {
+                    if (PermissionManager.checkImagePermission(requireActivity())) {
                         if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(
                                 requireContext()
                             )
@@ -234,12 +247,12 @@ class NewEventFragment : Fragment() {
 //                .createIntent(imageLauncher::launch)
                         true
                     } else {
-                        requestImagePermission()
+                        PermissionManager.requestImagePermission(requireActivity())
                         true
                     }
                 }
                 R.id.add_video -> {
-                    if (checkVideoPermission()) {
+                    if (PermissionManager.checkVideoPermission(requireActivity())) {
                         if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(
                                 requireContext()
                             )
@@ -248,16 +261,16 @@ class NewEventFragment : Fragment() {
                         }
                         true
                     } else {
-                        requestVideoPermission()
+                        PermissionManager.requestVideoPermission(requireActivity())
                         true
                     }
                 }
                 R.id.add_audio -> {
-                    if (checkAudioPermission()) {
+                    if (PermissionManager.checkAudioPermission(requireActivity())) {
 
                         true
                     } else {
-                        requestAudioPermission()
+                        PermissionManager.requestAudioPermission(requireActivity())
                         true
                     }
                 }
@@ -274,7 +287,8 @@ class NewEventFragment : Fragment() {
         }
 
         addPlace.setOnClickListener {
-            findNavController().navigate(R.id.action_newPostFragment_to_mapFragment)
+            findNavController().navigate(R.id.action_newEventFragment_to_mapFragment,
+            Bundle().apply { sourcePageTag = MapFragment.Companion.SourcePage.NEW_EVENT.toString() })
         }
 
         save.setOnClickListener {
@@ -283,9 +297,8 @@ class NewEventFragment : Fragment() {
                 if (userViewModel.isLogin()) {
                     viewModel.save(
                         contentField.text.toString(),
-                         "data time", //todo затягивать данные с верстки
+                        getDataTimeData(),
                         coordinates,
-                        Event.Type.ONLINE, //todo затягивать данные с верстки
                         linkField.text.toString().ifBlank { null },
                     )
                 } else DialogManager.errorAuthDialog(this@NewEventFragment)
@@ -293,6 +306,37 @@ class NewEventFragment : Fragment() {
                 Toast.makeText(context, "check fields", Toast.LENGTH_SHORT).show()
             }
             viewModel.clearData()
+        }
+
+        dateField.setOnClickListener {
+            datePicker.show(parentFragmentManager, null)
+        }
+
+        timeField.setOnClickListener {
+            timePicker.show(parentFragmentManager, null)
+        }
+
+        datePicker.addOnPositiveButtonClickListener {
+            val date = Instant
+                .ofEpochMilli(it)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .toString()
+            dateField.setText(date)
+        }
+
+        timePicker.addOnPositiveButtonClickListener {
+            val hour = timePicker.hour
+            val minute = timePicker.minute
+            timeField.setText(String.format("%02d:%02d", hour, minute))
+            Log.d("MyLog", "timeField.width ${timeField.width}")
+        }
+
+        typeGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.online_button -> viewModel.setType(Event.Type.ONLINE)
+                R.id.offline_button -> viewModel.setType(Event.Type.OFFLINE)
+            }
         }
     }
 
@@ -315,45 +359,18 @@ class NewEventFragment : Fragment() {
         else Coordinates(latField.text?.trim().toString(), lonField.text?.trim().toString())
     }
 
-    private fun checkImagePermission() = imagePermissions()
-        .map { requireActivity().checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        .contains(false)
-
-    private fun checkVideoPermission() = videoPermissions()
-        .map { requireActivity().checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        .contains(false)
-
-    private fun checkAudioPermission() = audioPermissions()
-        .map { requireActivity().checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        .contains(false)
-
-    private fun requestImagePermission() {
-        ActivityCompat.requestPermissions(requireActivity(), imagePermissions(), 1)
-    }
-
-    private fun requestVideoPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), videoPermissions(), 1)
-    }
-
-    private fun requestAudioPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), audioPermissions(), 1)
+    private fun getDataTimeData(): String? = with(binding) {
+        return if (dateField.text.isNullOrBlank() || timeField.text.isNullOrBlank()) null
+        else {
+            val time = LocalTime.parse(timeField.text.toString())
+            val date = LocalDate.parse(dateField.text.toString())
+            return LocalDateTime.of(date, time).toString()
+        }
     }
 
     private fun checkFields(): Boolean = with(binding) {
         return (!contentField.text.isNullOrBlank())
     }
-
-    private fun imagePermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) image_permissions_33
-        else storage_permissions
-
-    private fun videoPermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) video_permissions_33
-        else storage_permissions
-
-    private fun audioPermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) audio_permissions_33
-        else storage_permissions
 
     private fun makePermissionToast() {
         Toast.makeText(requireContext(), getString(R.string.need_permission), Toast.LENGTH_SHORT)

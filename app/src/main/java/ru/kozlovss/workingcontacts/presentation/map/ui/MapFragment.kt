@@ -32,12 +32,15 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.databinding.FragmentMapBinding
+import ru.kozlovss.workingcontacts.domain.util.StringArg
 import ru.kozlovss.workingcontacts.presentation.map.viewmodel.MapViewModel
+import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 
 class MapFragment : Fragment() {
     private val viewModel: MapViewModel by activityViewModels()
     private val newPostViewModel: NewPostViewModel by activityViewModels()
+    private val newEventViewModel: NewEventViewModel by activityViewModels()
     private var mapView: MapView? = null
     private lateinit var userLocation: UserLocationLayer
     private lateinit var binding: FragmentMapBinding
@@ -51,14 +54,13 @@ class MapFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMapBinding.inflate(inflater, container, false)
-        initListener()
+        arguments?.sourcePageTag?.let { initListener() }
         initLocationObjectListener()
         initPermissionLauncher()
         initMapView()
@@ -194,7 +196,18 @@ class MapFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED)  {
                 viewModel.coordinates.collect {
                     it?.let {
-                        newPostViewModel.setCoordinates(it)
+                        val tag = arguments?.sourcePageTag
+                        tag?.let { tag ->
+                            when (tag) {
+                                SourcePage.NEW_EVENT.toString() -> {
+                                    newEventViewModel.setCoordinates(it)
+                                }
+                                SourcePage.NEW_POST.toString() -> {
+                                    newPostViewModel.setCoordinates(it)
+                                }
+                                else -> {}
+                            }
+                        }
                         findNavController().navigateUp()
                     }
                 }
@@ -218,5 +231,13 @@ class MapFragment : Fragment() {
         mapView?.onStop()
         MapKitFactory.getInstance().onStop()
         super.onStop()
+    }
+
+    companion object {
+        var Bundle.sourcePageTag: String? by StringArg
+
+        enum class SourcePage {
+            NEW_EVENT, NEW_POST
+        }
     }
 }

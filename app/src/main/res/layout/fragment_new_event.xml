@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.newevent.ui.NewEventFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/baseline_close_24"
-            app:title="@string/post" />
+            app:title="@string/event" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -49,7 +49,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minLines="3"
-                    android:textColorHint="#546E7A"
                     tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -121,12 +120,78 @@
                 app:layout_constraintTop_toTopOf="@id/lon"
                 tools:ignore="SpeakableTextPresentCheck" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_between"
+                android:layout_marginEnd="@dimen/card_margin_between"
+                android:hint="@string/date"
+                app:layout_constraintEnd_toStartOf="@id/time"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lat">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/date_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/time"
+                app:layout_constraintBottom_toBottomOf="@id/date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/time_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="time"
+                    android:minWidth="80dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <RadioGroup
+                android:id="@+id/type_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/card_margin_between"
+                android:checkedButton="@+id/online_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/date">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_of_event"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/online_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/online" />
+
+                <RadioButton
+                    android:id="@+id/offline_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/offline" />
+            </RadioGroup>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/attachment_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/card_margin_side"
-                app:layout_constraintTop_toBottomOf="@id/lat">
+                app:layout_constraintTop_toBottomOf="@id/type_group">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/preview"

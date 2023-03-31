@@ -1,20 +1,14 @@
 package ru.kozlovss.workingcontacts.presentation.newpost.ui
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -33,25 +27,13 @@ import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.domain.util.PermissionManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag
 import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel.Event.*
-
-
-var storage_permissions = arrayOf(
-    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    Manifest.permission.READ_EXTERNAL_STORAGE
-)
-
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-var image_permissions_33 = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-var video_permissions_33 = arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
-
-@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-var audio_permissions_33 = arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
@@ -59,8 +41,6 @@ class NewPostFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewPostBinding
     private val mediaStore = MediaStore()
-    private var permissionLauncher: ActivityResultLauncher<String> =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -223,20 +203,20 @@ class NewPostFragment : Fragment() {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
-                    if (checkImagePermission()) {
+                    if (PermissionManager.checkImagePermission(requireActivity())) {
                         //            ImagePicker.Builder(this@NewPostFragment)
 //                .cameraOnly()
 //                .maxResultSize(2048, 2048)
 //                .createIntent(imageLauncher::launch)
                         true
                     } else {
-                        requestImagePermission()
+                        PermissionManager.requestImagePermission(requireActivity())
                         true
                     }
 
                 }
                 R.id.add_photo -> {
-                    if (checkImagePermission()) {
+                    if (PermissionManager.checkImagePermission(requireActivity())) {
                         if (isPhotoPickerAvailable(requireContext())) {
                             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }
@@ -246,27 +226,27 @@ class NewPostFragment : Fragment() {
 //                .createIntent(imageLauncher::launch)
                         true
                     } else {
-                        requestImagePermission()
+                        PermissionManager.requestImagePermission(requireActivity())
                         true
                     }
                 }
                 R.id.add_video -> {
-                    if (checkVideoPermission()) {
+                    if (PermissionManager.checkVideoPermission(requireActivity())) {
                         if (isPhotoPickerAvailable(requireContext())) {
                             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
                         }
                         true
                     } else {
-                        requestVideoPermission()
+                        PermissionManager.requestVideoPermission(requireActivity())
                         true
                     }
                 }
                 R.id.add_audio -> {
-                    if (checkAudioPermission()) {
+                    if (PermissionManager.checkAudioPermission(requireActivity())) {
 
                         true
                     } else {
-                        requestAudioPermission()
+                        PermissionManager.requestAudioPermission(requireActivity())
                         true
                     }
                 }
@@ -283,7 +263,8 @@ class NewPostFragment : Fragment() {
         }
 
         addPlace.setOnClickListener {
-            findNavController().navigate(R.id.action_newPostFragment_to_mapFragment)
+            findNavController().navigate(R.id.action_newPostFragment_to_mapFragment,
+                Bundle().apply { sourcePageTag = MapFragment.Companion.SourcePage.NEW_POST.toString() })
         }
 
         save.setOnClickListener {
@@ -322,45 +303,9 @@ class NewPostFragment : Fragment() {
         else Coordinates(latField.text?.trim().toString(), lonField.text?.trim().toString())
     }
 
-    private fun checkImagePermission() = imagePermissions()
-        .map { requireActivity().checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        .contains(false)
-
-    private fun checkVideoPermission() = videoPermissions()
-        .map { requireActivity().checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        .contains(false)
-
-    private fun checkAudioPermission() = audioPermissions()
-        .map { requireActivity().checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        .contains(false)
-
-    private fun requestImagePermission() {
-        ActivityCompat.requestPermissions(requireActivity(), imagePermissions(), 1)
-    }
-
-    private fun requestVideoPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), videoPermissions(), 1)
-    }
-
-    private fun requestAudioPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), audioPermissions(), 1)
-    }
-
     private fun checkFields(): Boolean = with(binding) {
         return (!contentField.text.isNullOrBlank())
     }
-
-    private fun imagePermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) image_permissions_33
-        else storage_permissions
-
-    private fun videoPermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) video_permissions_33
-        else storage_permissions
-
-    private fun audioPermissions() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) audio_permissions_33
-        else storage_permissions
 
     private fun makePermissionToast() {
         Toast.makeText(requireContext(), getString(R.string.need_permission), Toast.LENGTH_SHORT)

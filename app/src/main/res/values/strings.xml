@@ -51,4 +51,11 @@
     <string name="zoom_in">zoom in</string>
     <string name="zoom_out">zoom out</string>
     <string name="search_my_location">search my location</string>
+    <string name="event">Event</string>
+    <string name="data_time">Data and time</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="type_of_event">Type of event</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
 </resources>
