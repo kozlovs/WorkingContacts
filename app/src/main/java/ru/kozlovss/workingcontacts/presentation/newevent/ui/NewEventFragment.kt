@@ -141,8 +141,23 @@ class NewEventFragment : Fragment() {
                 viewModel.dateTime.collect {
                     it?.let {
                         val dateTime = LocalDateTime.parse(it)
-                        dateField.setText("") // todo сделать правильное форматирование
-                        timeField.setText("")
+                        dateField.setText(dateTime.toLocalDate().toString())
+                        timeField.setText(dateTime.toLocalTime().toString())
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.type.collect {
+                    when(it) {
+                        Event.Type.ONLINE -> {
+                            onlineButton.isChecked = true
+                        }
+                        Event.Type.OFFLINE -> {
+                            offlineButton.isChecked = true
+                        }
                     }
                 }
             }
@@ -329,7 +344,6 @@ class NewEventFragment : Fragment() {
             val hour = timePicker.hour
             val minute = timePicker.minute
             timeField.setText(String.format("%02d:%02d", hour, minute))
-            Log.d("MyLog", "timeField.width ${timeField.width}")
         }
 
         typeGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -370,11 +384,6 @@ class NewEventFragment : Fragment() {
 
     private fun checkFields(): Boolean = with(binding) {
         return (!contentField.text.isNullOrBlank())
-    }
-
-    private fun makePermissionToast() {
-        Toast.makeText(requireContext(), getString(R.string.need_permission), Toast.LENGTH_SHORT)
-            .show()
     }
 
     companion object {

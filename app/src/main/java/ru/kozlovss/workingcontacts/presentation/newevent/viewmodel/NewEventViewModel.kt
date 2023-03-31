@@ -1,6 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -152,12 +153,9 @@ class NewEventViewModel @Inject constructor(
         _coordinates.value = coordinates
     }
 
-    fun clearCoordinates() = viewModelScope.launch {
-        _coordinates.value = null
-    }
-
     fun setType(type: Event.Type) {
         _type.value = type
+        Log.d("MyLog", "type: ${_type.value}")
     }
 
     sealed class LocalEvent {
