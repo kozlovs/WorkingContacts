@@ -103,7 +103,6 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-
             <FrameLayout
                 android:id="@+id/video_layout"
                 android:layout_width="match_parent"

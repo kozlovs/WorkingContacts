@@ -44,7 +44,7 @@ class MapFragment : Fragment() {
     private var mapView: MapView? = null
     private lateinit var userLocation: UserLocationLayer
     private lateinit var binding: FragmentMapBinding
-    private lateinit var listener: InputListener
+    private var listener: InputListener? = null
     private lateinit var locationObjectListener: UserLocationObjectListener
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
 
@@ -66,8 +66,39 @@ class MapFragment : Fragment() {
         initMapView()
         setListeners()
         subscribe()
+        arguments?.let {
+            toTargetPlace(it.lat, it.lon)
+        }
 
         return binding.root
+    }
+
+    private fun toTargetPlace(latitude: String?, longitude: String?) = with(binding.mapview) {
+        if (checkCoordinates(latitude, longitude)) {
+            val cameraPosition = map.cameraPosition
+            map.move(
+                CameraPosition(
+                    Point(latitude!!.toDouble(), longitude!!.toDouble()),
+                    10F,
+                    cameraPosition.azimuth,
+                    cameraPosition.tilt,
+                )
+            )
+        }
+    }
+
+    private fun checkCoordinates(latitude: String?, longitude: String?): Boolean {
+        if (latitude == null || longitude == null) return false
+        try {
+            val latd = latitude.trim().toDouble()
+            val lond = longitude.trim().toDouble()
+            if (latd > Coordinates.MAX_LATITUDE || latd < Coordinates.MIN_LATITUDE) return false
+            if (lond > Coordinates.MAX_LONGITUDE || lond < Coordinates.MIN_LONGITUDE) return false
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
     }
 
     private fun initListener() {
@@ -82,7 +113,10 @@ class MapFragment : Fragment() {
                         setTitle("Coordinates")
                         setMessage("latitude: $latitude\nlongitude: $longitude")
                         setIcon(R.drawable.baseline_place_24)
-                        setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok)) { _, _ ->
+                        setButton(
+                            AlertDialog.BUTTON_POSITIVE,
+                            getString(android.R.string.ok)
+                        ) { _, _ ->
                             viewModel.setPlace(
                                 Coordinates(
                                     latitude,
@@ -90,7 +124,10 @@ class MapFragment : Fragment() {
                                 )
                             )
                         }
-                        setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel)) { _, _ ->
+                        setButton(
+                            AlertDialog.BUTTON_NEGATIVE,
+                            getString(android.R.string.cancel)
+                        ) { _, _ ->
                             dismiss()
                         }
                     }.show()
@@ -115,33 +152,33 @@ class MapFragment : Fragment() {
 
     private fun initPermissionLauncher() {
         permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            when {
-                granted -> {
-                    userLocation.isVisible = true
-                    userLocation.isHeadingEnabled = false
-                    userLocation.cameraPosition()?.target?.also {
-                        val map = mapView?.map ?: return@registerForActivityResult
-                        val cameraPosition = map.cameraPosition
-                        map.move(
-                            CameraPosition(
-                                it,
-                                cameraPosition.zoom,
-                                cameraPosition.azimuth,
-                                cameraPosition.tilt,
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                when {
+                    granted -> {
+                        userLocation.isVisible = true
+                        userLocation.isHeadingEnabled = false
+                        userLocation.cameraPosition()?.target?.also {
+                            val map = mapView?.map ?: return@registerForActivityResult
+                            val cameraPosition = map.cameraPosition
+                            map.move(
+                                CameraPosition(
+                                    it,
+                                    cameraPosition.zoom,
+                                    cameraPosition.azimuth,
+                                    cameraPosition.tilt,
+                                )
                             )
-                        )
+                        }
+                    }
+                    else -> {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.need_permission),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
-                else -> {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.need_permission),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
             }
-        }
     }
 
     private fun initMapView() {
@@ -156,7 +193,7 @@ class MapFragment : Fragment() {
                 userLocation.isHeadingEnabled = false
             }
 
-            map.addInputListener(listener)
+            listener?.let { map.addInputListener(it) }
 
             userLocation.setObjectListener(locationObjectListener)
         }
@@ -193,7 +230,7 @@ class MapFragment : Fragment() {
 
     private fun subscribe() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED)  {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.coordinates.collect {
                     it?.let {
                         val tag = arguments?.sourcePageTag
@@ -235,6 +272,8 @@ class MapFragment : Fragment() {
 
     companion object {
         var Bundle.sourcePageTag: String? by StringArg
+        var Bundle.lat: String? by StringArg
+        var Bundle.lon: String? by StringArg
 
         enum class SourcePage {
             NEW_EVENT, NEW_POST

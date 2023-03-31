@@ -45,12 +45,21 @@
                 android:id="@+id/author_job"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/avatar"
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/published"
                 app:layout_constraintEnd_toStartOf="@+id/menu"
                 app:layout_constraintStart_toEndOf="@+id/avatar"
                 app:layout_constraintTop_toBottomOf="@id/author" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/published"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/avatar"
+                app:layout_constraintEnd_toStartOf="@+id/menu"
+                app:layout_constraintStart_toEndOf="@+id/avatar"
+                app:layout_constraintTop_toBottomOf="@id/author_job" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/menu"
@@ -75,20 +84,70 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/type"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/datetime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/date_time_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_margin_between"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/coords"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/date_time_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/card_margin_between"
+                            android:src="@drawable/baseline_calendar_month_24" />
+
+                        <TextView
+                            android:id="@+id/date_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/type_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/card_margin_between"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/date_time_layout">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/type_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/card_margin_between" />
+
+                        <TextView
+                            android:id="@+id/type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/place"
+                        style="?attr/materialIconButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/baseline_place_24"
+                        app:layout_constraintBottom_toBottomOf="@id/type_layout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/date_time_layout"
+                        tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <FrameLayout
                     android:id="@+id/video_layout"
@@ -153,12 +212,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:autoLink="web" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/published"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

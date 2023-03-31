@@ -34,6 +34,8 @@ import ru.kozlovss.workingcontacts.presentation.event.adapter.SpeakersAdapter
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import ru.kozlovss.workingcontacts.presentation.event.viewmodel.EventViewModel
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lat
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lon
 import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment.Companion.eventId
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
@@ -126,9 +128,10 @@ class EventFragment : Fragment() {
         }
         content.text = event.content
         type.text = event.type.toString()
-        datetime.text = Formatter.localDateTimeToPostDateFormat(event.datetime)
-        coords.text = "lat: ${event.coords?.lat} long: ${event.coords?.longitude}"
-        coords.isVisible = event.coords != null
+        if (event.type == Event.Type.ONLINE) typeIcon.setImageResource(R.drawable.baseline_online_24)
+        else typeIcon.setImageResource(R.drawable.baseline_people_24)
+        dateTime.text = Formatter.localDateTimeToPostDateFormat(event.datetime)
+        place.isVisible = event.coords != null
         speakersCount.text = event.speakerIds.size.toString()
         like.isChecked = event.likedByMe
         like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
@@ -249,6 +252,15 @@ class EventFragment : Fragment() {
 
         speakersSelector.setOnClickListener {
             eventViewModel.switchSpeakersVisibility()
+        }
+
+        place.setOnClickListener {
+            eventViewModel.data.value?.coords?.let { coords ->
+                findNavController().navigate(R.id.action_eventFragment_to_mapFragment, Bundle().apply {
+                    lat = coords.lat
+                    lon = coords.longitude
+                })
+            }
         }
     }
 
