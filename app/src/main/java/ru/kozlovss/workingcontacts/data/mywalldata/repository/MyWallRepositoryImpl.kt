@@ -3,13 +3,7 @@ package ru.kozlovss.workingcontacts.data.mywalldata.repository
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
-import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
-import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
 import ru.kozlovss.workingcontacts.data.mywalldata.api.MyWallApiService
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallRemoteKeyDao
@@ -28,7 +22,6 @@ class MyWallRepositoryImpl @Inject constructor(
     private val mainDao: PostDao,
     wallApiService: MyWallApiService,
     private val postApiService: PostApiService,
-    private val mediaApiService: MediaApiService,
     remoteKeyDao: MyWallRemoteKeyDao,
     db: MyWallDb
 ) : MyWallRepository {
@@ -98,61 +91,6 @@ class MyWallRepositoryImpl @Inject constructor(
             mainDao.removeById(id)
             val response = postApiService.deletePostById(id)
             checkResponse(response)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            throw UnknownError()
-        }
-    }
-
-    override suspend fun save(post: Post) {
-        try {
-            val newPostId = dao.insert(PostEntity.fromDto(post))
-            val response = postApiService.savePost(post.toRequest())
-            val body = checkResponse(response)
-            dao.removeById(newPostId)
-            dao.save(PostEntity.fromDto(body))
-            mainDao.save(PostEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            throw UnknownError()
-        }
-    }
-
-    override suspend fun saveWithAttachment(post: Post, photo: MediaModel) {
-        try {
-            val media = upload(photo)
-            val newPostId = dao.insert(PostEntity.fromDto(post))
-            val response = postApiService.savePost(
-                post.copy(
-                    attachment = Attachment(
-                        media.url,
-                        Attachment.Type.IMAGE
-                    )
-                ).toRequest()
-            )
-            val body = checkResponse(response)
-            dao.removeById(newPostId)
-            dao.save(PostEntity.fromDto(body))
-            mainDao.save(PostEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            throw UnknownError()
-        }
-    }
-
-    private suspend fun upload(photo: MediaModel): Media {
-        try {
-            val media = MultipartBody.Part.createFormData(
-                "file",
-                photo.file?.name,
-                requireNotNull(photo.file?.asRequestBody())
-            )
-
-            val response = mediaApiService.createMedia(media)
-            return checkResponse(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {

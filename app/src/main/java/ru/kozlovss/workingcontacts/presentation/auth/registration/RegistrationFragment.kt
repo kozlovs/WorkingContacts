@@ -80,10 +80,12 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun subscribe() {
-        lifecycleScope.launchWhenCreated {
-            viewModel.token.collect {
-                it?.let {
-                    findNavController().navigate(R.id.action_registrationFragment_to_feedFragment)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.token.collect {
+                    it?.let {
+                        findNavController().navigate(R.id.action_registrationFragment_to_feedFragment)
+                    }
                 }
             }
         }

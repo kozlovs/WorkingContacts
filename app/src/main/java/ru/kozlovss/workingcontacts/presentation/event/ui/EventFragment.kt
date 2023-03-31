@@ -5,7 +5,6 @@ import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +34,7 @@ import ru.kozlovss.workingcontacts.presentation.event.adapter.SpeakersAdapter
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import ru.kozlovss.workingcontacts.presentation.event.viewmodel.EventViewModel
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
+import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment.Companion.eventId
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
 @AndroidEntryPoint
@@ -96,14 +96,6 @@ class EventFragment : Fragment() {
             }
         }
 
-        eventsViewModel.edited.observe(viewLifecycleOwner) {
-            if (it.id != 0L) {
-                findNavController().navigate(
-                    R.id.action_eventFragment_to_newEventFragment
-                )
-            }
-        }
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventViewModel.speakersVisibility.collect {
@@ -116,7 +108,6 @@ class EventFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventViewModel.speakers.collect {
-                    it.forEach { Log.d("MyLog", it.toString()) }
                     adapter.submitList(it)
                 }
             }
@@ -183,11 +174,6 @@ class EventFragment : Fragment() {
                     image.visibility = View.GONE
                     audio.visibility = View.GONE
                 }
-                else -> {
-                    image.visibility = View.GONE
-                    videoLayout.visibility = View.GONE
-                    audio.visibility = View.GONE
-                }
             }
         } else {
             image.visibility = View.GONE
@@ -235,7 +221,8 @@ class EventFragment : Fragment() {
                         R.id.edit -> {
                             if (userViewModel.isLogin()) {
                                 eventViewModel.data.value?.let { event ->
-                                    eventsViewModel.edit(event)
+                                    findNavController().navigate(R.id.action_eventFragment_to_newEventFragment,
+                                        Bundle().apply { eventId = event.id })
                                 }
                             } else DialogManager.errorAuthDialog(this@EventFragment)
                             true

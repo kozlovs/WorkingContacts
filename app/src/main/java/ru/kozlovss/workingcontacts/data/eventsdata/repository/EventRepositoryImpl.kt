@@ -1,12 +1,12 @@
 package ru.kozlovss.workingcontacts.data.eventsdata.repository
 
+import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
-import ru.kozlovss.workingcontacts.BuildConfig
 import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
@@ -16,6 +16,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
@@ -49,6 +50,7 @@ class EventRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -71,6 +73,7 @@ class EventRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -83,6 +86,7 @@ class EventRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -95,39 +99,25 @@ class EventRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
 
-    override suspend fun save(event: Event) {
+    override suspend fun save(event: EventRequest, model: MediaModel?) {
         try {
-            val newEventId = dao.insert(EventEntity.fromDto(event))
-            val response = apiService.saveEvent(event.toRequest())
-            val body = checkResponse(response)
-            dao.removeById(newEventId)
-            dao.save(EventEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            throw UnknownError()
-        }
-    }
-
-    override suspend fun saveWithAttachment(event: Event, photo: MediaModel) {
-        try {
-            val media = upload(photo)
-            val newEventId = dao.insert(EventEntity.fromDto(event))
-            val response = apiService.saveEvent(
-                event.copy(
-                    attachment = Attachment(
-                        media.url,
-                        Attachment.Type.IMAGE
+            val media = model?.let { upload(it) }
+            val response = media?.let {
+                apiService.saveEvent(
+                    event.copy(
+                        attachment = Attachment(
+                            media.url,
+                            model.type
+                        )
                     )
-                ).toRequest()
-            )
+                ) } ?: apiService.saveEvent(event)
             val body = checkResponse(response)
-            dao.removeById(newEventId)
-            dao.save(EventEntity.fromDto(body))
+            dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -135,19 +125,33 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun upload(photo: MediaModel): Media {
+    override suspend fun switchAudioPlayer(event: Event, audioPlayerState: Boolean) {
+        val newPost = event.copy(
+            isPaying = audioPlayerState
+        )
+        Log.d("MyLog", "audioPlayerState: $audioPlayerState")
+        Log.d("MyLog", "post: ${event.attachment}")
+        Log.d("MyLog", "newPost: ${newPost.attachment}")
+        //dao.update(PostEntity.fromDto(newPost))
+    }
+
+    override suspend fun stopAudioPlayer() {
+       // dao.stopPlayer()
+    }
+
+    private suspend fun upload(mediaModel: MediaModel): Media {
         try {
             val media = MultipartBody.Part.createFormData(
                 "file",
-                photo.file?.name,
-                requireNotNull(photo.file?.asRequestBody())
+                mediaModel.file?.name,
+                requireNotNull(mediaModel.file?.asRequestBody())
             )
-
             val response = mediaApiService.createMedia(media)
             return checkResponse(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -155,9 +159,5 @@ class EventRepositoryImpl @Inject constructor(
     private fun <T> checkResponse(response: Response<T>): T {
         if (!response.isSuccessful) throw ApiError(response.code(), response.message())
         return response.body() ?: throw ApiError(response.code(), response.message())
-    }
-
-    companion object {
-        fun getImageUrl(imageURL: String) = "${BuildConfig.BASE_URL}/media/$imageURL"
     }
 }

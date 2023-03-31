@@ -51,8 +51,9 @@ class PostRepositoryImpl @Inject constructor(
             return checkResponse(response)
         } catch (e: IOException) {
             throw NetworkError()
-//        } catch (e: Exception) {
-//            throw UnknownError()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError()
         }
     }
 
@@ -76,6 +77,7 @@ class PostRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -90,6 +92,7 @@ class PostRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -103,6 +106,7 @@ class PostRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
+            e.printStackTrace()
             throw UnknownError()
         }
     }
@@ -124,7 +128,7 @@ class PostRepositoryImpl @Inject constructor(
             Log.d("MyLog", "repository body ${response.errorBody()}")
             val body = checkResponse(response)
             Log.d("MyLog", "repository post body $body")
-            dao.save(PostEntity.fromDto(body))
+            dao.insert(PostEntity.fromDto(body))
             myWallDao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()

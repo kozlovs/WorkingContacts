@@ -143,11 +143,6 @@ class PostFragment : Fragment() {
                     image.visibility = View.GONE
                     audio.visibility = View.GONE
                 }
-                else -> {
-                    image.visibility = View.GONE
-                    videoLayout.visibility = View.GONE
-                    audio.visibility = View.GONE
-                }
             }
         } else {
             image.visibility = View.GONE

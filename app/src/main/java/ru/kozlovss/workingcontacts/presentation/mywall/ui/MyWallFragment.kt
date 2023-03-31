@@ -91,11 +91,6 @@ class MyWallFragment : Fragment() {
             }
         }
 
-        myWallViewModel.edited.observe(viewLifecycleOwner) { post ->
-            if (post.id == 0L) return@observe
-            findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
-        }
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.token.collect { token ->

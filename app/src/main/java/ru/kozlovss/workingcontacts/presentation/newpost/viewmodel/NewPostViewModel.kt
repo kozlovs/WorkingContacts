@@ -122,6 +122,7 @@ class NewPostViewModel @Inject constructor(
         _link.value = null
         _coordinates.value = null
         _attachment.value = null
+        _mentions.value = emptyList()
         _state.value = NewPostModel.State.Idle
     }
 

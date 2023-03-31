@@ -7,7 +7,6 @@ data class EventRequest(
     val id: Long,
     val content: String,
     val datetime: String?,
-    val published: String,
     val coords: Coordinates?,
     val type: Event.Type?,
     val attachment: Attachment?,

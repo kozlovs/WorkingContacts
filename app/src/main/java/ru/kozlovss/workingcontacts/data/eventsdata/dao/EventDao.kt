@@ -16,7 +16,7 @@ interface EventDao {
     fun pagingSource(): PagingSource<Int, EventEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(event: EventEntity): Long
+    suspend fun insert(event: EventEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(event: List<EventEntity>)

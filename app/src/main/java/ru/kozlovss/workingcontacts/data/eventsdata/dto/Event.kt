@@ -25,19 +25,6 @@ data class Event(
     val users: Map<Long, UserPreview>,
     val isPaying: Boolean = false
 ) {
-    fun toRequest() = with(this) {
-        EventRequest(
-            id,
-            content,
-            datetime,
-            published,
-            coords,
-            type,
-            attachment,
-            link,
-            speakerIds
-        )
-    }
 
     enum class Type {
         OFFLINE, ONLINE

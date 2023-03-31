@@ -211,8 +211,7 @@ class NewPostFragment : Fragment() {
                             binding.root,
                             it.text,
                             Snackbar.LENGTH_LONG
-                        )
-                            .show()
+                        ).show()
                         is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -309,8 +308,8 @@ class NewPostFragment : Fragment() {
         try {
             val lat = coordinates.lat.trim().toDouble()
             val lon = coordinates.longitude.trim().toDouble()
-            if (lat > MAX_LATITUDE || lat < MIN_LATITUDE) return false
-            if (lon > MAX_LONGITUDE || lon < MIN_LONGITUDE) return false
+            if (lat > Coordinates.MAX_LATITUDE || lat < Coordinates.MIN_LATITUDE) return false
+            if (lon > Coordinates.MAX_LONGITUDE || lon < Coordinates.MIN_LONGITUDE) return false
             return true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -370,9 +369,5 @@ class NewPostFragment : Fragment() {
 
     companion object {
         var Bundle.postId: Long by LongArg
-        const val MAX_LATITUDE = 90.0
-        const val MIN_LATITUDE = -90.0
-        const val MAX_LONGITUDE = 180.0
-        const val MIN_LONGITUDE = -180.0
     }
 }

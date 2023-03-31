@@ -25,6 +25,7 @@ import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
 import ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment.Companion.id
+import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment.Companion.eventId
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
 
@@ -70,7 +71,8 @@ class EventsFragment : Fragment() {
 
             override fun onEdit(event: Event) {
                 if (userViewModel.isLogin()) {
-                    viewModel.edit(event)
+                    findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment,
+                        Bundle().apply { eventId = event.id })
                 } else DialogManager.errorAuthDialog(this@EventsFragment)
             }
 
@@ -123,11 +125,6 @@ class EventsFragment : Fragment() {
                         it.refresh is LoadState.Loading
                 }
             }
-        }
-
-        viewModel.edited.observe(viewLifecycleOwner) { event ->
-            if (event.id == 0L) return@observe
-            findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment)
         }
 
         lifecycleScope.launch {
