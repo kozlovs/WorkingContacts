@@ -35,6 +35,10 @@ class EventViewHolder(
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
             menu.isVisible = event.ownedByMe
             speakersCount.text = event.speakerIds.size.toString()
+            placeIcon.isVisible = event.coords != null
+            if (event.type == Event.Type.ONLINE) typeIcon.setImageResource(R.drawable.baseline_online_24)
+            else typeIcon.setImageResource(R.drawable.baseline_people_24)
+            dateTime.text = Formatter.localDateTimeToPostDateFormat(event.datetime)
 
             if (event.authorAvatar != null) {
                 Glide.with(binding.avatar)

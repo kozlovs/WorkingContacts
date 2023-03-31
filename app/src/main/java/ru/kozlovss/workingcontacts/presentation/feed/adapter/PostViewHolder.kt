@@ -35,6 +35,10 @@ class PostViewHolder(
             like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
             switchButton.isChecked = post.isPaying == true
             menu.isVisible = post.ownedByMe
+            mentionsCount.text = post.mentionIds.size.toString()
+            mentionsCount.isVisible = post.mentionIds.isNotEmpty()
+            mentionsIcon.isVisible = post.mentionIds.isNotEmpty()
+            placeIcon.isVisible = post.coords != null
 
             if (post.authorAvatar != null) {
                 Glide.with(binding.avatar)
@@ -72,11 +76,6 @@ class PostViewHolder(
                         video.setVideoURI(uri)
                         video.seekTo(1)
                         image.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
-                    else -> {
-                        image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                 }
