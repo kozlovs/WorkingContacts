@@ -142,8 +142,10 @@ class MapFragment : Fragment() {
             override fun onObjectRemoved(view: UserLocationView) = Unit
 
             override fun onObjectUpdated(view: UserLocationView, event: ObjectEvent) {
-                userLocation.cameraPosition()?.target?.let {
-                    mapView?.map?.move(CameraPosition(it, 10F, 0F, 0F))
+                arguments?.sourcePageTag?.let {
+                    userLocation.cameraPosition()?.target?.let {
+                        mapView?.map?.move(CameraPosition(it, 10F, 0F, 0F))
+                    }
                 }
                 userLocation.setObjectListener(null)
             }
@@ -231,16 +233,16 @@ class MapFragment : Fragment() {
     private fun subscribe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.coordinates.collect {
-                    it?.let {
+                viewModel.coordinates.collect { coordinates ->
+                    coordinates?.let {
                         val tag = arguments?.sourcePageTag
-                        tag?.let { tag ->
-                            when (tag) {
+                        tag?.let {
+                            when (it) {
                                 SourcePage.NEW_EVENT.toString() -> {
-                                    newEventViewModel.setCoordinates(it)
+                                    newEventViewModel.setCoordinates(coordinates)
                                 }
                                 SourcePage.NEW_POST.toString() -> {
-                                    newPostViewModel.setCoordinates(it)
+                                    newPostViewModel.setCoordinates(coordinates)
                                 }
                                 else -> {}
                             }

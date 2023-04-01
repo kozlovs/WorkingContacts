@@ -6,24 +6,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
-import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import javax.inject.Inject
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
-    private val eventRepository: EventRepository,
-    private val userRepository: UserRepository
+    private val eventRepository: EventRepository
 ) : ViewModel() {
     private val _data = MutableStateFlow<Event?>(null)
     val data = _data.asStateFlow()
-
-    private val _speakers = MutableStateFlow<List<User>>(emptyList())
-    val speakers = _speakers.asStateFlow()
-
 
     private val _state = MutableStateFlow<EventModel.State>(EventModel.State.Idle)
     val state = _state.asStateFlow()
@@ -69,9 +62,5 @@ class EventViewModel @Inject constructor(
 
     fun switchSpeakersVisibility() {
         _speakersVisibility.value = !speakersVisibility.value
-    }
-
-    fun getSpeakers(speakerIds: List<Long>) = viewModelScope.launch {
-        _speakers.value = speakerIds.map { userRepository.getUserInfoById(it) }
     }
 }

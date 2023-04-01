@@ -58,4 +58,6 @@
     <string name="type_of_event">Type of event</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
+    <string name="mentions">mentions</string>
+    <string name="participants">participants</string>
 </resources>

@@ -24,13 +24,17 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.post.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lat
+import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lon
 import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 import ru.kozlovss.workingcontacts.presentation.post.model.PostModel
 import ru.kozlovss.workingcontacts.presentation.post.viewmodel.PostViewModel
@@ -43,6 +47,7 @@ class PostFragment : Fragment() {
     private val postViewModel: PostViewModel by viewModels()
     private lateinit var binding: FragmentPostBinding
     private var id: Long? = null
+    private lateinit var adapter: UsersPreviewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +62,8 @@ class PostFragment : Fragment() {
 
         id = arguments?.id
 
+        adapter = UsersPreviewAdapter()
+        binding.mentionsList.adapter = adapter
         subscribe()
         setListeners()
         postViewModel.updateData(id)
@@ -69,7 +76,7 @@ class PostFragment : Fragment() {
         postViewModel.clearData()
     }
 
-    private fun subscribe() {
+    private fun subscribe() = with(binding) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 postViewModel.data.collect { post ->
@@ -81,9 +88,18 @@ class PostFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 postViewModel.state.collectLatest { state ->
-                    binding.progress.isVisible = state is PostModel.State.Loading
-                    binding.cardLayout.isVisible = state is PostModel.State.Idle
-                    binding.errorLayout.isVisible = state is PostModel.State.Error
+                    progress.isVisible = state is PostModel.State.Loading
+                    cardLayout.isVisible = state is PostModel.State.Idle
+                    errorLayout.isVisible = state is PostModel.State.Error
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                postViewModel.mentionsVisibility.collect {
+                    mentionsCard.isVisible = it && !postViewModel.data.value?.mentionIds.isNullOrEmpty()
+                    mentionsSelectorIcon.isChecked = it
                 }
             }
         }
@@ -103,6 +119,18 @@ class PostFragment : Fragment() {
         like.isChecked = post.likedByMe
         like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
         menu.isVisible = post.ownedByMe
+        mentionsSelector.isVisible = post.mentionIds.isNotEmpty()
+        place.isVisible = post.coords != null
+        adapter.submitList(post.mentionIds.map {
+            val preview = post.users[it]!!
+            User(
+                it,
+                preview.name,
+                preview.name,
+                preview.avatar
+            )
+        })
+
 
         if (post.authorAvatar != null) {
             Glide.with(avatar)
@@ -214,6 +242,19 @@ class PostFragment : Fragment() {
         switchButton.setOnClickListener {
             postViewModel.data.value?.let { post ->
                 feedViewModel.switchAudio(post)
+            }
+        }
+
+        mentionsSelector.setOnClickListener {
+            postViewModel.switchMentionsVisibility()
+        }
+
+        place.setOnClickListener {
+            postViewModel.data.value?.coords?.let { coords ->
+                findNavController().navigate(R.id.action_postFragment_to_mapFragment, Bundle().apply {
+                    lat = coords.lat
+                    lon = coords.longitude
+                })
             }
         }
     }

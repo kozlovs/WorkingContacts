@@ -24,13 +24,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 import ru.kozlovss.workingcontacts.domain.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
-import ru.kozlovss.workingcontacts.presentation.event.adapter.SpeakersAdapter
+import ru.kozlovss.workingcontacts.presentation.event.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import ru.kozlovss.workingcontacts.presentation.event.viewmodel.EventViewModel
 import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
@@ -46,7 +47,7 @@ class EventFragment : Fragment() {
     private val eventViewModel: EventViewModel by viewModels()
     private lateinit var binding: FragmentEventBinding
     private var id: Long? = null
-    private lateinit var adapter: SpeakersAdapter
+    private lateinit var adapter: UsersPreviewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,7 +63,7 @@ class EventFragment : Fragment() {
         id = arguments?.id
 
 
-        adapter = SpeakersAdapter()
+        adapter = UsersPreviewAdapter()
         binding.speakersList.adapter = adapter
         subscribe()
         setListeners()
@@ -82,7 +83,6 @@ class EventFragment : Fragment() {
                 eventViewModel.data.collect { event ->
                     event?.let {
                         updateUi(it)
-                        eventViewModel.getSpeakers(it.speakerIds)
                     }
                 }
             }
@@ -101,16 +101,8 @@ class EventFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventViewModel.speakersVisibility.collect {
-                    speakersCard.isVisible = it && eventViewModel.speakers.value.isNotEmpty()
+                    speakersCard.isVisible = it && !eventViewModel.data.value?.speakerIds.isNullOrEmpty()
                     speakersSelectorIcon.isChecked = it
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                eventViewModel.speakers.collect {
-                    adapter.submitList(it)
                 }
             }
         }
@@ -137,6 +129,15 @@ class EventFragment : Fragment() {
         like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
         menu.isVisible = event.ownedByMe
         speakersSelectorIcon.isVisible = event.speakerIds.isNotEmpty()
+        adapter.submitList(event.speakerIds.map {
+            val preview = event.users[it]!!
+            User(
+                it,
+                preview.name,
+                preview.name,
+                preview.avatar
+            )
+        })
 
         if (event.authorAvatar != null) {
             Glide.with(avatar)

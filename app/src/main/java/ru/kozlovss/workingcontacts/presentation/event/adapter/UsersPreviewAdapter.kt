@@ -6,14 +6,13 @@ import androidx.recyclerview.widget.ListAdapter
 import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.databinding.CardUserItemBinding
 
-class SpeakersAdapter : ListAdapter<User, SpeakerViewHolder>(SpeakerDiffCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpeakerViewHolder {
+class UsersPreviewAdapter : ListAdapter<User, UsersPreviewViewHolder>(UsersPreviewDiffCallback()) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersPreviewViewHolder {
         val view = CardUserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SpeakerViewHolder(view)
+        return UsersPreviewViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: SpeakerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UsersPreviewViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 }

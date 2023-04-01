@@ -22,6 +22,9 @@ class PostViewModel @Inject constructor(
     private val _state = MutableStateFlow<PostModel.State>(PostModel.State.Idle)
     val state = _state.asStateFlow()
 
+    private val _mentionsVisibility = MutableStateFlow(false)
+    val mentionsVisibility = _mentionsVisibility.asStateFlow()
+
     fun updateData(id: Long?) = viewModelScope.launch {
         try {
             _state.value = PostModel.State.Loading
@@ -56,5 +59,9 @@ class PostViewModel @Inject constructor(
             e.printStackTrace()
             _state.value = PostModel.State.Error
         }
+    }
+
+    fun switchMentionsVisibility() {
+        _mentionsVisibility.value = !mentionsVisibility.value
     }
 }
