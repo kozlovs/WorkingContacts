@@ -58,21 +58,21 @@ class MyWallFragment : Fragment() {
         }.attach()
     }
 
-    private fun subscribe() {
+    private fun subscribe() = with(binding) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 myWallViewModel.myData.collect {
                     it?.let {
-                        binding.name.text = it.name
+                        name.text = it.name
                         if (it.avatar != null) {
-                            Glide.with(binding.avatar)
+                            Glide.with(avatar)
                                 .load(it.avatar)
                                 .placeholder(R.drawable.baseline_update_24)
                                 .error(R.drawable.baseline_error_outline_24)
                                 .timeout(10_000)
-                                .into(binding.avatar)
+                                .into(avatar)
                         } else {
-                            binding.avatar.setImageResource(R.drawable.baseline_person_outline_24)
+                            avatar.setImageResource(R.drawable.baseline_person_outline_24)
                         }
                     }
                 }
@@ -82,11 +82,11 @@ class MyWallFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 myWallViewModel.state.collectLatest { state ->
-                    binding.authButtons.isVisible = state is MyWallModel.State.NoLogin
-                    binding.progress.isVisible = state is MyWallModel.State.Loading
-                    binding.myCard.isVisible =
+                    authButtons.isVisible = state is MyWallModel.State.NoLogin
+                    progress.isVisible = state is MyWallModel.State.Loading
+                    wallLayout.isVisible =
                         state is MyWallModel.State.Idle || state is MyWallModel.State.RefreshingJobs
-                    binding.add.isVisible = state is MyWallModel.State.Idle
+                    add.isVisible = state is MyWallModel.State.Idle
                 }
             }
         }

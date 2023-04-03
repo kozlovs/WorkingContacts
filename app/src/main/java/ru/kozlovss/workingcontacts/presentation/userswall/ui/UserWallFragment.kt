@@ -51,22 +51,22 @@ class UserWallFragment : Fragment() {
         viewModel.clearData()
     }
 
-    private fun subscribe() {
+    private fun subscribe() = with(binding) {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userData.collect {
                     it?.let {
-                        binding.name.text = it.name
+                        name.text = it.name
                         if (it.avatar != null) {
-                            Glide.with(binding.avatar)
+                            Glide.with(avatar)
                                 .load(it.avatar)
                                 .placeholder(R.drawable.baseline_update_24)
                                 .error(R.drawable.baseline_error_outline_24)
                                 .timeout(10_000)
-                                .into(binding.avatar)
+                                .into(avatar)
                         } else {
-                            binding.avatar.setImageResource(R.drawable.baseline_person_outline_24)
+                            avatar.setImageResource(R.drawable.baseline_person_outline_24)
                         }
                     }
                 }
@@ -76,10 +76,10 @@ class UserWallFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collectLatest { state ->
-                    binding.progress.isVisible = state is UserWallModel.State.Loading
-                    binding.wallLayout.isVisible =
+                    progress.isVisible = state is UserWallModel.State.Loading
+                    wallLayout.isVisible =
                         (state is UserWallModel.State.Idle) || (state is UserWallModel.State.RefreshingJobs) || (state is UserWallModel.State.RefreshingPosts)
-                    binding.errorLayout.isVisible = state is UserWallModel.State.Error
+                    errorLayout.isVisible = state is UserWallModel.State.Error
                 }
             }
         }

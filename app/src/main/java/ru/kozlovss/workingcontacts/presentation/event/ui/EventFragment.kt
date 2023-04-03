@@ -38,7 +38,7 @@ import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lat
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lon
 import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment.Companion.eventId
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class EventFragment : Fragment() {
@@ -127,6 +127,8 @@ class EventFragment : Fragment() {
         speakersCount.text = event.speakerIds.size.toString()
         like.isChecked = event.likedByMe
         like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
+        participate.isChecked = event.participatedByMe
+        participate.text = Formatter.numberToShortFormat(event.participantsIds.size)
         menu.isVisible = event.ownedByMe
         speakersSelectorIcon.isVisible = event.speakerIds.isNotEmpty()
         adapter.submitList(event.speakerIds.map {
@@ -191,7 +193,18 @@ class EventFragment : Fragment() {
             if (userViewModel.isLogin()) {
                 eventViewModel.likeById(id)
                 ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
+                    like,
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+                ).start()
+            } else DialogManager.errorAuthDialog(this@EventFragment)
+        }
+
+        participate.setOnClickListener {
+            if (userViewModel.isLogin()) {
+                eventViewModel.participateById(id)
+                ObjectAnimator.ofPropertyValuesHolder(
+                    participate,
                     PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
                 ).start()

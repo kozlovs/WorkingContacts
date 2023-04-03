@@ -27,7 +27,7 @@ import ru.kozlovss.workingcontacts.presentation.events.viewmodel.EventsViewModel
 import ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment.Companion.eventId
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class EventsFragment : Fragment() {
@@ -49,6 +49,12 @@ class EventsFragment : Fragment() {
             override fun onLike(event: Event) {
                 if (userViewModel.isLogin()) {
                     viewModel.likeById(event.id)
+                } else DialogManager.errorAuthDialog(this@EventsFragment)
+            }
+
+            override fun onParticipate(event: Event) {
+                if (userViewModel.isLogin()) {
+                    viewModel.participateById(event.id)
                 } else DialogManager.errorAuthDialog(this@EventsFragment)
             }
 

@@ -57,7 +57,7 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun likeById(id: Long) {
         val event = getById(id)
-        dao.likeById(id)
+        //dao.likeById(id)
         if (event.likedByMe) {
             makeRequestDislikeById(id)
         } else {
@@ -81,6 +81,41 @@ class EventRepositoryImpl @Inject constructor(
     private suspend fun makeRequestDislikeById(id: Long) {
         try {
             val response = apiService.dislikeEventById(id)
+            val body = checkResponse(response)
+            dao.insert(EventEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError()
+        }
+    }
+
+    override suspend fun participateById(id: Long) {
+        val event = getById(id)
+        if (event.participatedByMe) {
+            makeRequestNotParticipateById(id)
+        } else {
+            makeRequestParticipateById(id)
+        }
+    }
+
+    private suspend fun makeRequestParticipateById(id: Long) {
+        try {
+            val response = apiService.participateEventById(id)
+            val body = checkResponse(response)
+            dao.insert(EventEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw UnknownError()
+        }
+    }
+
+    private suspend fun makeRequestNotParticipateById(id: Long) {
+        try {
+            val response = apiService.notParticipateEventById(id)
             val body = checkResponse(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {

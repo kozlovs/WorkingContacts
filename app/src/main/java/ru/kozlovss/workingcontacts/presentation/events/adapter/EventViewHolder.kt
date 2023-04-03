@@ -33,6 +33,8 @@ class EventViewHolder(
             content.text = event.content
             like.isChecked = event.likedByMe
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
+            participate.isChecked = event.participatedByMe
+            participate.text = Formatter.numberToShortFormat(event.participantsIds.size)
             menu.isVisible = event.ownedByMe
             speakersCount.text = event.speakerIds.size.toString()
             placeIcon.isVisible = event.coords != null
@@ -86,40 +88,63 @@ class EventViewHolder(
             }
         }
 
-        setListeners(binding, event)
+        setListeners(event)
     }
 
-    fun bind(payload: Payload) {
+    fun bind(payload: Payload) = with(binding) {
         payload.likedByMe?.let {
-            binding.like.isChecked = it
+            like.isChecked = it
             if (it) {
                 ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
+                    like,
                     PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
                 ).start()
             } else {
                 ObjectAnimator.ofPropertyValuesHolder(
-                    binding.like,
+                    like,
                     PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
                 ).start()
             }
         }
         payload.likes?.let {
-            binding.like.text = Formatter.numberToShortFormat(it)
+            like.text = Formatter.numberToShortFormat(it)
+        }
+        payload.participatedByMe?.let {
+            participate.isChecked = it
+            if (it) {
+                ObjectAnimator.ofPropertyValuesHolder(
+                    participate,
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+                ).start()
+            } else {
+                ObjectAnimator.ofPropertyValuesHolder(
+                    participate,
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
+                ).start()
+            }
+        }
+        payload.participateIds?.let {
+            participate.text = Formatter.numberToShortFormat(it)
         }
         payload.content?.let {
-            binding.content.text = it
+            content.text = it
         }
         payload.isPlay?.let {
-            binding.switchButton.isChecked = it
+            switchButton.isChecked = it
         }
     }
 
-    private fun setListeners(binding: CardEventBinding, event: Event) = with(binding) {
+    private fun setListeners(event: Event) = with(binding) {
         like.setOnClickListener {
             onInteractionListener.onLike(event)
+        }
+
+        participate.setOnClickListener {
+            onInteractionListener.onParticipate(event)
         }
 
         share.setOnClickListener {

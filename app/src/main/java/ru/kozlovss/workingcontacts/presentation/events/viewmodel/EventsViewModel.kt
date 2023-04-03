@@ -48,6 +48,15 @@ class EventsViewModel @Inject constructor(
         }
     }
 
+    fun participateById(id: Long) = viewModelScope.launch {
+        try {
+            repository.participateById(id)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _state.value = EventsModel.EventsModelState.Error
+        }
+    }
+
     fun removeById(id: Long) = viewModelScope.launch {
         try {
             repository.removeById(id)

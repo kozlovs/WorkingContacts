@@ -38,7 +38,7 @@ import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lon
 import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 import ru.kozlovss.workingcontacts.presentation.post.model.PostModel
 import ru.kozlovss.workingcontacts.presentation.post.viewmodel.PostViewModel
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class PostFragment : Fragment() {
@@ -119,6 +119,7 @@ class PostFragment : Fragment() {
         like.isChecked = post.likedByMe
         like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
         menu.isVisible = post.ownedByMe
+        mentionsCount.text = post.mentionIds.size.toString()
         mentionsSelector.isVisible = post.mentionIds.isNotEmpty()
         place.isVisible = post.coords != null
         adapter.submitList(post.mentionIds.map {

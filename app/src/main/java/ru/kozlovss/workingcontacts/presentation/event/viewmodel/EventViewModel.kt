@@ -60,6 +60,18 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    fun participateById(id: Long?) = viewModelScope.launch {
+        try {
+            id?.let {
+                eventRepository.participateById(it)
+                _data.value = eventRepository.getById(it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _state.value = EventModel.State.Error
+        }
+    }
+
     fun switchSpeakersVisibility() {
         _speakersVisibility.value = !speakersVisibility.value
     }

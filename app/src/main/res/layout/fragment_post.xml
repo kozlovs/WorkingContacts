@@ -199,7 +199,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/card_margin_between"
                     android:text="@string/mentions"
                     android:textSize="16sp" />
 
@@ -208,8 +207,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/card_margin_side"
-                    android:textSize="20sp"
+                    android:layout_marginStart="4dp"
+                    android:textSize="16sp"
                     tools:text="0" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

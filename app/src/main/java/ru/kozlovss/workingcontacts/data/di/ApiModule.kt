@@ -42,9 +42,9 @@ class ApiModule {
         .connectTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(logging)
         .addInterceptor { chain ->
-            appAuth.authStateFlow.value?.token?.let { token ->
+            appAuth.token?.let {
                 val request = chain.request().newBuilder()
-                    .addHeader("Authorization", token)
+                    .addHeader("Authorization", it)
                     .build()
                 return@addInterceptor chain.proceed(request)
             }

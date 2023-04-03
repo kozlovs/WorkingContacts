@@ -26,7 +26,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
 import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 
 @AndroidEntryPoint

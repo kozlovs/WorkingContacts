@@ -11,6 +11,7 @@ interface EventRepository {
     suspend fun getById(id: Long): Event?
     suspend fun likeById(id: Long)
     suspend fun removeById(id: Long)
+    suspend fun participateById(id: Long)
     suspend fun save(event: EventRequest, model: MediaModel?)
     suspend fun switchAudioPlayer(event: Event, audioPlayerState: Boolean)
     suspend fun stopAudioPlayer()

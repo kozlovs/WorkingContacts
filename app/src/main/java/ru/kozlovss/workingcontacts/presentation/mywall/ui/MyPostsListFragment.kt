@@ -29,7 +29,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class MyPostsListFragment : Fragment() {

@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AppAuth @Inject constructor(
     @ApplicationContext
     private val context: Context
-){
+) {
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
     private val _authStateFlow: MutableStateFlow<Token?>
     private val tokenKey = "TOKEN_KEY"
@@ -33,6 +33,9 @@ class AppAuth @Inject constructor(
     }
 
     val authStateFlow: StateFlow<Token?> = _authStateFlow.asStateFlow()
+
+    val token: String?
+        get() = prefs.getString(tokenKey, null)
 
     @Synchronized
     fun setAuth(token: Token) {

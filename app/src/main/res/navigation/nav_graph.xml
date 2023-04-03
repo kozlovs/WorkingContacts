@@ -374,7 +374,7 @@
     </fragment>
     <fragment
         android:id="@+id/videoFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.video.VideoFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment"
         android:label="fragment_video"
         tools:layout="@layout/fragment_video" />
     <fragment

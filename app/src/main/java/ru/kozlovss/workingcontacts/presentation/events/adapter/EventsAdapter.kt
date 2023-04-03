@@ -68,6 +68,8 @@ class EventsAdapter(private val onInteractionListener: OnInteractionListener) :
 data class Payload(
     val likedByMe: Boolean? = null,
     val likes: Int? = null,
+    val participatedByMe: Boolean? = null,
+    val participateIds: Int? = null,
     val content: String? = null,
     val isPlay: Boolean? = null
 )

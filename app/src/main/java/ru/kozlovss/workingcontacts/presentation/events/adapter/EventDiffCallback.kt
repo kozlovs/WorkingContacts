@@ -12,6 +12,8 @@ class EventDiffCallback : DiffUtil.ItemCallback<Event>() {
         Payload(
             likedByMe = newItem.likedByMe.takeIf { it != oldItem.likedByMe },
             likes = newItem.likeOwnerIds.size.takeIf { it != oldItem.likeOwnerIds.size },
+            participatedByMe = newItem.participatedByMe.takeIf { it != oldItem.participatedByMe },
+            participateIds = newItem.participantsIds.size.takeIf { it != oldItem.participantsIds.size },
             content = newItem.content.takeIf { it != oldItem.content },
             isPlay = newItem.isPaying.takeIf { it != oldItem.isPaying }
         )

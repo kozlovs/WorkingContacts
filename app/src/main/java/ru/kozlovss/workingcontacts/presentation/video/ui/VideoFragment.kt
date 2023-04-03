@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.video
+package ru.kozlovss.workingcontacts.presentation.video.ui
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,17 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.VideoView
+import androidx.fragment.app.viewModels
 import ru.kozlovss.workingcontacts.databinding.FragmentVideoBinding
 import ru.kozlovss.workingcontacts.domain.util.StringArg
+import ru.kozlovss.workingcontacts.presentation.video.viewmodel.VideoViewModel
 
 class VideoFragment : Fragment() {
 
     private lateinit var binding: FragmentVideoBinding
+    private val viewModel: VideoViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         val uri = Uri.parse(arguments?.url!!)
         val mediaController = MediaController(context)
         binding = FragmentVideoBinding.inflate(inflater, container, false)
@@ -27,7 +31,9 @@ class VideoFragment : Fragment() {
                 mediaController.setAnchorView(video)
                 mediaController.setMediaPlayer(video)
                 video.setMediaController(mediaController)
-                video.seekTo(1)
+                video.setOnPreparedListener {
+
+                }
                 video.setOnClickListener {
                     (it as VideoView).start()
                 }

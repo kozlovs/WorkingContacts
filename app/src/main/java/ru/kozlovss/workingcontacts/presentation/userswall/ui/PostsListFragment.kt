@@ -24,7 +24,7 @@ import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.OnIntera
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
-import ru.kozlovss.workingcontacts.presentation.video.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
 
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
