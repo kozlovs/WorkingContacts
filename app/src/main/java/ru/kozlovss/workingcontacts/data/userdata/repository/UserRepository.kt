@@ -21,4 +21,5 @@ interface UserRepository {
     suspend fun clearTokenOfUser()
 
     suspend fun getUserInfoById(id: Long): User
+    suspend fun getUsers(): List<User>
 }

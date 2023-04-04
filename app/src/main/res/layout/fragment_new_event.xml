@@ -249,7 +249,7 @@
                 android:layout_marginTop="@dimen/card_margin_side"
                 app:layout_constraintTop_toBottomOf="@id/attachment_group"
                 tools:itemCount="3"
-                tools:listitem="@layout/card_user_item" />
+                tools:listitem="@layout/card_user_item_line" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

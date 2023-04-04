@@ -34,6 +34,7 @@ import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sou
 import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel.Event.*
+import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFragment
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
@@ -41,6 +42,7 @@ class NewPostFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewPostBinding
     private val mediaStore = MediaStore()
+    private lateinit var bottomSheet: UserBottomSheetFragment
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -76,6 +78,7 @@ class NewPostFragment : Fragment() {
     ): View {
         arguments?.postId?.let { viewModel.getData(it) }
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
+        bottomSheet = UserBottomSheetFragment.newInstance()
         subscribe()
         addBackPressedAction()
         setListeners()
@@ -251,6 +254,8 @@ class NewPostFragment : Fragment() {
                     }
                 }
                 R.id.add_mentions -> {
+                    bottomSheet.
+                    show(requireActivity().supportFragmentManager, UserBottomSheetFragment.TAG)
                     true
                 }
                 else -> false

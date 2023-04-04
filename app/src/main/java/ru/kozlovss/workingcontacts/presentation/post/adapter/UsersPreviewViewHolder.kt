@@ -4,10 +4,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.User
-import ru.kozlovss.workingcontacts.databinding.CardUserItemBinding
+import ru.kozlovss.workingcontacts.databinding.CardUserItemLineBinding
 
 class UsersPreviewViewHolder(
-    private val binding: CardUserItemBinding
+    private val binding: CardUserItemLineBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(speaker: User) = with(binding) {

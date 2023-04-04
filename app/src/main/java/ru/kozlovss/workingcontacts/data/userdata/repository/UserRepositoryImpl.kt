@@ -80,6 +80,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserInfoById(id: Long) = checkResponse(apiService.getUserById(id))
 
+    override suspend fun getUsers() = checkResponse(apiService.getAllUsers())
+
     private fun <T> checkResponse(response: Response<T>): T {
         if (!response.isSuccessful) throw ApiError(response.code(), response.message())
         return response.body() ?: throw RuntimeException("body is null")
