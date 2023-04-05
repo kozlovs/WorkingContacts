@@ -254,8 +254,7 @@ class NewPostFragment : Fragment() {
                     }
                 }
                 R.id.add_mentions -> {
-                    bottomSheet.
-                    show(requireActivity().supportFragmentManager, UserBottomSheetFragment.TAG)
+                    bottomSheet.show(requireActivity().supportFragmentManager, UserBottomSheetFragment.NEW_POST_TAG)
                     true
                 }
                 else -> false

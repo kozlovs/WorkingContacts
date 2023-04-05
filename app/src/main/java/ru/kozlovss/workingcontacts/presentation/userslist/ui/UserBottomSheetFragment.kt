@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.databinding.FragmentUserBottomSheetBinding
+import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
+import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.userslist.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.userslist.adapter.UsersAdapter
 import ru.kozlovss.workingcontacts.presentation.userslist.viewmodel.UsersViewModel
@@ -24,6 +27,8 @@ class UserBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentUserBottomSheetBinding
     private lateinit var adapter: UsersAdapter
     private val viewModel: UsersViewModel by viewModels()
+    private val newPostViewModel: NewPostViewModel by activityViewModels()
+    private val newEventViewModel: NewEventViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +37,10 @@ class UserBottomSheetFragment : BottomSheetDialogFragment() {
         binding = FragmentUserBottomSheetBinding.inflate(inflater, container, false)
         adapter = UsersAdapter(object : OnInteractionListener {
             override fun onSelect(user: User) {
-                TODO("Not yet implemented")
+                when(tag) {
+                    NEW_POST_TAG -> newPostViewModel.addMention(user)
+                    NEW_EVENT_TAG -> newEventViewModel.addSpeaker(user)
+                }
             }
         })
         binding.list.layoutManager = GridLayoutManager(context, COLUMN_COUNT)
@@ -61,7 +69,8 @@ class UserBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "ModalBottomSheet"
+        const val NEW_POST_TAG = "NEW_POST_TAG"
+        const val NEW_EVENT_TAG = "NEW_EVENT_TAG"
         const val COLUMN_COUNT = 4
 
         @JvmStatic

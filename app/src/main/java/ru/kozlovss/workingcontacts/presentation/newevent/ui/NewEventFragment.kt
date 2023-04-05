@@ -36,6 +36,7 @@ import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sou
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel.LocalEvent.*
+import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFragment
 import java.time.*
 
 @AndroidEntryPoint
@@ -45,6 +46,7 @@ class NewEventFragment : Fragment() {
     private lateinit var binding: FragmentNewEventBinding
     private lateinit var datePicker: MaterialDatePicker<Long>
     private lateinit var timePicker: MaterialTimePicker
+    private lateinit var bottomSheet: UserBottomSheetFragment
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -62,6 +64,7 @@ class NewEventFragment : Fragment() {
     ): View {
         arguments?.eventId?.let { viewModel.getData(it) }
         binding = FragmentNewEventBinding.inflate(inflater, container, false)
+        bottomSheet = UserBottomSheetFragment.newInstance()
         initDatePiker()
         subscribe()
         addBackPressedAction()
@@ -289,7 +292,8 @@ class NewEventFragment : Fragment() {
                         true
                     }
                 }
-                R.id.add_mentions -> {
+                R.id.add_speakers -> {
+                    bottomSheet.show(requireActivity().supportFragmentManager, UserBottomSheetFragment.NEW_EVENT_TAG)
                     true
                 }
                 else -> false

@@ -137,11 +137,10 @@ class NewPostViewModel @Inject constructor(
     fun setCoordinates(coordinates: Coordinates) = viewModelScope.launch {
         _coordinates.value = coordinates
     }
-
-    fun clearCoordinates() = viewModelScope.launch {
-        _coordinates.value = null
+    fun addMention(user: User) = viewModelScope.launch {
+        _mentions.value = mentions.value?.plus(user)
+        _events.emit(Event.ShowToast("Added mention of ${user.name}"))
     }
-
 
     sealed class Event {
         object CreateNewItem : Event()

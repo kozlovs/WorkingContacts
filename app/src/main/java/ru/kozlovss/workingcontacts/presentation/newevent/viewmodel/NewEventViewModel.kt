@@ -20,6 +20,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
+import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import java.io.File
 import javax.inject.Inject
 
@@ -155,7 +156,11 @@ class NewEventViewModel @Inject constructor(
 
     fun setType(type: Event.Type) {
         _type.value = type
-        Log.d("MyLog", "type: ${_type.value}")
+    }
+
+    fun addSpeaker(user: User) = viewModelScope.launch  {
+        _speakers.value = speakers.value?.plus(user)
+        _events.emit(LocalEvent.ShowToast("Added speaker ${user.name}"))
     }
 
     sealed class LocalEvent {
