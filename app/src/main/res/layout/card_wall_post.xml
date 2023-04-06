@@ -35,12 +35,14 @@
                 android:layout_height="200dp"
                 android:layout_marginTop="8dp">
 
-                <VideoView
-                    android:id="@+id/video"
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/video_preview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:scaleType="center"
+                    app:shapeAppearanceOverlay="@style/roundedPostImageView" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
@@ -109,6 +111,33 @@
             app:barrierDirection="bottom"
             app:barrierMargin="16dp"
             app:constraint_referenced_ids="contentLayout" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/like"
+            app:layout_constraintTop_toBottomOf="@id/barrierContent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/mentions_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/mention_24" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/mentions_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/place_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/card_margin_between"
+                android:src="@drawable/baseline_place_24" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
         <com.google.android.material.button.MaterialButton

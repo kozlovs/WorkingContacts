@@ -6,6 +6,7 @@
     tools:context=".presentation.video.ui.VideoFragment">
 
     <FrameLayout
+        android:id="@+id/video_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center">

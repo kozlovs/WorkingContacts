@@ -2,8 +2,8 @@ package ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.net.Uri
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,69 +18,81 @@ class PostViewHolder(
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(post: Post) {
-        binding.apply {
-            published.text = Formatter.localDateTimeToPostDateFormat(post.published)
-            content.text = post.content
-            like.isChecked = post.likedByMe
-            like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
+    fun bind(post: Post) = with(binding) {
+        published.text = Formatter.localDateTimeToPostDateFormat(post.published)
+        content.text = post.content
+        if (post.link != null) {
+            link.visibility = View.VISIBLE
+            link.text = post.link
+        } else {
+            link.visibility = View.GONE
+        }
+        like.isChecked = post.likedByMe
+        like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
+        switchButton.isChecked = post.isPaying == true
+        mentionsCount.text = post.mentionIds.size.toString()
+        mentionsCount.isVisible = post.mentionIds.isNotEmpty()
+        mentionsIcon.isVisible = post.mentionIds.isNotEmpty()
+        placeIcon.isVisible = post.coords != null
 
-            val attachment = post.attachment
-            if (attachment != null) {
-                when (attachment.type) {
-                    Attachment.Type.IMAGE -> {
-                        image.visibility = View.VISIBLE
-                        Glide.with(image)
-                            .load(attachment.url)
-                            .transform(RoundedCorners(30))
-                            .placeholder(R.drawable.baseline_update_24)
-                            .error(R.drawable.baseline_error_outline_24)
-                            .timeout(10_000)
-                            .into(image)
-                        videoLayout.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
-                    Attachment.Type.AUDIO -> {
-                        audio.visibility = View.VISIBLE
-                        image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
-                    }
-                    Attachment.Type.VIDEO -> {
-                        videoLayout.visibility = View.VISIBLE
-                        val uri = Uri.parse(attachment.url)
-                        video.setVideoURI(uri)
-                        video.seekTo(1)
-                        image.visibility = View.GONE
-                        audio.visibility = View.GONE
-                    }
+        val attachment = post.attachment
+        if (attachment != null) {
+            when (attachment.type) {
+                Attachment.Type.IMAGE -> {
+                    image.visibility = View.VISIBLE
+                    Glide.with(image)
+                        .load(attachment.url)
+                        .transform(RoundedCorners(30))
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(image)
+                    videoLayout.visibility = View.GONE
+                    audio.visibility = View.GONE
                 }
-            } else {
-                image.visibility = View.GONE
-                videoLayout.visibility = View.GONE
-                audio.visibility = View.GONE
+                Attachment.Type.AUDIO -> {
+                    audio.visibility = View.VISIBLE
+                    image.visibility = View.GONE
+                    videoLayout.visibility = View.GONE
+                }
+                Attachment.Type.VIDEO -> {
+                    videoLayout.visibility = View.VISIBLE
+                    Glide.with(videoPreview)
+                        .load(attachment.url)
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(videoPreview)
+                    image.visibility = View.GONE
+                    audio.visibility = View.GONE
+                }
             }
+        } else {
+            image.visibility = View.GONE
+            videoLayout.visibility = View.GONE
+            audio.visibility = View.GONE
         }
 
         setListeners(post)
     }
 
-    fun bind(payload: Payload) {
+    fun bind(payload: Payload) = with(binding) {
         payload.likedByMe?.let {
-            binding.like.isChecked = it
+            like.isChecked = it
             ObjectAnimator.ofPropertyValuesHolder(
-                binding.like,
+                like,
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 1.0F, 1.2F, 1.0F),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.0F, 1.2F, 1.0F)
             ).start()
         }
         payload.likes?.let {
-            binding.like.text = Formatter.numberToShortFormat(it)
+            like.text = Formatter.numberToShortFormat(it)
         }
         payload.content?.let {
-            binding.content.text = it
+            content.text = it
         }
         payload.isPlay?.let {
-            binding.switchButton.isChecked = it
+            switchButton.isChecked = it
         }
     }
 
@@ -93,7 +105,7 @@ class PostViewHolder(
             onInteractionListener.onShare(post)
         }
 
-        video.setOnClickListener {
+        videoPreview.setOnClickListener {
             onInteractionListener.onToVideo(post)
         }
 

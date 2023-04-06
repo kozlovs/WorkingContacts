@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.presentation.events.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.net.Uri
 import android.view.View
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
@@ -74,9 +73,12 @@ class EventViewHolder(
                     }
                     Attachment.Type.VIDEO -> {
                         videoLayout.visibility = View.VISIBLE
-                        val uri = Uri.parse(attachment.url)
-                        video.setVideoURI(uri)
-                        video.seekTo(1)
+                        Glide.with(videoPreview)
+                            .load(attachment.url)
+                            .placeholder(R.drawable.baseline_update_24)
+                            .error(R.drawable.baseline_error_outline_24)
+                            .timeout(10_000)
+                            .into(videoPreview)
                         image.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
@@ -151,7 +153,7 @@ class EventViewHolder(
             onInteractionListener.onShare(event)
         }
 
-        video.setOnClickListener {
+        videoPreview.setOnClickListener {
             onInteractionListener.onToVideo(event)
         }
 
