@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
@@ -81,6 +82,7 @@ class NewEventFragment : Fragment() {
             .build()
         timePicker = MaterialTimePicker.Builder()
             .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+            .setTimeFormat(TimeFormat.CLOCK_24H)
             .setTitleText("Select time")
             .build()
     }
@@ -387,7 +389,9 @@ class NewEventFragment : Fragment() {
     }
 
     private fun checkFields(): Boolean = with(binding) {
-        return (!contentField.text.isNullOrBlank())
+        return (!contentField.text.isNullOrBlank() &&
+                !dateField.text.isNullOrBlank() &&
+                !timeField.text.isNullOrBlank())
     }
 
     companion object {
