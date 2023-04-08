@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.event.adapter
 
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.kozlovss.workingcontacts.R
@@ -11,6 +12,7 @@ class UsersPreviewViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(speaker: User) = with(binding) {
+        delete.isVisible = false
         name.text = speaker.name
         if (speaker.avatar != null) {
             Glide.with(avatar)

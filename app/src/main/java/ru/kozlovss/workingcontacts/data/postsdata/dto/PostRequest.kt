@@ -9,5 +9,5 @@ data class PostRequest(
     val coords: Coordinates?,
     val link: String?,
     val attachment: Attachment?,
-    val mentionIds: List<Long>?,
+    val mentionIds: List<Long>,
 )

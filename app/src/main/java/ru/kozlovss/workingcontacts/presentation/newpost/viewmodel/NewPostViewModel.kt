@@ -47,7 +47,7 @@ class NewPostViewModel @Inject constructor(
     private val _attachment = MutableStateFlow<MediaModel?>(null)
     val attachment = _attachment.asStateFlow()
 
-    private val _mentions = MutableStateFlow<List<User>?>(emptyList())
+    private val _mentions = MutableStateFlow<List<User>>(emptyList())
     val mentions = _mentions.asStateFlow()
 
     private val _events = MutableSharedFlow<Event>()
@@ -55,22 +55,22 @@ class NewPostViewModel @Inject constructor(
 
     fun save(
         content: String,
-        coord: Coordinates?,
+        coords: Coordinates?,
         link: String?
     ) = viewModelScope.launch {
         try {
             _state.value = NewPostModel.State.Loading
-            val mentionIds = mentions.value?.let { users ->
+            val mentionIds = mentions.value.let { users ->
                 users.map { it.id }
             }
 
             val postRequest = PostRequest(
-                0,
-                content,
-                coord,
-                link,
-                null,
-                mentionIds.takeIf { it != null }
+                id = 0,
+                content = content,
+                coords = coords,
+                link = link,
+                attachment = null,
+                mentionIds = mentionIds
             )
             Log.d("MyLog", "viewModel request $postRequest")
             repository.save(postRequest, attachment.value)
@@ -96,16 +96,18 @@ class NewPostViewModel @Inject constructor(
         _state.value = NewPostModel.State.Loading
         try {
             val post = repository.getById(id)
-            post?.let { post ->
-                _postId.value = post.id
-                _content.value = post.content
-                post.link?.let { _link.value = it }
-                post.attachment?.let {
-                    _attachment.value = MediaModel(it.url.toUri(), null, it.type)
+            post?.let {
+                _postId.value = it.id
+                _content.value = it.content
+                it.link?.let { link ->
+                    _link.value = link
                 }
-                if (post.mentionIds.isNotEmpty()) {
-                    _mentions.value = post.mentionIds.map {
-                        userRepository.getUserInfoById(it)
+                it.attachment?.let { attachment ->
+                    _attachment.value = MediaModel(attachment.url.toUri(), null, attachment.type)
+                }
+                if (it.mentionIds.isNotEmpty()) {
+                    _mentions.value = it.mentionIds.map { id ->
+                        userRepository.getUserInfoById(id)
                     }
                 }
             }
@@ -138,9 +140,16 @@ class NewPostViewModel @Inject constructor(
         _coordinates.value = coordinates
     }
     fun addMention(user: User) = viewModelScope.launch {
-        _mentions.value = mentions.value?.plus(user)
-        _events.emit(Event.ShowToast("Added mention of ${user.name}"))
+        if (!_mentions.value.contains(user)) {
+            _mentions.value = mentions.value.plus(user)
+            _events.emit(Event.ShowToast("Added mention of ${user.name}"))
+        }
     }
+
+    fun removeMention(user: User) = viewModelScope.launch {
+        _mentions.value = mentions.value.minus(user)
+    }
+
 
     sealed class Event {
         object CreateNewItem : Event()

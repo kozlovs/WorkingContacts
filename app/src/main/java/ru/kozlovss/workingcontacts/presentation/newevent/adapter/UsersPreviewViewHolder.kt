@@ -1,6 +1,5 @@
-package ru.kozlovss.workingcontacts.presentation.post.adapter
+package ru.kozlovss.workingcontacts.presentation.newevent.adapter
 
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.kozlovss.workingcontacts.R
@@ -8,11 +7,11 @@ import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.databinding.CardUserItemLineBinding
 
 class UsersPreviewViewHolder(
-    private val binding: CardUserItemLineBinding
+    private val binding: CardUserItemLineBinding,
+    private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(speaker: User) = with(binding) {
-        delete.isVisible = false
         name.text = speaker.name
         if (speaker.avatar != null) {
             Glide.with(avatar)
@@ -23,6 +22,13 @@ class UsersPreviewViewHolder(
                 .into(avatar)
         } else {
             avatar.setImageResource(R.drawable.baseline_person_outline_24)
+        }
+        setListeners(speaker)
+    }
+
+    private fun setListeners(speaker: User) = with(binding) {
+        delete.setOnClickListener {
+            onInteractionListener.onRemove(speaker)
         }
     }
 }

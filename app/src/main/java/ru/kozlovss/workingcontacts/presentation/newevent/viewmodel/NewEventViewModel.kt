@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,7 +19,6 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
-import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import java.io.File
 import javax.inject.Inject
 
@@ -55,7 +53,7 @@ class NewEventViewModel @Inject constructor(
     private val _attachment = MutableStateFlow<MediaModel?>(null)
     val attachment = _attachment.asStateFlow()
 
-    private val _speakers = MutableStateFlow<List<User>?>(emptyList())
+    private val _speakers = MutableStateFlow<List<User>>(emptyList())
     val speakers = _speakers.asStateFlow()
 
     private val _events = MutableSharedFlow<LocalEvent>()
@@ -69,7 +67,7 @@ class NewEventViewModel @Inject constructor(
     ) = viewModelScope.launch {
         try {
             _state.value = NewEventModel.State.Loading
-            val speakerIds = speakers.value?.let { users ->
+            val speakerIds = speakers.value.let { users ->
                 users.map { it.id }
             }
 
@@ -81,7 +79,7 @@ class NewEventViewModel @Inject constructor(
                 type = type.value,
                 attachment = null,
                 link = link,
-                speakerIds = speakerIds.takeIf { it != null }
+                speakerIds = speakerIds
             )
             repository.save(eventRequest, attachment.value)
             clearData()
@@ -108,18 +106,20 @@ class NewEventViewModel @Inject constructor(
         _state.value = NewEventModel.State.Loading
         try {
             val event = repository.getById(id)
-            event?.let { event ->
-                _eventId.value = event.id
-                _content.value = event.content
-                _dateTime.value = event.datetime
-                _type.value = event.type
-                event.link?.let { _link.value = it }
-                event.attachment?.let {
-                    _attachment.value = MediaModel(it.url.toUri(), null, it.type)
+            event?.let {
+                _eventId.value = it.id
+                _content.value = it.content
+                _dateTime.value = it.datetime
+                _type.value = it.type
+                it.link?.let {  link ->
+                    _link.value = link
                 }
-                if (event.speakerIds.isNotEmpty()) {
-                    _speakers.value = event.speakerIds.map {
-                        userRepository.getUserInfoById(it)
+                it.attachment?.let { attachment ->
+                    _attachment.value = MediaModel(attachment.url.toUri(), null, attachment.type)
+                }
+                if (it.speakerIds.isNotEmpty()) {
+                    _speakers.value = it.speakerIds.map { id ->
+                        userRepository.getUserInfoById(id)
                     }
                 }
             }
@@ -159,8 +159,14 @@ class NewEventViewModel @Inject constructor(
     }
 
     fun addSpeaker(user: User) = viewModelScope.launch  {
-        _speakers.value = speakers.value?.plus(user)
-        _events.emit(LocalEvent.ShowToast("Added speaker ${user.name}"))
+        if (!_speakers.value.contains(user)) {
+            _speakers.value = speakers.value.plus(user)
+            _events.emit(LocalEvent.ShowToast("Added speaker ${user.name}"))
+        }
+    }
+
+    fun removeSpeaker(user: User) = viewModelScope.launch {
+        _speakers.value = speakers.value.minus(user)
     }
 
     sealed class LocalEvent {

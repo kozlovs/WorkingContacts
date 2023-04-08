@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
@@ -37,6 +38,8 @@ import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sou
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel.LocalEvent.*
+import ru.kozlovss.workingcontacts.presentation.newevent.adapter.OnInteractionListener
+import ru.kozlovss.workingcontacts.presentation.newevent.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFragment
 import java.time.*
 
@@ -48,6 +51,7 @@ class NewEventFragment : Fragment() {
     private lateinit var datePicker: MaterialDatePicker<Long>
     private lateinit var timePicker: MaterialTimePicker
     private lateinit var bottomSheet: UserBottomSheetFragment
+    private lateinit var adapter: UsersPreviewAdapter
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -66,12 +70,22 @@ class NewEventFragment : Fragment() {
         arguments?.eventId?.let { viewModel.getData(it) }
         binding = FragmentNewEventBinding.inflate(inflater, container, false)
         bottomSheet = UserBottomSheetFragment.newInstance()
+        initAdapter()
         initDatePiker()
         subscribe()
         addBackPressedAction()
         setListeners()
 
         return binding.root
+    }
+
+    private fun initAdapter() {
+        adapter = UsersPreviewAdapter( object : OnInteractionListener {
+            override fun onRemove(user: User) {
+                viewModel.removeSpeaker(user)
+            }
+        })
+        binding.speakers.adapter = adapter
     }
 
     private fun initDatePiker() {
@@ -145,7 +159,7 @@ class NewEventFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dateTime.collect {
                     it?.let {
-                        val dateTime = LocalDateTime.parse(it)
+                        val dateTime = LocalDateTime.parse(it.substring(0, 16))
                         dateField.setText(dateTime.toLocalDate().toString())
                         timeField.setText(dateTime.toLocalTime().toString())
                     }
@@ -201,6 +215,15 @@ class NewEventFragment : Fragment() {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.speakers.collect {
+                    speakers.isVisible = it.isNotEmpty()
+                    adapter.submitList(it)
                 }
             }
         }

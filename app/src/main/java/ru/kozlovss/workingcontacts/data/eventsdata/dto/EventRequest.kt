@@ -11,5 +11,5 @@ data class EventRequest(
     val type: Event.Type?,
     val attachment: Attachment?,
     val link: String?,
-    val speakerIds: List<Long>?,
+    val speakerIds: List<Long>,
 )

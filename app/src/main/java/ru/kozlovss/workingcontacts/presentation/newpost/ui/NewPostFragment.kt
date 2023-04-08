@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
+import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
@@ -31,6 +32,8 @@ import ru.kozlovss.workingcontacts.domain.util.PermissionManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag
+import ru.kozlovss.workingcontacts.presentation.newpost.adapter.OnInteractionListener
+import ru.kozlovss.workingcontacts.presentation.newpost.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel.Event.*
@@ -43,6 +46,7 @@ class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
     private val mediaStore = MediaStore()
     private lateinit var bottomSheet: UserBottomSheetFragment
+    private lateinit var adapter: UsersPreviewAdapter
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -79,11 +83,21 @@ class NewPostFragment : Fragment() {
         arguments?.postId?.let { viewModel.getData(it) }
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
         bottomSheet = UserBottomSheetFragment.newInstance()
+        initAdapter()
         subscribe()
         addBackPressedAction()
         setListeners()
 
         return binding.root
+    }
+
+    private fun initAdapter() {
+        adapter = UsersPreviewAdapter( object : OnInteractionListener {
+            override fun onRemove(user: User) {
+                viewModel.removeMention(user)
+            }
+        })
+        binding.mentions.adapter = adapter
     }
 
     private fun addBackPressedAction() {
@@ -170,6 +184,15 @@ class NewPostFragment : Fragment() {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mentions.collect {
+                    mentions.isVisible = it.isNotEmpty()
+                    adapter.submitList(it)
                 }
             }
         }
