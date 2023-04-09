@@ -120,7 +120,7 @@ class MyPostsListFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 if (userViewModel.isLogin()) {
-                    findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment,
+                    findNavController().navigate(R.id.action_global_newPostFragment,
                         Bundle().apply { postId = post.id })
                 } else DialogManager.errorAuthDialog(this@MyPostsListFragment)
             }
@@ -128,7 +128,7 @@ class MyPostsListFragment : Fragment() {
             override fun onToVideo(post: Post) {
                 post.attachment?.let {
                     findNavController().navigate(
-                        R.id.action_myWallFragment_to_videoFragment,
+                        R.id.action_global_videoFragment,
                         Bundle().apply { url = it.url })
                 }
             }
@@ -139,7 +139,7 @@ class MyPostsListFragment : Fragment() {
 
             override fun onToPost(post: Post) {
                 findNavController().navigate(
-                    R.id.action_myWallFragment_to_postFragment,
+                    R.id.action_global_postFragment,
                     Bundle().apply { id = post.id })
             }
         })

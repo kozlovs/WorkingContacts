@@ -253,7 +253,7 @@ class EventFragment : Fragment() {
 
         video.setOnClickListener {
             eventViewModel.data.value?.attachment?.let {
-                findNavController().navigate(R.id.action_eventFragment_to_videoFragment,
+                findNavController().navigate(R.id.action_global_videoFragment,
                     Bundle().apply { url = it.url })
             }
         }

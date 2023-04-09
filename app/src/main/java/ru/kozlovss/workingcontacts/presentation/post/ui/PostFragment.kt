@@ -220,7 +220,7 @@ class PostFragment : Fragment() {
                         R.id.edit -> {
                             if (userViewModel.isLogin()) {
                                 postViewModel.data.value?.let { post ->
-                                    findNavController().navigate(R.id.action_postFragment_to_newPostFragment,
+                                    findNavController().navigate(R.id.action_global_newPostFragment,
                                     Bundle().apply { postId = post.id })
                                 }
                             } else DialogManager.errorAuthDialog(this@PostFragment)
@@ -235,7 +235,7 @@ class PostFragment : Fragment() {
 
         video.setOnClickListener {
             postViewModel.data.value?.attachment?.let {
-                findNavController().navigate(R.id.action_postFragment_to_videoFragment,
+                findNavController().navigate(R.id.action_global_videoFragment,
                     Bundle().apply { url = it.url })
             }
         }

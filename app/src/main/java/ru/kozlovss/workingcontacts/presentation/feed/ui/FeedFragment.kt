@@ -48,6 +48,14 @@ class  FeedFragment : Fragment() {
             false
         )
 
+        initAdapter()
+        subscribe()
+        setListeners()
+
+        return binding.root
+    }
+
+    private fun initAdapter() {
         adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
                 if (userViewModel.isLogin()) {
@@ -74,15 +82,15 @@ class  FeedFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 if (userViewModel.isLogin()) {
-                    findNavController().navigate(R.id.action_feedFragment_to_newPostFragment,
-                    Bundle().apply { postId = post.id })
+                    findNavController().navigate(R.id.action_global_newPostFragment,
+                        Bundle().apply { postId = post.id })
                 } else DialogManager.errorAuthDialog(this@FeedFragment)
             }
 
             override fun onToVideo(post: Post) {
                 post.attachment?.let {
-                    findNavController().navigate(R.id.action_feedFragment_to_videoFragment,
-                    Bundle().apply { url = it.url  })
+                    findNavController().navigate(R.id.action_global_videoFragment,
+                        Bundle().apply { url = it.url  })
                 }
             }
 
@@ -92,7 +100,7 @@ class  FeedFragment : Fragment() {
 
             override fun onToPost(post: Post) {
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
+                    R.id.action_global_postFragment,
                     Bundle().apply { id = post.id })
             }
 
@@ -107,11 +115,6 @@ class  FeedFragment : Fragment() {
             header = PostLoadingStateAdapter { adapter.retry() },
             footer = PostLoadingStateAdapter { adapter.retry() }
         )
-
-        subscribe()
-        setListeners()
-
-        return binding.root
     }
 
     private fun subscribe() = with(binding) {
@@ -149,7 +152,7 @@ class  FeedFragment : Fragment() {
     private fun setListeners() = with(binding) {
         add.setOnClickListener {
             if (userViewModel.isLogin()) {
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+                findNavController().navigate(R.id.action_global_newPostFragment)
             } else DialogManager.errorAuthDialog(this@FeedFragment)
         }
 

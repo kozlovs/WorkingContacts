@@ -16,18 +16,23 @@ import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
     private val viewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        initBinding()
         setContentView(binding.root)
+        initNavController()
+        setDestinationChangedListener()
+        setBottomNavigation()
+    }
 
-        val navView = binding.navView
+    private fun initNavController() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         val inflater = navController.navInflater
         val graph = inflater.inflate(R.navigation.nav_graph)
         if (viewModel.isLogin()) {
@@ -35,14 +40,18 @@ class MainActivity : AppCompatActivity() {
         } else {
             graph.setStartDestination(R.id.startFragment)
         }
-
         navController.setGraph(graph, intent.extras)
-        setDestinationChangedListener(navController)
+    }
 
+    private fun setBottomNavigation() = with(binding) {
         navView.setupWithNavController(navController)
     }
 
-    private fun setDestinationChangedListener(navController: NavController) = with(binding) {
+    private fun initBinding() {
+        binding = ActivityMainBinding.inflate(layoutInflater)
+    }
+
+    private fun setDestinationChangedListener() = with(binding) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
            when(destination.id) {
                R.id.feedFragment -> navView.visibility = View.VISIBLE

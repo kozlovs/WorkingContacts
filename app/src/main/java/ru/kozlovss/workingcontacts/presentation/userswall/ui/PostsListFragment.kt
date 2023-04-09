@@ -25,6 +25,7 @@ import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.PostsAda
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel
 import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
+import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
@@ -91,7 +92,7 @@ class PostsListFragment : Fragment() {
             override fun onToVideo(post: Post) {
                 post.attachment?.let {
                     findNavController().navigate(
-                        R.id.action_userWallFragment_to_videoFragment,
+                        R.id.action_global_videoFragment,
                         Bundle().apply { url = it.url })
                 }
             }
@@ -101,9 +102,9 @@ class PostsListFragment : Fragment() {
             }
 
             override fun onToPost(post: Post) {
-//                findNavController().navigate(
-//                    R.id.action_feedFragment_to_postFragment,
-//                    Bundle().apply { id = post.id })
+                findNavController().navigate(
+                    R.id.action_global_postFragment,
+                    Bundle().apply { id = post.id })
             }
         })
         list.adapter = adapter

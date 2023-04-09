@@ -103,7 +103,7 @@ class MyWallFragment : Fragment() {
     private fun setListeners() = with(binding) {
         add.setOnClickListener {
             if (myWallViewModel.isLogin()) {
-                if (tabLayout.selectedTabPosition == 0) findNavController().navigate(R.id.action_myWallFragment_to_newPostFragment)
+                if (tabLayout.selectedTabPosition == 0) findNavController().navigate(R.id.action_global_newPostFragment)
                 else findNavController().navigate(R.id.action_myWallFragment_to_newJobFragment)
             }
             else DialogManager.errorAuthDialog(this@MyWallFragment)

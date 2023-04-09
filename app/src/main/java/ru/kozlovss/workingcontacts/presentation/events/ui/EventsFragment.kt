@@ -84,7 +84,7 @@ class EventsFragment : Fragment() {
 
             override fun onToVideo(event: Event) {
                 event.attachment?.let {
-                    findNavController().navigate(R.id.action_eventsFragment_to_videoFragment,
+                    findNavController().navigate(R.id.action_global_videoFragment,
                     Bundle().apply { url = it.url  })
                 }
             }
