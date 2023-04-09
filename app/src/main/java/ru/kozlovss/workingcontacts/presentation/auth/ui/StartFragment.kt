@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.auth
+package ru.kozlovss.workingcontacts.presentation.auth.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -33,7 +33,7 @@ class StartFragment : Fragment() {
                 findNavController().navigate(R.id.action_global_registrationFragment)
             }
             skipButton.setOnClickListener {
-                findNavController().navigate(R.id.action_startFragment_to_feedFragment)
+                findNavController().navigate(R.id.action_global_feedFragment)
             }
         }
     }

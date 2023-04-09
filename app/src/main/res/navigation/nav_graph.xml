@@ -38,32 +38,14 @@
     </fragment>
     <fragment
         android:id="@+id/authorizationFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.auth.authorization.AuthorizationFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.auth.ui.AuthorizationFragment"
         android:label="fragment_authorization"
-        tools:layout="@layout/fragment_authorization">
-        <action
-            android:id="@+id/action_authorizationFragment_to_feedFragment"
-            app:destination="@id/feedFragment"
-            app:enterAnim="@animator/nav_default_enter_anim"
-            app:exitAnim="@animator/nav_default_exit_anim"
-            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
-            app:popExitAnim="@animator/nav_default_pop_exit_anim"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_authorization"/>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.auth.registration.RegistrationFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.auth.ui.RegistrationFragment"
         android:label="fragment_registration"
-        tools:layout="@layout/fragment_registration">
-        <action
-            android:id="@+id/action_registrationFragment_to_feedFragment"
-            app:destination="@id/feedFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_registration"/>
     <fragment
         android:id="@+id/newPostFragment"
         android:name="ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment"
@@ -86,17 +68,9 @@
         tools:layout="@layout/fragment_new_event"/>
     <fragment
         android:id="@+id/startFragment"
-        android:name="ru.kozlovss.workingcontacts.presentation.auth.StartFragment"
+        android:name="ru.kozlovss.workingcontacts.presentation.auth.ui.StartFragment"
         android:label="fragment_start"
-        tools:layout="@layout/fragment_start">
-        <action
-            android:id="@+id/action_startFragment_to_feedFragment"
-            app:destination="@id/feedFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
+        tools:layout="@layout/fragment_start"/>
     <fragment
         android:id="@+id/userWallFragment"
         android:name="ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment"
@@ -129,6 +103,7 @@
         app:destination="@id/postFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
+        app:launchSingleTop="true"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     <action
@@ -143,6 +118,7 @@
         app:destination="@id/userWallFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
+        app:launchSingleTop="true"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     <action
@@ -164,7 +140,6 @@
         app:destination="@id/registrationFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
-        app:launchSingleTop="true"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     <action
@@ -172,7 +147,15 @@
         app:destination="@id/authorizationFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:exitAnim="@anim/nav_default_exit_anim"
-        app:launchSingleTop="true"
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <action
+        android:id="@+id/action_global_feedFragment"
+        app:destination="@id/feedFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/nav_graph" />
 </navigation>

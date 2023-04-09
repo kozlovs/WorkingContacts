@@ -19,6 +19,7 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentFeedBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.activity.MainActivity
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
@@ -47,12 +48,17 @@ class  FeedFragment : Fragment() {
             container,
             false
         )
-
+        resetNvaViewState()
         initAdapter()
         subscribe()
         setListeners()
 
         return binding.root
+    }
+
+    private fun resetNvaViewState() {
+        val activity = activity as MainActivity
+        activity.resetNvaViewState()
     }
 
     private fun initAdapter() {

@@ -61,4 +61,8 @@ class MainActivity : AppCompatActivity() {
            }
         }
     }
+
+    fun resetNvaViewState() = with(binding.navView) {
+        if (selectedItemId != R.id.feedFragment) selectedItemId = R.id.feedFragment
+    }
 }

@@ -1,14 +1,10 @@
-package ru.kozlovss.workingcontacts.presentation.auth.registration
+package ru.kozlovss.workingcontacts.presentation.auth.ui
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toFile
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -84,7 +80,7 @@ class RegistrationFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.token.collect {
                     it?.let {
-                        findNavController().navigate(R.id.action_registrationFragment_to_feedFragment)
+                        findNavController().navigate(R.id.action_global_feedFragment)
                     }
                 }
             }

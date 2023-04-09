@@ -9,6 +9,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -38,6 +41,7 @@ import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel.Event.*
 import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFragment
+import java.util.concurrent.Executor
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
@@ -47,6 +51,7 @@ class NewPostFragment : Fragment() {
     private val mediaStore = MediaStore()
     private lateinit var bottomSheet: UserBottomSheetFragment
     private lateinit var adapter: UsersPreviewAdapter
+    private lateinit var executor: Executor
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -84,11 +89,16 @@ class NewPostFragment : Fragment() {
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
         bottomSheet = UserBottomSheetFragment.newInstance()
         initAdapter()
+        initExecutor()
         subscribe()
         addBackPressedAction()
         setListeners()
 
         return binding.root
+    }
+
+    private fun initExecutor() {
+        executor = ContextCompat.getMainExecutor(requireContext())
     }
 
     private fun initAdapter() {
@@ -229,14 +239,12 @@ class NewPostFragment : Fragment() {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
-                    if (PermissionManager.checkImagePermission(requireActivity())) {
-                        //            ImagePicker.Builder(this@NewPostFragment)
-//                .cameraOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
+                    if (PermissionManager.checkCameraPermission(requireActivity())) {
+                        startCamera()
+                        takePhoto()
                         true
                     } else {
-                        PermissionManager.requestImagePermission(requireActivity())
+                        PermissionManager.requestCameraPermission(requireActivity())
                         true
                     }
 
@@ -309,6 +317,19 @@ class NewPostFragment : Fragment() {
             }
             viewModel.clearData()
         }
+    }
+
+    private fun takePhoto() {
+        TODO("Not yet implemented")
+    }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build()
+            //preview.setSurfaceProvider(binding.preview.surfaceProvider)
+        }, executor)
     }
 
     private fun checkCoordinate(coordinates: Coordinates?): Boolean {

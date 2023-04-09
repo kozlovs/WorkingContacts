@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/card_margin_side"
-    tools:context=".presentation.auth.StartFragment">
+    tools:context=".presentation.auth.ui.StartFragment">
 
 
     <androidx.appcompat.widget.AppCompatTextView

@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.presentation.auth.authorization
+package ru.kozlovss.workingcontacts.presentation.auth.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -33,24 +33,20 @@ class AuthorizationFragment : Fragment() {
         return binding.root
     }
 
-    private fun setListeners() {
-        with(binding) {
-            logInButton.setOnClickListener {
-                val login = login.text.toString()
-                val password = password.text.toString()
-                viewModel.logIn(login, password)
-            }
+    private fun setListeners() = with(binding) {
+        logInButton.setOnClickListener {
+            val login = login.text.toString()
+            val password = password.text.toString()
+            viewModel.logIn(login, password)
         }
     }
 
 
-    private fun subscribe() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.token.collect {
-                    it?.let {
-                        findNavController().navigate(R.id.action_authorizationFragment_to_feedFragment)
-                    }
+    private fun subscribe() = lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.token.collect {
+                it?.let {
+                    findNavController().navigate(R.id.action_global_feedFragment)
                 }
             }
         }
