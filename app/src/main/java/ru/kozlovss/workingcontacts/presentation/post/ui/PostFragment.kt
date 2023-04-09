@@ -252,7 +252,7 @@ class PostFragment : Fragment() {
 
         place.setOnClickListener {
             postViewModel.data.value?.coords?.let { coords ->
-                findNavController().navigate(R.id.action_postFragment_to_mapFragment, Bundle().apply {
+                findNavController().navigate(R.id.action_global_mapFragment, Bundle().apply {
                     lat = coords.lat
                     lon = coords.longitude
                 })

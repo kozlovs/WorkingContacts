@@ -77,7 +77,7 @@ class EventsFragment : Fragment() {
 
             override fun onEdit(event: Event) {
                 if (userViewModel.isLogin()) {
-                    findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment,
+                    findNavController().navigate(R.id.action_global_newEventFragment,
                         Bundle().apply { eventId = event.id })
                 } else DialogManager.errorAuthDialog(this@EventsFragment)
             }
@@ -101,7 +101,7 @@ class EventsFragment : Fragment() {
 
             override fun onToUser(event: Event) {
                 findNavController().navigate(
-                    R.id.action_eventsFragment_to_userWallFragment,
+                    R.id.action_global_userWallFragment,
                     Bundle().apply { userId = event.authorId }
                 )
             }
@@ -145,7 +145,7 @@ class EventsFragment : Fragment() {
     private fun setListeners(binding: FragmentEventsBinding, adapter: EventsAdapter) {
         binding.add.setOnClickListener {
             if (userViewModel.isLogin()) {
-                findNavController().navigate(R.id.action_eventsFragment_to_newEventFragment)
+                findNavController().navigate(R.id.action_global_newEventFragment)
             } else DialogManager.errorAuthDialog(this)
         }
 

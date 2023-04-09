@@ -290,7 +290,7 @@ class NewPostFragment : Fragment() {
         }
 
         addPlace.setOnClickListener {
-            findNavController().navigate(R.id.action_newPostFragment_to_mapFragment,
+            findNavController().navigate(R.id.action_global_mapFragment,
                 Bundle().apply { sourcePageTag = MapFragment.Companion.SourcePage.NEW_POST.toString() })
         }
 

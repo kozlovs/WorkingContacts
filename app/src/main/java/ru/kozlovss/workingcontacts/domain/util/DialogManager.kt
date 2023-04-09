@@ -5,12 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.presentation.event.ui.EventFragment
-import ru.kozlovss.workingcontacts.presentation.events.ui.EventsFragment
-import ru.kozlovss.workingcontacts.presentation.newevent.ui.NewEventFragment
-import ru.kozlovss.workingcontacts.presentation.feed.ui.FeedFragment
-import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment
-import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment
 
 object DialogManager {
 
@@ -45,36 +39,10 @@ object DialogManager {
                 setTitle("Auth error")
                 setMessage("Sign In to yur account")
                 setButton(AlertDialog.BUTTON_POSITIVE, "Sign in") { _, _ ->
-                    when (fragment) {
-                        is FeedFragment -> fragment.findNavController()
-                            .navigate(R.id.action_feedFragment_to_authorizationFragment)
-                        is PostFragment -> fragment.findNavController()
-                            .navigate(R.id.action_postFragment_to_authorizationFragment)
-                        is NewPostFragment -> fragment.findNavController()
-                            .navigate(R.id.action_newPostFragment_to_authorizationFragment)
-                        is EventsFragment -> fragment.findNavController()
-                            .navigate(R.id.action_eventsFragment_to_authorizationFragment)
-                        is EventFragment -> fragment.findNavController()
-                            .navigate(R.id.action_eventFragment_to_authorizationFragment)
-                        is NewEventFragment -> fragment.findNavController()
-                            .navigate(R.id.action_newEventFragment_to_authorizationFragment)
-                    }
+                    fragment.findNavController().navigate(R.id.action_global_authorizationFragment)
                 }
                 setButton(AlertDialog.BUTTON_NEUTRAL, "Sign up") { _, _ ->
-                    when (fragment) {
-                        is FeedFragment -> fragment.findNavController()
-                            .navigate(R.id.action_feedFragment_to_registrationFragment)
-                        is PostFragment -> fragment.findNavController()
-                            .navigate(R.id.action_postFragment_to_registrationFragment)
-                        is NewPostFragment -> fragment.findNavController()
-                            .navigate(R.id.action_newPostFragment_to_registrationFragment)
-                        is EventsFragment -> fragment.findNavController()
-                            .navigate(R.id.action_eventsFragment_to_registrationFragment)
-                        is EventFragment -> fragment.findNavController()
-                            .navigate(R.id.action_eventFragment_to_registrationFragment)
-                        is NewEventFragment -> fragment.findNavController()
-                            .navigate(R.id.action_newEventFragment_to_registrationFragment)
-                    }
+                    fragment.findNavController().navigate(R.id.action_global_registrationFragment)
                 }
                 setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
                     dismiss()
@@ -92,7 +60,8 @@ object DialogManager {
                     dismiss()
                 }
             }.show()
-        //        takePhoto.setOnClickListener {
+
+    //        takePhoto.setOnClickListener {
 //            ImagePicker.Builder(this@RegistrationFragment)
 //                .cameraOnly()
 //                .maxResultSize(2048, 2048)

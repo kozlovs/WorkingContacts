@@ -114,11 +114,11 @@ class MyWallFragment : Fragment() {
         }
 
         onLogInButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myWallFragment_to_authorizationFragment)
+            findNavController().navigate(R.id.action_global_authorizationFragment)
         }
 
         onSignInButton.setOnClickListener {
-            findNavController().navigate(R.id.action_myWallFragment_to_registrationFragment)
+            findNavController().navigate(R.id.action_global_registrationFragment)
         }
     }
 }

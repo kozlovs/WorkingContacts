@@ -27,10 +27,10 @@ class StartFragment : Fragment() {
     private fun setListeners() {
         with(binding) {
             authorizationButton.setOnClickListener {
-                findNavController().navigate(R.id.action_startFragment_to_authorizationFragment)
+                findNavController().navigate(R.id.action_global_authorizationFragment)
             }
             registrationButton.setOnClickListener {
-                findNavController().navigate(R.id.action_startFragment_to_registrationFragment)
+                findNavController().navigate(R.id.action_global_registrationFragment)
             }
             skipButton.setOnClickListener {
                 findNavController().navigate(R.id.action_startFragment_to_feedFragment)

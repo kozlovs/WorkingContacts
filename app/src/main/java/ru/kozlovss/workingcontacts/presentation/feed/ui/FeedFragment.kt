@@ -106,7 +106,7 @@ class  FeedFragment : Fragment() {
 
             override fun onToUser(post: Post) {
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_userWallFragment,
+                    R.id.action_global_userWallFragment,
                     Bundle().apply { userId = post.authorId }
                 )
             }

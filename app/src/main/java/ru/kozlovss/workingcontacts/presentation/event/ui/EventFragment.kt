@@ -238,7 +238,7 @@ class EventFragment : Fragment() {
                         R.id.edit -> {
                             if (userViewModel.isLogin()) {
                                 eventViewModel.data.value?.let { event ->
-                                    findNavController().navigate(R.id.action_eventFragment_to_newEventFragment,
+                                    findNavController().navigate(R.id.action_global_newEventFragment,
                                         Bundle().apply { eventId = event.id })
                                 }
                             } else DialogManager.errorAuthDialog(this@EventFragment)
@@ -270,7 +270,7 @@ class EventFragment : Fragment() {
 
         place.setOnClickListener {
             eventViewModel.data.value?.coords?.let { coords ->
-                findNavController().navigate(R.id.action_eventFragment_to_mapFragment, Bundle().apply {
+                findNavController().navigate(R.id.action_global_mapFragment, Bundle().apply {
                     lat = coords.lat
                     lon = coords.longitude
                 })
