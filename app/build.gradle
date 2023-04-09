@@ -72,7 +72,7 @@ dependencies {
     def ext_junit_version = "1.1.5"
     def espresso_version = "3.5.1"
     def yandex_map_version = "4.2.2-lite"
-    def camera_version = "1.2.2"
+    def image_picker_version = "2.1"
 
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -113,11 +113,7 @@ dependencies {
 
     implementation "com.yandex.android:maps.mobile:$yandex_map_version"
 
-    implementation "androidx.camera:camera-core:$camera_version"
-    implementation "androidx.camera:camera-camera2:$camera_version"
-    implementation "androidx.camera:camera-lifecycle:$camera_version"
-    implementation "androidx.camera:camera-view:$camera_version"
-    implementation "androidx.camera:camera-extensions:$camera_version"
+    implementation "com.github.dhaval2404:imagepicker:$image_picker_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"

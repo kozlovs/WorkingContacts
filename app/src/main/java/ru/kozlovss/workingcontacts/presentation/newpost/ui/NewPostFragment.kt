@@ -1,16 +1,12 @@
 package ru.kozlovss.workingcontacts.presentation.newpost.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
@@ -21,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -53,32 +50,22 @@ class NewPostFragment : Fragment() {
     private lateinit var adapter: UsersPreviewAdapter
     private lateinit var executor: Executor
 
-    private val pickMedia =
-        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                Log.d("MyLog", "Selected URI: $uri")
-
-                val file = uri.toFile()
-            } else {
-                Log.d("MyLog", "No media selected")
+    private val imageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            when (it.resultCode) {
+                ImagePicker.RESULT_ERROR -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.photo_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                Activity.RESULT_OK -> {
+                    val uri = it.data?.data
+                    viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
+                }
             }
         }
-//    private val imageLauncher =
-//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-//            when (it.resultCode) {
-//                ImagePicker.RESULT_ERROR -> {
-//                    Toast.makeText(
-//                        requireContext(),
-//                        getString(R.string.photo_error),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//                Activity.RESULT_OK -> {
-//                    val uri = it.data?.data
-//                    viewModel.savePhoto(uri, uri?.toFile())
-//                }
-//            }
-//        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -102,7 +89,7 @@ class NewPostFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        adapter = UsersPreviewAdapter( object : OnInteractionListener {
+        adapter = UsersPreviewAdapter(object : OnInteractionListener {
             override fun onRemove(user: User) {
                 viewModel.removeMention(user)
             }
@@ -240,8 +227,6 @@ class NewPostFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.take_photo -> {
                     if (PermissionManager.checkCameraPermission(requireActivity())) {
-                        startCamera()
-                        takePhoto()
                         true
                     } else {
                         PermissionManager.requestCameraPermission(requireActivity())
@@ -251,13 +236,10 @@ class NewPostFragment : Fragment() {
                 }
                 R.id.add_photo -> {
                     if (PermissionManager.checkImagePermission(requireActivity())) {
-                        if (isPhotoPickerAvailable(requireContext())) {
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        }
-                        //            ImagePicker.Builder(this@NewPostFragment)
-//                .galleryOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
+                        ImagePicker.Builder(this@NewPostFragment)
+                            .galleryOnly()
+                            .maxResultSize(2048, 2048)
+                            .createIntent(imageLauncher::launch)
                         true
                     } else {
                         PermissionManager.requestImagePermission(requireActivity())
@@ -266,9 +248,7 @@ class NewPostFragment : Fragment() {
                 }
                 R.id.add_video -> {
                     if (PermissionManager.checkVideoPermission(requireActivity())) {
-                        if (isPhotoPickerAvailable(requireContext())) {
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
-                        }
+
                         true
                     } else {
                         PermissionManager.requestVideoPermission(requireActivity())
@@ -285,7 +265,10 @@ class NewPostFragment : Fragment() {
                     }
                 }
                 R.id.add_mentions -> {
-                    bottomSheet.show(requireActivity().supportFragmentManager, UserBottomSheetFragment.NEW_POST_TAG)
+                    bottomSheet.show(
+                        requireActivity().supportFragmentManager,
+                        UserBottomSheetFragment.NEW_POST_TAG
+                    )
                     true
                 }
                 else -> false
@@ -299,7 +282,9 @@ class NewPostFragment : Fragment() {
 
         addPlace.setOnClickListener {
             findNavController().navigate(R.id.action_global_mapFragment,
-                Bundle().apply { sourcePageTag = MapFragment.Companion.SourcePage.NEW_POST.toString() })
+                Bundle().apply {
+                    sourcePageTag = MapFragment.Companion.SourcePage.NEW_POST.toString()
+                })
         }
 
         save.setOnClickListener {
@@ -317,19 +302,6 @@ class NewPostFragment : Fragment() {
             }
             viewModel.clearData()
         }
-    }
-
-    private fun takePhoto() {
-        TODO("Not yet implemented")
-    }
-
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build()
-            //preview.setSurfaceProvider(binding.preview.surfaceProvider)
-        }, executor)
     }
 
     private fun checkCoordinate(coordinates: Coordinates?): Boolean {
