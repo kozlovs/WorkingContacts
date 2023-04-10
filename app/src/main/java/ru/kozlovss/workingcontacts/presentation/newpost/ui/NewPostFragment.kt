@@ -187,6 +187,43 @@ class NewPostFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.attachmentRemote.collect {
+                    attachmentGroup.isVisible = it != null
+                    it?.let {
+                        attachmentType.text = it.type.toString()
+                        when (it.type) {
+                            Attachment.Type.IMAGE -> {
+                                Glide.with(preview)
+                                    .load(it.url)
+                                    .placeholder(R.drawable.baseline_update_24)
+                                    .error(R.drawable.baseline_error_outline_24)
+                                    .timeout(10_000)
+                                    .into(preview)
+                                preview.isVisible = true
+                                audioIcon.isVisible = false
+                            }
+                            Attachment.Type.VIDEO -> {
+                                Glide.with(preview)
+                                    .load(it.url)
+                                    .placeholder(R.drawable.baseline_update_24)
+                                    .error(R.drawable.baseline_error_outline_24)
+                                    .timeout(10_000)
+                                    .into(preview)
+                                preview.isVisible = true
+                                audioIcon.isVisible = false
+                            }
+                            Attachment.Type.AUDIO -> {
+                                preview.isVisible = false
+                                audioIcon.isVisible = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.mentions.collect {
                     mentions.isVisible = it.isNotEmpty()
                     adapter.submitList(it)
@@ -227,6 +264,11 @@ class NewPostFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.take_photo -> {
                     if (PermissionManager.checkCameraPermission(requireActivity())) {
+                        ImagePicker.Builder(this@NewPostFragment)
+                            .cameraOnly()
+                            .crop()
+                            .maxResultSize(2048, 2048)
+                            .createIntent(imageLauncher::launch)
                         true
                     } else {
                         PermissionManager.requestCameraPermission(requireActivity())
@@ -238,6 +280,7 @@ class NewPostFragment : Fragment() {
                     if (PermissionManager.checkImagePermission(requireActivity())) {
                         ImagePicker.Builder(this@NewPostFragment)
                             .galleryOnly()
+                            .crop()
                             .maxResultSize(2048, 2048)
                             .createIntent(imageLauncher::launch)
                         true

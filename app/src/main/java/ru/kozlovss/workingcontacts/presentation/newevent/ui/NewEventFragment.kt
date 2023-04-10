@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -62,6 +65,23 @@ class NewEventFragment : Fragment() {
             }
         }
 
+    private val imageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            when (it.resultCode) {
+                ImagePicker.RESULT_ERROR -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.photo_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                Activity.RESULT_OK -> {
+                    val uri = it.data?.data
+                    viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
+                }
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,7 +100,7 @@ class NewEventFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        adapter = UsersPreviewAdapter( object : OnInteractionListener {
+        adapter = UsersPreviewAdapter(object : OnInteractionListener {
             override fun onRemove(user: User) {
                 viewModel.removeSpeaker(user)
             }
@@ -170,7 +190,7 @@ class NewEventFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.type.collect {
-                    when(it) {
+                    when (it) {
                         Event.Type.ONLINE -> {
                             onlineButton.isChecked = true
                         }
@@ -202,6 +222,43 @@ class NewEventFragment : Fragment() {
                             Attachment.Type.VIDEO -> {
                                 Glide.with(preview)
                                     .load(it.uri)
+                                    .placeholder(R.drawable.baseline_update_24)
+                                    .error(R.drawable.baseline_error_outline_24)
+                                    .timeout(10_000)
+                                    .into(preview)
+                                preview.isVisible = true
+                                audioIcon.isVisible = false
+                            }
+                            Attachment.Type.AUDIO -> {
+                                preview.isVisible = false
+                                audioIcon.isVisible = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.attachmentRemote.collect {
+                    attachmentGroup.isVisible = it != null
+                    it?.let {
+                        attachmentType.text = it.type.toString()
+                        when (it.type) {
+                            Attachment.Type.IMAGE -> {
+                                Glide.with(preview)
+                                    .load(it.url)
+                                    .placeholder(R.drawable.baseline_update_24)
+                                    .error(R.drawable.baseline_error_outline_24)
+                                    .timeout(10_000)
+                                    .into(preview)
+                                preview.isVisible = true
+                                audioIcon.isVisible = false
+                            }
+                            Attachment.Type.VIDEO -> {
+                                Glide.with(preview)
+                                    .load(it.url)
                                     .placeholder(R.drawable.baseline_update_24)
                                     .error(R.drawable.baseline_error_outline_24)
                                     .timeout(10_000)
@@ -265,10 +322,11 @@ class NewEventFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.take_photo -> {
                     if (PermissionManager.checkImagePermission(requireActivity())) {
-                        //            ImagePicker.Builder(this@NewPostFragment)
-//                .cameraOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
+                        ImagePicker.Builder(this@NewEventFragment)
+                            .cameraOnly()
+                            .crop()
+                            .maxResultSize(2048, 2048)
+                            .createIntent(imageLauncher::launch)
                         true
                     } else {
                         PermissionManager.requestImagePermission(requireActivity())
@@ -278,16 +336,13 @@ class NewEventFragment : Fragment() {
                 }
                 R.id.add_photo -> {
                     if (PermissionManager.checkImagePermission(requireActivity())) {
-                        if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(
-                                requireContext()
-                            )
-                        ) {
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(requireContext())) {
+                            ImagePicker.Builder(this@NewEventFragment)
+                                .galleryOnly()
+                                .crop()
+                                .maxResultSize(2048, 2048)
+                                .createIntent(imageLauncher::launch)
                         }
-                        //            ImagePicker.Builder(this@NewPostFragment)
-//                .galleryOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
                         true
                     } else {
                         PermissionManager.requestImagePermission(requireActivity())
@@ -318,7 +373,10 @@ class NewEventFragment : Fragment() {
                     }
                 }
                 R.id.add_speakers -> {
-                    bottomSheet.show(requireActivity().supportFragmentManager, UserBottomSheetFragment.NEW_EVENT_TAG)
+                    bottomSheet.show(
+                        requireActivity().supportFragmentManager,
+                        UserBottomSheetFragment.NEW_EVENT_TAG
+                    )
                     true
                 }
                 else -> false
@@ -332,7 +390,9 @@ class NewEventFragment : Fragment() {
 
         addPlace.setOnClickListener {
             findNavController().navigate(R.id.action_global_mapFragment,
-            Bundle().apply { sourcePageTag = MapFragment.Companion.SourcePage.NEW_EVENT.toString() })
+                Bundle().apply {
+                    sourcePageTag = MapFragment.Companion.SourcePage.NEW_EVENT.toString()
+                })
         }
 
         save.setOnClickListener {

@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.viewmodel
 
 import android.net.Uri
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,6 +52,9 @@ class NewEventViewModel @Inject constructor(
     private val _attachment = MutableStateFlow<MediaModel?>(null)
     val attachment = _attachment.asStateFlow()
 
+    private val _attachmentRemote = MutableStateFlow<Attachment?>(null)
+    val attachmentRemote = _attachmentRemote.asStateFlow()
+
     private val _speakers = MutableStateFlow<List<User>>(emptyList())
     val speakers = _speakers.asStateFlow()
 
@@ -72,18 +74,19 @@ class NewEventViewModel @Inject constructor(
             }
 
             val eventRequest = EventRequest(
-                id = 0,
+                id = eventId.value ?: 0,
                 content = content,
                 datetime = dateTime,
                 coords = coords,
                 type = type.value,
-                attachment = null,
+                attachment = attachmentRemote.value,
                 link = link,
                 speakerIds = speakerIds
             )
             repository.save(eventRequest, attachment.value)
             clearData()
             _events.emit(LocalEvent.CreateNewItem)
+            _state.value = NewEventModel.State.Idle
         } catch (e: Exception) {
             e.printStackTrace()
             _state.value = NewEventModel.State.Error
@@ -115,7 +118,7 @@ class NewEventViewModel @Inject constructor(
                     _link.value = link
                 }
                 it.attachment?.let { attachment ->
-                    _attachment.value = MediaModel(attachment.url.toUri(), null, attachment.type)
+                    _attachmentRemote.value = attachment
                 }
                 if (it.speakerIds.isNotEmpty()) {
                     _speakers.value = it.speakerIds.map { id ->
@@ -138,16 +141,18 @@ class NewEventViewModel @Inject constructor(
         _type.value = Event.Type.ONLINE
         _coordinates.value = null
         _attachment.value = null
+        _attachmentRemote.value = null
         _speakers.value = emptyList()
-        _state.value = NewEventModel.State.Idle
     }
 
     fun saveAttachment(uri: Uri?, toFile: File?, type: Attachment.Type) = viewModelScope.launch {
+        _attachmentRemote.value = null
         _attachment.value = MediaModel(uri, toFile, type)
     }
 
     fun clearAttachment() = viewModelScope.launch {
         _attachment.value = null
+        _attachmentRemote.value = null
     }
 
     fun setCoordinates(coordinates: Coordinates) = viewModelScope.launch {

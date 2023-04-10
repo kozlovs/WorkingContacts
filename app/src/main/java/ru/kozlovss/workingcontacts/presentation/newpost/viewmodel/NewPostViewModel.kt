@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.presentation.newpost.viewmodel
 
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +46,9 @@ class NewPostViewModel @Inject constructor(
     private val _attachment = MutableStateFlow<MediaModel?>(null)
     val attachment = _attachment.asStateFlow()
 
+    private val _attachmentRemote = MutableStateFlow<Attachment?>(null)
+    val attachmentRemote = _attachmentRemote.asStateFlow()
+
     private val _mentions = MutableStateFlow<List<User>>(emptyList())
     val mentions = _mentions.asStateFlow()
 
@@ -65,17 +67,18 @@ class NewPostViewModel @Inject constructor(
             }
 
             val postRequest = PostRequest(
-                id = 0,
+                id = postId.value ?: 0,
                 content = content,
                 coords = coords,
                 link = link,
-                attachment = null,
+                attachment = attachmentRemote.value,
                 mentionIds = mentionIds
             )
             Log.d("MyLog", "viewModel request $postRequest")
             repository.save(postRequest, attachment.value)
             clearData()
             _events.emit(Event.CreateNewItem)
+            _state.value = NewPostModel.State.Idle
         } catch (e: Exception) {
             e.printStackTrace()
             _state.value = NewPostModel.State.Error
@@ -103,7 +106,7 @@ class NewPostViewModel @Inject constructor(
                     _link.value = link
                 }
                 it.attachment?.let { attachment ->
-                    _attachment.value = MediaModel(attachment.url.toUri(), null, attachment.type)
+                    _attachmentRemote.value = attachment
                 }
                 if (it.mentionIds.isNotEmpty()) {
                     _mentions.value = it.mentionIds.map { id ->
@@ -124,16 +127,18 @@ class NewPostViewModel @Inject constructor(
         _link.value = null
         _coordinates.value = null
         _attachment.value = null
+        _attachmentRemote.value = null
         _mentions.value = emptyList()
-        _state.value = NewPostModel.State.Idle
     }
 
     fun saveAttachment(uri: Uri?, toFile: File?, type: Attachment.Type) = viewModelScope.launch {
+        _attachmentRemote.value = null
         _attachment.value = MediaModel(uri, toFile, type)
     }
 
     fun clearAttachment() = viewModelScope.launch {
         _attachment.value = null
+        _attachmentRemote.value = null
     }
 
     fun setCoordinates(coordinates: Coordinates) = viewModelScope.launch {
