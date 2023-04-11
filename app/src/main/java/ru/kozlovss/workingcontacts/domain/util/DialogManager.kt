@@ -49,13 +49,18 @@ object DialogManager {
                 }
             }.show()
 
-    fun addPhotoDialog(fragment: Fragment, isPhotoUploaded: Boolean = false) =
+    fun addPhotoDialog(fragment: Fragment, onToCamera: () -> Unit, onToGallery: () -> Unit) =
         MaterialAlertDialogBuilder(fragment.requireContext())
             .create()
             .apply {
-                setTitle("Photo upload")
-                if (isPhotoUploaded) setMessage("Manage your photo")
-                else setMessage("Add your photo")
+                setTitle("User's photo upload")
+                setMessage("Add your photo")
+                setButton(AlertDialog.BUTTON_POSITIVE, "Camera") { _, _ ->
+                    onToCamera()
+                }
+                setButton(AlertDialog.BUTTON_NEUTRAL, "Gallery") { _, _ ->
+                    onToGallery()
+                }
                 setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
                     dismiss()
                 }

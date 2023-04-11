@@ -19,15 +19,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpUsage" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/card_color"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@color/material_dynamic_neutral_variant70"
+        android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="@id/app_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/app_name" />
+        app:layout_constraintStart_toEndOf="@+id/app_name"
+        app:layout_constraintTop_toTopOf="@id/app_name"
+        app:shapeAppearanceOverlay="@style/roundedProfileAvatarImageView"
+        tools:ignore="ImageContrastCheck" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/remove_avatar_button"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/baseline_remove_24"
+        app:layout_constraintBottom_toTopOf="@id/avatar"
+        app:layout_constraintEnd_toEndOf="@+id/avatar"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="@+id/avatar" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/sign_in_card"
@@ -87,7 +101,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -101,7 +115,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
