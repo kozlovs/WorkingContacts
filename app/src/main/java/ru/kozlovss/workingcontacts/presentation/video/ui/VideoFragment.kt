@@ -2,13 +2,11 @@ package ru.kozlovss.workingcontacts.presentation.video.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
-import android.widget.VideoView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -29,7 +27,7 @@ class VideoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //viewModel.setStateLoading()
+        viewModel.setStateLoading()
 
         binding = FragmentVideoBinding.inflate(inflater, container, false)
         setVideo()
@@ -41,10 +39,11 @@ class VideoFragment : Fragment() {
     private fun subscribe() = with(binding) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect {state ->
+                viewModel.state.collect { state ->
                     progress.isVisible = state is VideoModel.State.Loading
-                    video.isVisible = (state is VideoModel.State.Idle)
                     errorLayout.isVisible = state is VideoModel.State.Error
+                    if (state is VideoModel.State.Idle) videoLayout.visibility = View.VISIBLE
+                    else videoLayout.visibility = View.INVISIBLE
                 }
             }
         }
@@ -57,16 +56,13 @@ class VideoFragment : Fragment() {
             viewModel.setStateError()
             true
         }
-        setOnPreparedListener {
-            viewModel.setStateIde()
-        }
         setVideoURI(uri)
         mediaController.setAnchorView(this)
         mediaController.setMediaPlayer(this)
         setMediaController(mediaController)
-
-        setOnClickListener {
-            (it as VideoView).start()
+        setOnPreparedListener {
+        viewModel.setStateIde()
+            start()
         }
     }
 

@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.presentation.newpost.ui
 
 import android.app.Activity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.dto.User
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
 import ru.kozlovss.workingcontacts.domain.util.LongArg
@@ -45,7 +44,6 @@ class NewPostFragment : Fragment() {
     private val viewModel: NewPostViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private lateinit var binding: FragmentNewPostBinding
-    private val mediaStore = MediaStore()
     private lateinit var bottomSheet: UserBottomSheetFragment
     private lateinit var adapter: UsersPreviewAdapter
     private lateinit var executor: Executor
@@ -60,6 +58,7 @@ class NewPostFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
                 Activity.RESULT_OK -> {
                     val uri = it.data?.data
                     viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
@@ -165,6 +164,7 @@ class NewPostFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.VIDEO -> {
                                 Glide.with(preview)
                                     .load(it.uri)
@@ -175,6 +175,7 @@ class NewPostFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.AUDIO -> {
                                 preview.isVisible = false
                                 audioIcon.isVisible = true
@@ -202,6 +203,7 @@ class NewPostFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.VIDEO -> {
                                 Glide.with(preview)
                                     .load(it.url)
@@ -212,6 +214,7 @@ class NewPostFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.AUDIO -> {
                                 preview.isVisible = false
                                 audioIcon.isVisible = true
@@ -252,6 +255,7 @@ class NewPostFragment : Fragment() {
                             it.text,
                             Snackbar.LENGTH_LONG
                         ).show()
+
                         is ShowToast -> Toast.makeText(context, it.text, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -263,57 +267,20 @@ class NewPostFragment : Fragment() {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
-                    if (PermissionManager.checkCameraPermission(requireActivity())) {
-                        ImagePicker.Builder(this@NewPostFragment)
-                            .cameraOnly()
-                            .crop()
-                            .maxResultSize(2048, 2048)
-                            .createIntent(imageLauncher::launch)
-                        true
-                    } else {
-                        PermissionManager.requestCameraPermission(requireActivity())
-                        true
-                    }
-
-                }
-                R.id.add_photo -> {
-                    if (PermissionManager.checkImagePermission(requireActivity())) {
-                        ImagePicker.Builder(this@NewPostFragment)
-                            .galleryOnly()
-                            .crop()
-                            .maxResultSize(2048, 2048)
-                            .createIntent(imageLauncher::launch)
-                        true
-                    } else {
-                        PermissionManager.requestImagePermission(requireActivity())
-                        true
-                    }
-                }
-                R.id.add_video -> {
-                    if (PermissionManager.checkVideoPermission(requireActivity())) {
-
-                        true
-                    } else {
-                        PermissionManager.requestVideoPermission(requireActivity())
-                        true
-                    }
-                }
-                R.id.add_audio -> {
-                    if (PermissionManager.checkAudioPermission(requireActivity())) {
-
-                        true
-                    } else {
-                        PermissionManager.requestAudioPermission(requireActivity())
-                        true
-                    }
-                }
-                R.id.add_mentions -> {
-                    bottomSheet.show(
-                        requireActivity().supportFragmentManager,
-                        UserBottomSheetFragment.NEW_POST_TAG
-                    )
+                    takePhoto()
                     true
                 }
+
+                R.id.add_photo -> {
+                    addPhoto()
+                    true
+                }
+
+                R.id.add_mentions -> {
+                    addMentions()
+                    true
+                }
+
                 else -> false
             }
 
@@ -347,6 +314,37 @@ class NewPostFragment : Fragment() {
         }
     }
 
+    private fun takePhoto() {
+        if (PermissionManager.checkImagePermission(requireActivity())) {
+            ImagePicker.Builder(this@NewPostFragment)
+                .cameraOnly()
+                .crop()
+                .maxResultSize(2048, 2048)
+                .createIntent(imageLauncher::launch)
+        } else {
+            PermissionManager.requestImagePermission(requireActivity())
+        }
+    }
+
+    private fun addPhoto() {
+        if (PermissionManager.checkImagePermission(requireActivity())) {
+            ImagePicker.Builder(this@NewPostFragment)
+                .galleryOnly()
+                .crop()
+                .maxResultSize(2048, 2048)
+                .createIntent(imageLauncher::launch)
+        } else {
+            PermissionManager.requestImagePermission(requireActivity())
+        }
+    }
+
+    private fun addMentions() {
+        bottomSheet.show(
+            requireActivity().supportFragmentManager,
+            UserBottomSheetFragment.NEW_POST_TAG
+        )
+    }
+
     private fun checkCoordinate(coordinates: Coordinates?): Boolean {
         if (coordinates == null) return true
         try {
@@ -368,11 +366,6 @@ class NewPostFragment : Fragment() {
 
     private fun checkFields(): Boolean = with(binding) {
         return (!contentField.text.isNullOrBlank())
-    }
-
-    private fun makePermissionToast() {
-        Toast.makeText(requireContext(), getString(R.string.need_permission), Toast.LENGTH_SHORT)
-            .show()
     }
 
     companion object {

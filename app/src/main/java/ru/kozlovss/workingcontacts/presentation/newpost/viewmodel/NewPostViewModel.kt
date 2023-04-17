@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.newpost.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +12,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
-import ru.kozlovss.workingcontacts.data.dto.User
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
@@ -74,7 +73,6 @@ class NewPostViewModel @Inject constructor(
                 attachment = attachmentRemote.value,
                 mentionIds = mentionIds
             )
-            Log.d("MyLog", "viewModel request $postRequest")
             repository.save(postRequest, attachment.value)
             clearData()
             _events.emit(Event.CreateNewItem)

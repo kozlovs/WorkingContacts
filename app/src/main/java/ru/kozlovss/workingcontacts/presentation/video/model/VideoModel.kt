@@ -9,7 +9,5 @@ class VideoModel(
         object Idle : State
         object Error : State
         object Loading : State
-        object RefreshingJobs: State
-        object RefreshingPosts: State
     }
 }

@@ -1,16 +1,16 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.ui
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.dto.User
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.domain.util.DialogManager
@@ -56,15 +56,6 @@ class NewEventFragment : Fragment() {
     private lateinit var bottomSheet: UserBottomSheetFragment
     private lateinit var adapter: UsersPreviewAdapter
 
-    private val pickMedia =
-        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                Log.d("MyLog", "Selected URI: $uri")
-            } else {
-                Log.d("MyLog", "No media selected")
-            }
-        }
-
     private val imageLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
@@ -75,6 +66,7 @@ class NewEventFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
                 Activity.RESULT_OK -> {
                     val uri = it.data?.data
                     viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
@@ -82,6 +74,7 @@ class NewEventFragment : Fragment() {
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -194,6 +187,7 @@ class NewEventFragment : Fragment() {
                         Event.Type.ONLINE -> {
                             onlineButton.isChecked = true
                         }
+
                         Event.Type.OFFLINE -> {
                             offlineButton.isChecked = true
                         }
@@ -219,6 +213,7 @@ class NewEventFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.VIDEO -> {
                                 Glide.with(preview)
                                     .load(it.uri)
@@ -229,6 +224,7 @@ class NewEventFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.AUDIO -> {
                                 preview.isVisible = false
                                 audioIcon.isVisible = true
@@ -256,6 +252,7 @@ class NewEventFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.VIDEO -> {
                                 Glide.with(preview)
                                     .load(it.url)
@@ -266,6 +263,7 @@ class NewEventFragment : Fragment() {
                                 preview.isVisible = true
                                 audioIcon.isVisible = false
                             }
+
                             Attachment.Type.AUDIO -> {
                                 preview.isVisible = false
                                 audioIcon.isVisible = true
@@ -306,6 +304,7 @@ class NewEventFragment : Fragment() {
                             it.text,
                             Snackbar.LENGTH_LONG
                         ).show()
+
                         is ShowToast -> Toast.makeText(
                             context,
                             it.text,
@@ -317,66 +316,20 @@ class NewEventFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun setListeners() = with(binding) {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
-                    if (PermissionManager.checkImagePermission(requireActivity())) {
-                        ImagePicker.Builder(this@NewEventFragment)
-                            .cameraOnly()
-                            .crop()
-                            .maxResultSize(2048, 2048)
-                            .createIntent(imageLauncher::launch)
-                        true
-                    } else {
-                        PermissionManager.requestImagePermission(requireActivity())
-                        true
-                    }
-
+                    takePhoto()
+                    true
                 }
                 R.id.add_photo -> {
-                    if (PermissionManager.checkImagePermission(requireActivity())) {
-                        if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(requireContext())) {
-                            ImagePicker.Builder(this@NewEventFragment)
-                                .galleryOnly()
-                                .crop()
-                                .maxResultSize(2048, 2048)
-                                .createIntent(imageLauncher::launch)
-                        }
-                        true
-                    } else {
-                        PermissionManager.requestImagePermission(requireActivity())
-                        true
-                    }
-                }
-                R.id.add_video -> {
-                    if (PermissionManager.checkVideoPermission(requireActivity())) {
-                        if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(
-                                requireContext()
-                            )
-                        ) {
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
-                        }
-                        true
-                    } else {
-                        PermissionManager.requestVideoPermission(requireActivity())
-                        true
-                    }
-                }
-                R.id.add_audio -> {
-                    if (PermissionManager.checkAudioPermission(requireActivity())) {
-
-                        true
-                    } else {
-                        PermissionManager.requestAudioPermission(requireActivity())
-                        true
-                    }
+                    addPhoto()
+                    true
                 }
                 R.id.add_speakers -> {
-                    bottomSheet.show(
-                        requireActivity().supportFragmentManager,
-                        UserBottomSheetFragment.NEW_EVENT_TAG
-                    )
+                    addSpeaker()
                     true
                 }
                 else -> false
@@ -441,6 +394,37 @@ class NewEventFragment : Fragment() {
                 R.id.offline_button -> viewModel.setType(Event.Type.OFFLINE)
             }
         }
+    }
+
+    private fun takePhoto() {
+        if (PermissionManager.checkImagePermission(requireActivity())) {
+            ImagePicker.Builder(this@NewEventFragment)
+                .cameraOnly()
+                .crop()
+                .maxResultSize(2048, 2048)
+                .createIntent(imageLauncher::launch)
+        } else {
+            PermissionManager.requestImagePermission(requireActivity())
+        }
+    }
+
+    private fun addPhoto() {
+        if (PermissionManager.checkImagePermission(requireActivity())) {
+            ImagePicker.Builder(this@NewEventFragment)
+                .galleryOnly()
+                .crop()
+                .maxResultSize(2048, 2048)
+                .createIntent(imageLauncher::launch)
+        } else {
+            PermissionManager.requestImagePermission(requireActivity())
+        }
+    }
+
+    private fun addSpeaker() {
+        bottomSheet.show(
+            requireActivity().supportFragmentManager,
+            UserBottomSheetFragment.NEW_EVENT_TAG
+        )
     }
 
     private fun checkCoordinate(coordinates: Coordinates?): Boolean {

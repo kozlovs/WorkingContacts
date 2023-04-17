@@ -13,5 +13,4 @@ interface PostRepository {
     suspend fun removeById(id: Long)
     suspend fun save(post: PostRequest, model: MediaModel?)
     suspend fun switchAudioPlayer(post: Post, audioPlayerState: Boolean)
-    suspend fun stopAudioPlayer()
 }

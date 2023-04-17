@@ -3,7 +3,7 @@ package ru.kozlovss.workingcontacts.presentation.post.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import ru.kozlovss.workingcontacts.data.dto.User
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.databinding.CardUserItemLineBinding
 
 class UsersPreviewAdapter : ListAdapter<User, UsersPreviewViewHolder>(UsersPreviewDiffCallback()) {

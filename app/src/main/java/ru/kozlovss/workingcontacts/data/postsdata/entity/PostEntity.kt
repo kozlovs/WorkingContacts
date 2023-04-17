@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.dto.UserPreview
+import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
 
 @Entity
 data class PostEntity(
@@ -78,5 +78,4 @@ data class PostEntity(
     }
 }
 
-fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
 fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity.Companion::fromDto)

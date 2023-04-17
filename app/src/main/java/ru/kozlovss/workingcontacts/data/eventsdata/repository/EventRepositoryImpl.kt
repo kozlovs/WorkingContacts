@@ -1,6 +1,5 @@
 package ru.kozlovss.workingcontacts.data.eventsdata.repository
 
-import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -161,17 +160,10 @@ class EventRepositoryImpl @Inject constructor(
     }
 
     override suspend fun switchAudioPlayer(event: Event, audioPlayerState: Boolean) {
-        val newPost = event.copy(
+        val newEvent = event.copy(
             isPaying = audioPlayerState
         )
-        Log.d("MyLog", "audioPlayerState: $audioPlayerState")
-        Log.d("MyLog", "post: ${event.attachment}")
-        Log.d("MyLog", "newPost: ${newPost.attachment}")
-        //dao.update(PostEntity.fromDto(newPost))
-    }
-
-    override suspend fun stopAudioPlayer() {
-       // dao.stopPlayer()
+        dao.update(EventEntity.fromDto(newEvent))
     }
 
     private suspend fun upload(mediaModel: MediaModel): Media {

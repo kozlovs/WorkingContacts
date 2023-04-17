@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
-import ru.kozlovss.workingcontacts.data.dto.User
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
 interface UserRepository {

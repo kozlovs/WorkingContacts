@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.dto.UserPreview
+import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
 
 @Entity
 data class EventEntity(
@@ -87,5 +87,4 @@ data class EventEntity(
     }
 }
 
-fun List<EventEntity>.toDto(): List<Event> = map(EventEntity::toDto)
 fun List<Event>.toEntity(): List<EventEntity> = map(EventEntity.Companion::fromDto)

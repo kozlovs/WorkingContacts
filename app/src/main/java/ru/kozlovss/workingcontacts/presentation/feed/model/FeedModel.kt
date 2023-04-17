@@ -10,6 +10,5 @@ data class FeedModel(
         object Idle : State
         object Error : State
         object Loading : State
-        object Refreshing : State
     }
 }

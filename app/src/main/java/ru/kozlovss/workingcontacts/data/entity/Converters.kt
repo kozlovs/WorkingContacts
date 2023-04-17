@@ -3,7 +3,7 @@ package ru.kozlovss.workingcontacts.data.entity
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.kozlovss.workingcontacts.data.dto.UserPreview
+import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
 
 class ListLongConverter {
     @TypeConverter

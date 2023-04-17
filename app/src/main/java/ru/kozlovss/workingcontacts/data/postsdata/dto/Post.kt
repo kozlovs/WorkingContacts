@@ -2,7 +2,7 @@ package ru.kozlovss.workingcontacts.data.postsdata.dto
 
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.dto.UserPreview
+import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
 
 data class Post(
     val id: Long,
@@ -22,16 +22,5 @@ data class Post(
     val ownedByMe: Boolean,
     val users: Map<Long, UserPreview>,
     val isPaying: Boolean = false
-) {
-    fun toRequest() = with(this) {
-        PostRequest(
-            id,
-            content,
-            coords,
-            link,
-            attachment,
-            mentionIds
-        )
-    }
-}
+)
 

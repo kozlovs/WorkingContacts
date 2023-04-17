@@ -1,6 +1,5 @@
 package ru.kozlovss.workingcontacts.data.postsdata.repository
 
-import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -114,7 +113,6 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun save(post: PostRequest, model: MediaModel?) {
         try {
             val media = model?.let { upload(it) }
-            Log.d("MyLog", "repository media $media")
             val response = media?.let {
                 apiService.savePost(
                     post.copy(
@@ -124,10 +122,7 @@ class PostRepositoryImpl @Inject constructor(
                         )
                     )
                 ) } ?: apiService.savePost(post)
-            Log.d("MyLog", "repository response ${response.isSuccessful}")
-            Log.d("MyLog", "repository body ${response.errorBody()}")
             val body = checkResponse(response)
-            Log.d("MyLog", "repository post body $body")
             dao.insert(PostEntity.fromDto(body))
             myWallDao.save(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -141,14 +136,7 @@ class PostRepositoryImpl @Inject constructor(
         val newPost = post.copy(
             isPaying = audioPlayerState
         )
-        Log.d("MyLog", "audioPlayerState: $audioPlayerState")
-        Log.d("MyLog", "post: ${post.attachment}")
-        Log.d("MyLog", "newPost: ${newPost.attachment}")
         dao.update(PostEntity.fromDto(newPost))
-    }
-
-    override suspend fun stopAudioPlayer() {
-        dao.stopPlayer()
     }
 
     private suspend fun upload(mediaModel: MediaModel): Media {

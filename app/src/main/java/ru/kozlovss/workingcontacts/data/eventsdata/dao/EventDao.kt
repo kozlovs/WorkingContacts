@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 
 @Dao
@@ -39,4 +40,7 @@ interface EventDao {
 
     @Query("DELETE FROM EventEntity")
     suspend fun clear()
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(post: EventEntity)
 }

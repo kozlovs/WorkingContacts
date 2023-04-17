@@ -145,14 +145,6 @@ class  FeedFragment : Fragment() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.audioPlayerState.collect {
-                    viewModel.stopAudio() // todo тут надо что то сделать
-                }
-            }
-        }
     }
 
     private fun setListeners() = with(binding) {

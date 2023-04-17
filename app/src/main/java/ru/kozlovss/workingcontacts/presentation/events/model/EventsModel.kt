@@ -10,6 +10,5 @@ class EventsModel(
         object Idle : EventsModelState
         object Error : EventsModelState
         object Loading : EventsModelState
-        object Refreshing : EventsModelState
     }
 }

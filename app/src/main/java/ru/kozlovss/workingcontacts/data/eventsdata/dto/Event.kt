@@ -2,7 +2,7 @@ package ru.kozlovss.workingcontacts.data.eventsdata.dto
 
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.dto.UserPreview
+import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
 data class Event(
     val id: Long,
     val authorId: Long,

@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.domain.audioplayer
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ru.kozlovss.workingcontacts.data.dto.Attachment
@@ -12,7 +11,7 @@ class AudioPlayer {
     val isPlaying = _isPlaying.asStateFlow()
 
     private val _track = MutableStateFlow<Attachment?>(null)
-    val track = _track.asStateFlow()
+    private val track = _track.asStateFlow()
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -29,7 +28,6 @@ class AudioPlayer {
                     .build()
             )
             setOnCompletionListener {
-                Log.d("MyLog", "end track")
                 playerStop()
             }
         }

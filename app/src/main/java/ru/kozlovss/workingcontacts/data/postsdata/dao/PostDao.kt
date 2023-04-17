@@ -41,9 +41,6 @@ interface PostDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(post: PostEntity)
 
-    @Query("UPDATE PostEntity SET isPaying = 0")
-    suspend fun stopPlayer()
-
     @Query("SELECT COUNT(*) != 0 FROM PostEntity WHERE id == :id")
     suspend fun containsPostWithId(id: Long): Boolean
 }

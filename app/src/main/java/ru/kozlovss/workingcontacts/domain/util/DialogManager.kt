@@ -7,7 +7,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.kozlovss.workingcontacts.R
 
 object DialogManager {
-
     fun errorDialog(fragment: Fragment, e: Exception) =
         MaterialAlertDialogBuilder(fragment.requireContext())
             .create()
@@ -65,23 +64,5 @@ object DialogManager {
                     dismiss()
                 }
             }.show()
-
-    //        takePhoto.setOnClickListener {
-//            ImagePicker.Builder(this@RegistrationFragment)
-//                .cameraOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
-//        }
-//
-//        gallery.setOnClickListener {
-//            ImagePicker.Builder(this@RegistrationFragment)
-//                .galleryOnly()
-//                .maxResultSize(2048, 2048)
-//                .createIntent(imageLauncher::launch)
-//        }
-//
-//        clear.setOnClickListener {
-//            viewModel.clearAvatar()
-//        }//todo добавить механизм загрузки фото
     private fun makeErrorMessage(e: Exception) = e.message.toString()
 }

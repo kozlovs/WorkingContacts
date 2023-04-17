@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.model
 
-import ru.kozlovss.workingcontacts.data.dto.User
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 
 data class MyWallModel(
     val posts: List<Post> = emptyList(),
@@ -12,7 +12,6 @@ data class MyWallModel(
         object Error : State
         object Loading : State
         object NoLogin : State
-        object RefreshingPosts : State
         object RefreshingJobs : State
     }
 }
