@@ -25,15 +25,7 @@ object PermissionManager {
         .map { activity.checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
         .contains(false)
 
-
-    fun checkCameraPermission(activity: Activity) =
-        activity.checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-
     fun requestImagePermission(activity: Activity) {
         ActivityCompat.requestPermissions(activity, imagePermissions(), 1)
-    }
-
-    fun requestCameraPermission(activity: Activity) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 1)
     }
 }

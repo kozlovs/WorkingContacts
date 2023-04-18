@@ -324,17 +324,24 @@ class NewEventFragment : Fragment() {
                     takePhoto()
                     true
                 }
+
                 R.id.add_photo -> {
                     addPhoto()
                     true
                 }
+
                 R.id.add_speakers -> {
                     addSpeaker()
                     true
                 }
+
                 else -> false
             }
+        }
 
+        topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+            viewModel.clearData()
         }
 
         clear.setOnClickListener {

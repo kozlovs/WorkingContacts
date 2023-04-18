@@ -76,14 +76,14 @@ class RegistrationFragment : Fragment() {
             DialogManager.addPhotoDialog(
                 this@RegistrationFragment,
                 {
-                    if (PermissionManager.checkCameraPermission(requireActivity())) {
+                    if (PermissionManager.checkImagePermission(requireActivity())) {
                         ImagePicker.Builder(this@RegistrationFragment)
                             .cameraOnly()
                             .crop()
                             .maxResultSize(2048, 2048)
                             .createIntent(imageLauncher::launch)
                     } else {
-                        PermissionManager.requestCameraPermission(requireActivity())
+                        PermissionManager.requestImagePermission(requireActivity())
                     }
                 },
                 {

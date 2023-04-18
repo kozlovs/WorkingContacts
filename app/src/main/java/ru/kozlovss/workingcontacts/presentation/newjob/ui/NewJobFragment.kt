@@ -115,6 +115,10 @@ class NewJobFragment : Fragment() {
                 FINISH_TAG -> finishField.setText(date)
             }
         }
+
+        topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun checkFields(): Boolean = with(binding) {

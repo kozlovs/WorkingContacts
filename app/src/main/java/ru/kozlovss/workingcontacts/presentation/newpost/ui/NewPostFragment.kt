@@ -286,6 +286,11 @@ class NewPostFragment : Fragment() {
 
         }
 
+        topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+            viewModel.clearData()
+        }
+
         clear.setOnClickListener {
             viewModel.clearAttachment()
         }
