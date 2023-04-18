@@ -3,7 +3,6 @@ package ru.kozlovss.workingcontacts.presentation.event.ui
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -174,9 +173,13 @@ class EventFragment : Fragment() {
                 }
                 Attachment.Type.VIDEO -> {
                     videoLayout.visibility = View.VISIBLE
-                    val uri = Uri.parse(attachment.url)
-                    video.setVideoURI(uri)
-                    video.seekTo(1)
+                    Glide.with(video)
+                        .load(attachment.url)
+                        .transform(RoundedCorners(30))
+                        .placeholder(R.drawable.baseline_update_24)
+                        .error(R.drawable.baseline_error_outline_24)
+                        .timeout(10_000)
+                        .into(video)
                     image.visibility = View.GONE
                     audio.visibility = View.GONE
                 }
