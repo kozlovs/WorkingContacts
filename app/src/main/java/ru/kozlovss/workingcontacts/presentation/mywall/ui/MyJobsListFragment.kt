@@ -82,6 +82,7 @@ class MyJobsListFragment : Fragment() {
                         NewJobViewModel.Event.CreateNewItem -> {
                             viewModel.getJobs()
                         }
+
                         else -> {}
                     }
                 }
@@ -91,11 +92,14 @@ class MyJobsListFragment : Fragment() {
 
     private fun init() = with(binding) {
         list.layoutManager = LinearLayoutManager(activity)
-        adapter = JobsAdapter(object : OnInteractionListener {
-            override fun onRemove(job: Job) {
-                viewModel.removeJobById(job.id)
-            }
-        })
+        adapter = JobsAdapter(
+            object : OnInteractionListener {
+                override fun onRemove(job: Job) {
+                    viewModel.removeJobById(job.id)
+                }
+            },
+            requireContext()
+        )
 
         binding.list.adapter = adapter
     }

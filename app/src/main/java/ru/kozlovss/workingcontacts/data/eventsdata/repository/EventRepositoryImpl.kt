@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.mediadata.api.MediaApiService
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
@@ -17,8 +16,8 @@ import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
-import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
+import ru.kozlovss.workingcontacts.domain.util.ResponseChecker
 import java.io.IOException
 import javax.inject.Inject
 
@@ -45,7 +44,7 @@ class EventRepositoryImpl @Inject constructor(
     override suspend fun getById(id: Long): Event {
         try {
             val response = apiService.getEventById(id)
-            return checkResponse(response)
+            return ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -56,7 +55,6 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun likeById(id: Long) {
         val event = getById(id)
-        //dao.likeById(id)
         if (event.likedByMe) {
             makeRequestDislikeById(id)
         } else {
@@ -67,7 +65,7 @@ class EventRepositoryImpl @Inject constructor(
     private suspend fun makeRequestLikeById(id: Long) {
         try {
             val response = apiService.likeEventById(id)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
@@ -80,7 +78,7 @@ class EventRepositoryImpl @Inject constructor(
     private suspend fun makeRequestDislikeById(id: Long) {
         try {
             val response = apiService.dislikeEventById(id)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
@@ -102,7 +100,7 @@ class EventRepositoryImpl @Inject constructor(
     private suspend fun makeRequestParticipateById(id: Long) {
         try {
             val response = apiService.participateEventById(id)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
@@ -115,7 +113,7 @@ class EventRepositoryImpl @Inject constructor(
     private suspend fun makeRequestNotParticipateById(id: Long) {
         try {
             val response = apiService.notParticipateEventById(id)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
@@ -129,7 +127,7 @@ class EventRepositoryImpl @Inject constructor(
         try {
             dao.removeById(id)
             val response = apiService.deleteEventById(id)
-            checkResponse(response)
+            ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -150,7 +148,7 @@ class EventRepositoryImpl @Inject constructor(
                         )
                     )
                 ) } ?: apiService.saveEvent(event)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError()
@@ -174,17 +172,12 @@ class EventRepositoryImpl @Inject constructor(
                 requireNotNull(mediaModel.file?.asRequestBody())
             )
             val response = mediaApiService.createMedia(media)
-            return checkResponse(response)
+            return ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
             e.printStackTrace()
             throw UnknownError()
         }
-    }
-
-    private fun <T> checkResponse(response: Response<T>): T {
-        if (!response.isSuccessful) throw ApiError(response.code(), response.message())
-        return response.body() ?: throw ApiError(response.code(), response.message())
     }
 }

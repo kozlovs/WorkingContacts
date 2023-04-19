@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -37,7 +36,6 @@ import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel.Event.*
 import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFragment
-import java.util.concurrent.Executor
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
@@ -46,7 +44,6 @@ class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
     private lateinit var bottomSheet: UserBottomSheetFragment
     private lateinit var adapter: UsersPreviewAdapter
-    private lateinit var executor: Executor
 
     private val imageLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -75,16 +72,11 @@ class NewPostFragment : Fragment() {
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
         bottomSheet = UserBottomSheetFragment.newInstance()
         initAdapter()
-        initExecutor()
         subscribe()
         addBackPressedAction()
         setListeners()
 
         return binding.root
-    }
-
-    private fun initExecutor() {
-        executor = ContextCompat.getMainExecutor(requireContext())
     }
 
     private fun initAdapter() {
@@ -313,7 +305,7 @@ class NewPostFragment : Fragment() {
                     )
                 } else DialogManager.errorAuthDialog(this@NewPostFragment)
             } else {
-                Toast.makeText(context, "check fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.check_fields), Toast.LENGTH_SHORT).show()
             }
             viewModel.clearData()
         }

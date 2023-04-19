@@ -6,14 +6,13 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
 import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
+import ru.kozlovss.workingcontacts.domain.util.ResponseChecker
 import java.io.IOException
 import javax.inject.Inject
 
@@ -47,7 +46,7 @@ class UserRepositoryImpl @Inject constructor(
                 nameRequestBody,
                 file
             )
-            return checkResponse(response)
+            return ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -60,7 +59,7 @@ class UserRepositoryImpl @Inject constructor(
             val response = withContext(Dispatchers.Default) {
                 apiService.logIn(AuthenticationRequest(login, password))
             }
-            return checkResponse(response)
+            return ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -76,14 +75,9 @@ class UserRepositoryImpl @Inject constructor(
         appAuth.removeAuth()
     }
 
-    override suspend fun getMyData(id: Long) = checkResponse(apiService.getUserById(id))
+    override suspend fun getMyData(id: Long) = ResponseChecker.check(apiService.getUserById(id))
 
-    override suspend fun getUserInfoById(id: Long) = checkResponse(apiService.getUserById(id))
+    override suspend fun getUserInfoById(id: Long) = ResponseChecker.check(apiService.getUserById(id))
 
-    override suspend fun getUsers() = checkResponse(apiService.getAllUsers())
-
-    private fun <T> checkResponse(response: Response<T>): T {
-        if (!response.isSuccessful) throw ApiError(response.code(), response.message())
-        return response.body() ?: throw RuntimeException("body is null")
-    }
+    override suspend fun getUsers() = ResponseChecker.check(apiService.getAllUsers())
 }

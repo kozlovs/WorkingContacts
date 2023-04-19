@@ -104,7 +104,7 @@ class NewEventFragment : Fragment() {
     private fun initDatePiker() {
         datePicker = MaterialDatePicker.Builder
             .datePicker()
-            .setTitleText("Select date")
+            .setTitleText(getString(R.string.select_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
         timePicker = MaterialTimePicker.Builder()
@@ -367,7 +367,7 @@ class NewEventFragment : Fragment() {
                     )
                 } else DialogManager.errorAuthDialog(this@NewEventFragment)
             } else {
-                Toast.makeText(context, "check fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.check_fields), Toast.LENGTH_SHORT).show()
             }
             viewModel.clearData()
         }
@@ -392,7 +392,7 @@ class NewEventFragment : Fragment() {
         timePicker.addOnPositiveButtonClickListener {
             val hour = timePicker.hour
             val minute = timePicker.minute
-            timeField.setText(String.format("%02d:%02d", hour, minute))
+            timeField.setText(getString(R.string.time_field_format, hour, minute))
         }
 
         typeGroup.setOnCheckedChangeListener { _, checkedId ->

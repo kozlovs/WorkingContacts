@@ -97,52 +97,55 @@ class MyPostsListFragment : Fragment() {
 
     private fun init() = with(binding) {
         list.layoutManager = LinearLayoutManager(activity)
-        adapter = PostsAdapter(object : OnInteractionListener {
-            override fun onLike(post: Post) {
-                if (viewModel.isLogin()) viewModel.likeById(post.id)
-                else DialogManager.errorAuthDialog(this@MyPostsListFragment)
-            }
-
-            override fun onShare(post: Post) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
+        adapter = PostsAdapter(
+            object : OnInteractionListener {
+                override fun onLike(post: Post) {
+                    if (viewModel.isLogin()) viewModel.likeById(post.id)
+                    else DialogManager.errorAuthDialog(this@MyPostsListFragment)
                 }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
 
-            override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
-            }
+                override fun onShare(post: Post) {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, post.content)
+                        type = "text/plain"
+                    }
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                    startActivity(shareIntent)
+                }
 
-            override fun onEdit(post: Post) {
-                if (userViewModel.isLogin()) {
-                    findNavController().navigate(R.id.action_global_newPostFragment,
-                        Bundle().apply { postId = post.id })
-                } else DialogManager.errorAuthDialog(this@MyPostsListFragment)
-            }
+                override fun onRemove(post: Post) {
+                    viewModel.removeById(post.id)
+                }
 
-            override fun onToVideo(post: Post) {
-                post.attachment?.let {
+                override fun onEdit(post: Post) {
+                    if (userViewModel.isLogin()) {
+                        findNavController().navigate(R.id.action_global_newPostFragment,
+                            Bundle().apply { postId = post.id })
+                    } else DialogManager.errorAuthDialog(this@MyPostsListFragment)
+                }
+
+                override fun onToVideo(post: Post) {
+                    post.attachment?.let {
+                        findNavController().navigate(
+                            R.id.action_global_videoFragment,
+                            Bundle().apply { url = it.url })
+                    }
+                }
+
+                override fun onSwitchAudio(post: Post) {
+                    viewModel.switchAudio(post)
+                }
+
+                override fun onToPost(post: Post) {
                     findNavController().navigate(
-                        R.id.action_global_videoFragment,
-                        Bundle().apply { url = it.url })
+                        R.id.action_global_postFragment,
+                        Bundle().apply { id = post.id })
                 }
-            }
-
-            override fun onSwitchAudio(post: Post) {
-                viewModel.switchAudio(post)
-            }
-
-            override fun onToPost(post: Post) {
-                findNavController().navigate(
-                    R.id.action_global_postFragment,
-                    Bundle().apply { id = post.id })
-            }
-        })
+            },
+            requireContext()
+        )
 
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = PostLoadingStateAdapter { adapter.retry() },

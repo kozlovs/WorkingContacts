@@ -45,67 +45,70 @@ class EventsFragment : Fragment() {
             false
         )
 
-        val adapter = EventsAdapter(object : OnInteractionListener {
-            override fun onLike(event: Event) {
-                if (userViewModel.isLogin()) {
-                    viewModel.likeById(event.id)
-                } else DialogManager.errorAuthDialog(this@EventsFragment)
-            }
-
-            override fun onParticipate(event: Event) {
-                if (userViewModel.isLogin()) {
-                    viewModel.participateById(event.id)
-                } else DialogManager.errorAuthDialog(this@EventsFragment)
-            }
-
-            override fun onShare(event: Event) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, event.content)
-                    type = "text/plain"
+        val adapter = EventsAdapter(
+            object : OnInteractionListener {
+                override fun onLike(event: Event) {
+                    if (userViewModel.isLogin()) {
+                        viewModel.likeById(event.id)
+                    } else DialogManager.errorAuthDialog(this@EventsFragment)
                 }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_event))
-                startActivity(shareIntent)
-            }
 
-            override fun onRemove(event: Event) {
-                if (userViewModel.isLogin()) {
-                    viewModel.removeById(event.id)
-                } else DialogManager.errorAuthDialog(this@EventsFragment)
-            }
-
-            override fun onEdit(event: Event) {
-                if (userViewModel.isLogin()) {
-                    findNavController().navigate(R.id.action_global_newEventFragment,
-                        Bundle().apply { eventId = event.id })
-                } else DialogManager.errorAuthDialog(this@EventsFragment)
-            }
-
-            override fun onToVideo(event: Event) {
-                event.attachment?.let {
-                    findNavController().navigate(R.id.action_global_videoFragment,
-                    Bundle().apply { url = it.url  })
+                override fun onParticipate(event: Event) {
+                    if (userViewModel.isLogin()) {
+                        viewModel.participateById(event.id)
+                    } else DialogManager.errorAuthDialog(this@EventsFragment)
                 }
-            }
 
-            override fun onSwitchAudio(event: Event) {
-                viewModel.switchAudio(event)
-            }
+                override fun onShare(event: Event) {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, event.content)
+                        type = "text/plain"
+                    }
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_share_event))
+                    startActivity(shareIntent)
+                }
 
-            override fun onToEvent(event: Event) {
-                findNavController().navigate(
-                    R.id.action_eventsFragment_to_eventFragment,
-                    Bundle().apply { id = event.id })
-            }
+                override fun onRemove(event: Event) {
+                    if (userViewModel.isLogin()) {
+                        viewModel.removeById(event.id)
+                    } else DialogManager.errorAuthDialog(this@EventsFragment)
+                }
 
-            override fun onToUser(event: Event) {
-                findNavController().navigate(
-                    R.id.action_global_userWallFragment,
-                    Bundle().apply { userId = event.authorId }
-                )
-            }
-        })
+                override fun onEdit(event: Event) {
+                    if (userViewModel.isLogin()) {
+                        findNavController().navigate(R.id.action_global_newEventFragment,
+                            Bundle().apply { eventId = event.id })
+                    } else DialogManager.errorAuthDialog(this@EventsFragment)
+                }
+
+                override fun onToVideo(event: Event) {
+                    event.attachment?.let {
+                        findNavController().navigate(R.id.action_global_videoFragment,
+                            Bundle().apply { url = it.url })
+                    }
+                }
+
+                override fun onSwitchAudio(event: Event) {
+                    viewModel.switchAudio(event)
+                }
+
+                override fun onToEvent(event: Event) {
+                    findNavController().navigate(
+                        R.id.action_eventsFragment_to_eventFragment,
+                        Bundle().apply { id = event.id })
+                }
+
+                override fun onToUser(event: Event) {
+                    findNavController().navigate(
+                        R.id.action_global_userWallFragment,
+                        Bundle().apply { userId = event.authorId }
+                    )
+                }
+            },
+            requireContext()
+        )
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = EventLoadingStateAdapter { adapter.retry() },
             footer = EventLoadingStateAdapter { adapter.retry() }

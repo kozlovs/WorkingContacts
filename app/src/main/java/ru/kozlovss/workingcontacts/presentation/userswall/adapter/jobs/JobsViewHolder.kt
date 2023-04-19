@@ -2,6 +2,7 @@ package ru.kozlovss.workingcontacts.presentation.userswall.adapter.jobs
 
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.CardJobBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
@@ -18,7 +19,7 @@ class JobsViewHolder(
         if (job.finish != null) {
             finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
         } else {
-            finish.text = "till now"
+            finish.text = root.context.getString(R.string.till_now)
         }
         if (job.link != null) {
             link.text = job.link

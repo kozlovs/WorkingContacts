@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -7,12 +8,15 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
 
-class PostsAdapter(private val onInteractionListener: OnInteractionListener) :
+class PostsAdapter(
+    private val onInteractionListener: OnInteractionListener,
+    private val context: Context
+) :
     PagingDataAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
             is Post -> R.layout.card_wall_post
-            else -> error("unknown item type")
+            else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): PostViewHolder =
@@ -22,7 +26,8 @@ class PostsAdapter(private val onInteractionListener: OnInteractionListener) :
                     CardWallPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 PostViewHolder(binding, onInteractionListener)
             }
-            else -> error("unknown view type")
+
+            else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onBindViewHolder(
@@ -59,7 +64,8 @@ class PostsAdapter(private val onInteractionListener: OnInteractionListener) :
                     (holder as? PostViewHolder)?.bind(payload)
                 } ?: (holder as? PostViewHolder)?.bind(feedItem)
             }
-            else -> error("unknown item type")
+
+            else -> error(context.getString(R.string.unknown_item_type))
         }
     }
 }

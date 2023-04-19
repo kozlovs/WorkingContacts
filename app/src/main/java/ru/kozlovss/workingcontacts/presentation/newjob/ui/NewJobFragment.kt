@@ -16,6 +16,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentNewJobBinding
 import ru.kozlovss.workingcontacts.presentation.newjob.model.NewJobModel
 import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel
@@ -45,7 +46,7 @@ class NewJobFragment : Fragment() {
     private fun initDatePiker() {
         datePicker = MaterialDatePicker.Builder
             .datePicker()
-            .setTitleText("Select date")
+            .setTitleText(getString(R.string.select_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
     }
@@ -100,7 +101,7 @@ class NewJobFragment : Fragment() {
                     linkField.text.toString().ifBlank { null },
                 )
             } else {
-                Toast.makeText(context, "check fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.check_fields), Toast.LENGTH_SHORT).show()
             }
         }
 

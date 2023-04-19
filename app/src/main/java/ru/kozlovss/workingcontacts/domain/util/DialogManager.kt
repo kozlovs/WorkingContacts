@@ -11,9 +11,9 @@ object DialogManager {
         MaterialAlertDialogBuilder(fragment.requireContext())
             .create()
             .apply {
-                setTitle("Error")
+                setTitle(R.string.error)
                 setMessage(makeErrorMessage(e))
-                setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+                setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.ok)) { _, _ ->
                     dismiss()
                 }
             }
@@ -23,9 +23,9 @@ object DialogManager {
         MaterialAlertDialogBuilder(fragment.requireContext())
             .create()
             .apply {
-                setTitle("Error")
-                setMessage("Passwords are different")
-                setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
+                setTitle(R.string.error)
+                setMessage(context.getString(R.string.passwords_are_different))
+                setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.ok)) { _, _ ->
                     dismiss()
                 }
             }
@@ -35,15 +35,15 @@ object DialogManager {
         MaterialAlertDialogBuilder(fragment.requireContext())
             .create()
             .apply {
-                setTitle("Auth error")
-                setMessage("Sign In to yur account")
-                setButton(AlertDialog.BUTTON_POSITIVE, "Sign in") { _, _ ->
+                setTitle(R.string.auth_error)
+                setMessage(context.getString(R.string.sign_in_to_your_account))
+                setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.Sign_in)) { _, _ ->
                     fragment.findNavController().navigate(R.id.action_global_authorizationFragment)
                 }
-                setButton(AlertDialog.BUTTON_NEUTRAL, "Sign up") { _, _ ->
+                setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.Sign_up)) { _, _ ->
                     fragment.findNavController().navigate(R.id.action_global_registrationFragment)
                 }
-                setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+                setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.Cancel)) { _, _ ->
                     dismiss()
                 }
             }.show()
@@ -52,15 +52,15 @@ object DialogManager {
         MaterialAlertDialogBuilder(fragment.requireContext())
             .create()
             .apply {
-                setTitle("User's photo upload")
-                setMessage("Add your photo")
-                setButton(AlertDialog.BUTTON_POSITIVE, "Camera") { _, _ ->
+                setTitle(R.string.user_s_photo_upload)
+                setMessage(context.getString(R.string.add_your_photo))
+                setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.camera)) { _, _ ->
                     onToCamera()
                 }
-                setButton(AlertDialog.BUTTON_NEUTRAL, "Gallery") { _, _ ->
+                setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.gallery)) { _, _ ->
                     onToGallery()
                 }
-                setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel") { _, _ ->
+                setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.Cancel)) { _, _ ->
                     dismiss()
                 }
             }.show()

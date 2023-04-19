@@ -110,8 +110,8 @@ class MapFragment : Fragment() {
                 val longitude = point.longitude.toString().substring(0, 9)
                 MaterialAlertDialogBuilder(requireContext())
                     .create().apply {
-                        setTitle("Coordinates")
-                        setMessage("latitude: $latitude\nlongitude: $longitude")
+                        setTitle(R.string.coordinates)
+                        setMessage(getString(R.string.latitude_and_longitude, latitude, longitude))
                         setIcon(R.drawable.baseline_place_24)
                         setButton(
                             AlertDialog.BUTTON_POSITIVE,

@@ -15,7 +15,7 @@
     <string name="log_in_head_card">Log In</string>
     <string name="sign_in_head_card">Sign In</string>
     <string name="authorization_button">Authorization</string>
-    <string name="sign_in_button">Sign in</string>
+    <string name="Sign_in">Sign in</string>
     <string name="photo_error">Pock photo error</string>
     <string name="share_button">Share</string>
     <string name="menu_remove">Remove</string>
@@ -60,4 +60,23 @@
     <string name="date">Date</string>
     <string name="mentions">mentions</string>
     <string name="participants">participants</string>
+    <string name="auth_error">Auth error</string>
+    <string name="sign_in_to_your_account">Sign In to your account</string>
+    <string name="Sign_up">Sign up</string>
+    <string name="Cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
+    <string name="passwords_are_different">Passwords are different</string>
+    <string name="user_s_photo_upload">User\'s photo upload</string>
+    <string name="add_your_photo">Add your photo</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="posts">Posts</string>
+    <string name="till_now">till now</string>
+    <string name="check_fields">check fields</string>
+    <string name="select_date">Select date</string>
+    <string name="time_field_format">%02d:%02d</string>
+    <string name="latitude_and_longitude">latitude: %s \n longitude: %s</string>
+    <string name="unknown_item_type">unknown item type</string>
+    <string name="coordinates">Coordinates</string>
 </resources>

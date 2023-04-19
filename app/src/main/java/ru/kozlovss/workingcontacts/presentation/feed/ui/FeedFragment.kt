@@ -31,7 +31,7 @@ import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion
 import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Companion.postId
 
 @AndroidEntryPoint
-class  FeedFragment : Fragment() {
+class FeedFragment : Fragment() {
 
     private val viewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
@@ -62,61 +62,64 @@ class  FeedFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        adapter = PostsAdapter(object : OnInteractionListener {
-            override fun onLike(post: Post) {
-                if (userViewModel.isLogin()) {
-                    viewModel.likeById(post.id)
-                } else DialogManager.errorAuthDialog(this@FeedFragment)
-            }
-
-            override fun onShare(post: Post) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
+        adapter = PostsAdapter(
+            object : OnInteractionListener {
+                override fun onLike(post: Post) {
+                    if (userViewModel.isLogin()) {
+                        viewModel.likeById(post.id)
+                    } else DialogManager.errorAuthDialog(this@FeedFragment)
                 }
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-            }
 
-            override fun onRemove(post: Post) {
-                if (userViewModel.isLogin()) {
-                    viewModel.removeById(post.id)
-                } else DialogManager.errorAuthDialog(this@FeedFragment)
-            }
-
-            override fun onEdit(post: Post) {
-                if (userViewModel.isLogin()) {
-                    findNavController().navigate(R.id.action_global_newPostFragment,
-                        Bundle().apply { postId = post.id })
-                } else DialogManager.errorAuthDialog(this@FeedFragment)
-            }
-
-            override fun onToVideo(post: Post) {
-                post.attachment?.let {
-                    findNavController().navigate(R.id.action_global_videoFragment,
-                        Bundle().apply { url = it.url  })
+                override fun onShare(post: Post) {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, post.content)
+                        type = "text/plain"
+                    }
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_share_post))
+                    startActivity(shareIntent)
                 }
-            }
 
-            override fun onSwitchAudio(post: Post) {
-                viewModel.switchAudio(post)
-            }
+                override fun onRemove(post: Post) {
+                    if (userViewModel.isLogin()) {
+                        viewModel.removeById(post.id)
+                    } else DialogManager.errorAuthDialog(this@FeedFragment)
+                }
 
-            override fun onToPost(post: Post) {
-                findNavController().navigate(
-                    R.id.action_global_postFragment,
-                    Bundle().apply { id = post.id })
-            }
+                override fun onEdit(post: Post) {
+                    if (userViewModel.isLogin()) {
+                        findNavController().navigate(R.id.action_global_newPostFragment,
+                            Bundle().apply { postId = post.id })
+                    } else DialogManager.errorAuthDialog(this@FeedFragment)
+                }
 
-            override fun onToUser(post: Post) {
-                findNavController().navigate(
-                    R.id.action_global_userWallFragment,
-                    Bundle().apply { userId = post.authorId }
-                )
-            }
-        })
+                override fun onToVideo(post: Post) {
+                    post.attachment?.let {
+                        findNavController().navigate(R.id.action_global_videoFragment,
+                            Bundle().apply { url = it.url })
+                    }
+                }
+
+                override fun onSwitchAudio(post: Post) {
+                    viewModel.switchAudio(post)
+                }
+
+                override fun onToPost(post: Post) {
+                    findNavController().navigate(
+                        R.id.action_global_postFragment,
+                        Bundle().apply { id = post.id })
+                }
+
+                override fun onToUser(post: Post) {
+                    findNavController().navigate(
+                        R.id.action_global_userWallFragment,
+                        Bundle().apply { userId = post.authorId }
+                    )
+                }
+            },
+            requireContext()
+        )
         binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
             header = PostLoadingStateAdapter { adapter.retry() },
             footer = PostLoadingStateAdapter { adapter.retry() }

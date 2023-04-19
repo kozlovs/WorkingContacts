@@ -32,7 +32,7 @@ class UserWallFragment : Fragment() {
         PostsListFragment.newInstance(),
         JobsListFragment.newInstance()
     )
-    private val tabList = listOf("Posts", "Jobs")
+    private val tabList = listOf(getString(R.string.posts), getString(R.string.jobs))
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -7,13 +8,16 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.CardMyJobBinding
 
-class JobsAdapter (private val onInteractionListener: OnInteractionListener) :
+class JobsAdapter(
+    private val onInteractionListener: OnInteractionListener,
+    private val context: Context
+) :
     ListAdapter<Job, JobViewHolder>(JobDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
             is Job -> R.layout.card_my_job
-            else -> error("unknown item type")
+            else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): JobViewHolder =
@@ -23,7 +27,8 @@ class JobsAdapter (private val onInteractionListener: OnInteractionListener) :
                     CardMyJobBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 JobViewHolder(binding, onInteractionListener)
             }
-            else -> error("unknown view type")
+
+            else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onBindViewHolder(
@@ -60,7 +65,8 @@ class JobsAdapter (private val onInteractionListener: OnInteractionListener) :
                     (holder as? JobViewHolder)?.bind(payload)
                 } ?: (holder as? JobViewHolder)?.bind(feedItem)
             }
-            else -> error("unknown item type")
+
+            else -> error(context.getString(R.string.unknown_item_type))
         }
     }
 }

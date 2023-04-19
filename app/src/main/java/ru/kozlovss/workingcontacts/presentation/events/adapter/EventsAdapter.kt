@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.events.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -8,12 +9,15 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.CardEventBinding
 
-class EventsAdapter(private val onInteractionListener: OnInteractionListener) :
+class EventsAdapter(
+    private val onInteractionListener: OnInteractionListener,
+    private val context: Context
+    ) :
     PagingDataAdapter<Event, RecyclerView.ViewHolder>(EventDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
             is Event -> R.layout.card_event
-            else -> error("unknown item type")
+            else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): RecyclerView.ViewHolder =
@@ -23,7 +27,7 @@ class EventsAdapter(private val onInteractionListener: OnInteractionListener) :
                     CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 EventViewHolder(binding, onInteractionListener)
             }
-            else -> error("unknown view type")
+            else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onBindViewHolder(
@@ -60,7 +64,7 @@ class EventsAdapter(private val onInteractionListener: OnInteractionListener) :
                     (holder as? EventViewHolder)?.bind(payload)
                 } ?: (holder as? EventViewHolder)?.bind(feedItem)
             }
-            else -> error("unknown item type")
+            else -> error(context.getString(R.string.unknown_item_type))
         }
     }
 }

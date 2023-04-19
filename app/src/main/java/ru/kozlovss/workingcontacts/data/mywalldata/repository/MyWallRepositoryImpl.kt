@@ -3,7 +3,6 @@ package ru.kozlovss.workingcontacts.data.mywalldata.repository
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import retrofit2.Response
 import ru.kozlovss.workingcontacts.data.mywalldata.api.MyWallApiService
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallRemoteKeyDao
@@ -12,8 +11,8 @@ import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
-import ru.kozlovss.workingcontacts.domain.error.ApiError
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
+import ru.kozlovss.workingcontacts.domain.util.ResponseChecker
 import java.io.IOException
 import javax.inject.Inject
 
@@ -41,7 +40,7 @@ class MyWallRepositoryImpl @Inject constructor(
     override suspend fun getById(id: Long): Post {
         try {
             val response = postApiService.getPostById(id)
-            return checkResponse(response)
+            return ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -62,7 +61,7 @@ class MyWallRepositoryImpl @Inject constructor(
     private suspend fun makeRequestLikeById(id: Long) {
         try {
             val response = postApiService.likePostById(id)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(PostEntity.fromDto(body))
             mainDao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -75,7 +74,7 @@ class MyWallRepositoryImpl @Inject constructor(
     private suspend fun makeRequestDislikeById(id: Long) {
         try {
             val response = postApiService.dislikePostById(id)
-            val body = checkResponse(response)
+            val body = ResponseChecker.check(response)
             dao.insert(PostEntity.fromDto(body))
             mainDao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
@@ -90,16 +89,11 @@ class MyWallRepositoryImpl @Inject constructor(
             dao.removeById(id)
             mainDao.removeById(id)
             val response = postApiService.deletePostById(id)
-            checkResponse(response)
+            ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
             throw UnknownError()
         }
-    }
-
-    private fun <T> checkResponse(response: Response<T>): T {
-        if (!response.isSuccessful) throw ApiError(response.code(), response.message())
-        return response.body() ?: throw ApiError(response.code(), response.message())
     }
 }
