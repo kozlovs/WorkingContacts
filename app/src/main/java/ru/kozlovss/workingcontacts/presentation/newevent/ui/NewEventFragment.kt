@@ -21,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
@@ -114,20 +113,23 @@ class NewEventFragment : Fragment() {
             .build()
     }
 
-    private fun addBackPressedAction() {
+    private fun addBackPressedAction() = with(binding) {
         val callbackExit = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (viewModel.eventId.value != null) {
                     viewModel.clearData()
                 } else {
-                    val content = binding.contentField.text?.trim().toString()
+                    val content = contentField.text?.trim().toString()
                     val dataTime = getDataTimeData()
-                    val link = binding.linkField.text?.trim().toString()
+                    val link = linkField.text?.trim().toString()
                     if (content.isNotBlank()) {
                         viewModel.makeDraft(
                             content,
                             dataTime,
-                            getCoordsData(),
+                            Coordinates.getDataFromFields(
+                                latField.text.toString(),
+                                lonField.text.toString()
+                            ),
                             link.ifBlank { null }
                         )
                     } else viewModel.clearData()
@@ -299,15 +301,9 @@ class NewEventFragment : Fragment() {
                 viewModel.events.collect {
                     when (it) {
                         CreateNewItem -> findNavController().navigateUp()
-                        is ShowSnackBar -> Snackbar.make(
-                            binding.root,
-                            it.text,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-
-                        is ShowToast -> Toast.makeText(
+                        is AddedSpeaker -> Toast.makeText(
                             context,
-                            it.text,
+                            getString(R.string.added_speaker, it.userName),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -356,8 +352,11 @@ class NewEventFragment : Fragment() {
         }
 
         save.setOnClickListener {
-            val coordinates = getCoordsData()
-            if (checkFields() && checkCoordinate(coordinates)) {
+            val coordinates = Coordinates.getDataFromFields(
+                latField.text.toString(),
+                lonField.text.toString()
+            )
+            if (checkFields() && Coordinates.check(coordinates)) {
                 if (userViewModel.isLogin()) {
                     viewModel.save(
                         contentField.text.toString(),
@@ -432,25 +431,6 @@ class NewEventFragment : Fragment() {
             requireActivity().supportFragmentManager,
             UserBottomSheetFragment.NEW_EVENT_TAG
         )
-    }
-
-    private fun checkCoordinate(coordinates: Coordinates?): Boolean {
-        if (coordinates == null) return true
-        try {
-            val lat = coordinates.lat.trim().toDouble()
-            val lon = coordinates.longitude.trim().toDouble()
-            if (lat > Coordinates.MAX_LATITUDE || lat < Coordinates.MIN_LATITUDE) return false
-            if (lon > Coordinates.MAX_LONGITUDE || lon < Coordinates.MIN_LONGITUDE) return false
-            return true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-    }
-
-    private fun getCoordsData(): Coordinates? = with(binding) {
-        return if (latField.text.isNullOrBlank() || lonField.text.isNullOrBlank()) null
-        else Coordinates(latField.text?.trim().toString(), lonField.text?.trim().toString())
     }
 
     private fun getDataTimeData(): String? = with(binding) {

@@ -145,7 +145,7 @@ class NewPostViewModel @Inject constructor(
     fun addMention(user: User) = viewModelScope.launch {
         if (!_mentions.value.contains(user)) {
             _mentions.value = mentions.value.plus(user)
-            _events.emit(Event.ShowToast("Added mention of ${user.name}"))
+            _events.emit(Event.AddedMention(user.name))
         }
     }
 
@@ -156,7 +156,6 @@ class NewPostViewModel @Inject constructor(
 
     sealed class Event {
         object CreateNewItem : Event()
-        data class ShowSnackBar(val text: String) : Event()
-        data class ShowToast(val text: String) : Event()
+        data class AddedMention(val userName: String) : Event()
     }
 }

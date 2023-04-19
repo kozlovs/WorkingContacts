@@ -79,4 +79,6 @@
     <string name="latitude_and_longitude">latitude: %s \n longitude: %s</string>
     <string name="unknown_item_type">unknown item type</string>
     <string name="coordinates">Coordinates</string>
+    <string name="added_speaker">Added speaker %s</string>
+    <string name="added_mention_of">Added mention of %s</string>
 </resources>

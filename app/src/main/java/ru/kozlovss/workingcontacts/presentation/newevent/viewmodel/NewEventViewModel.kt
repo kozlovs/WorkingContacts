@@ -166,7 +166,7 @@ class NewEventViewModel @Inject constructor(
     fun addSpeaker(user: User) = viewModelScope.launch  {
         if (!_speakers.value.contains(user)) {
             _speakers.value = speakers.value.plus(user)
-            _events.emit(LocalEvent.ShowToast("Added speaker ${user.name}"))
+            _events.emit(LocalEvent.AddedSpeaker(user.name))
         }
     }
 
@@ -176,7 +176,6 @@ class NewEventViewModel @Inject constructor(
 
     sealed class LocalEvent {
         object CreateNewItem: LocalEvent()
-        data class ShowSnackBar(val text: String): LocalEvent()
-        data class ShowToast(val text: String): LocalEvent()
+        data class AddedSpeaker(val userName: String): LocalEvent()
     }
 }
