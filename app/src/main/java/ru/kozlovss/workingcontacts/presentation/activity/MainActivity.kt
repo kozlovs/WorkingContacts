@@ -15,15 +15,14 @@ import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private var binding: ActivityMainBinding? = null
     private lateinit var navController: NavController
     private val viewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initBinding()
-        setContentView(binding.root)
+        setContentView(binding!!.root)
         initNavController()
         setDestinationChangedListener()
         setBottomNavigation()
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         navController.setGraph(graph, intent.extras)
     }
 
-    private fun setBottomNavigation() = with(binding) {
+    private fun setBottomNavigation() = with(binding!!) {
         navView.setupWithNavController(navController)
     }
 
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private fun setDestinationChangedListener() = with(binding) {
+    private fun setDestinationChangedListener() = with(binding!!) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
            when(destination.id) {
                R.id.feedFragment -> navView.visibility = View.VISIBLE
@@ -62,7 +61,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun resetNvaViewState() = with(binding.navView) {
+    fun resetNvaViewState() = with(binding!!.navView) {
         if (selectedItemId != R.id.feedFragment) selectedItemId = R.id.feedFragment
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }

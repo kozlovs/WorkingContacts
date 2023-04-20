@@ -22,9 +22,9 @@ import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallView
 @AndroidEntryPoint
 class JobsListFragment : Fragment() {
 
-    private lateinit var binding: FragmentJobsListBinding
+    private var binding: FragmentJobsListBinding? = null
     private val viewModel: UserWallViewModel by activityViewModels()
-    private lateinit var adapter: JobsAdapter
+    private var adapter: JobsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +32,13 @@ class JobsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentJobsListBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,11 +48,11 @@ class JobsListFragment : Fragment() {
         setListeners()
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.jobsData.collect {
-                    adapter.submitList(it)
+                    adapter!!.submitList(it)
                     empty.isVisible = it.isEmpty()
                 }
             }
@@ -61,13 +67,13 @@ class JobsListFragment : Fragment() {
         }
     }
 
-    private fun init() = with(binding) {
+    private fun init() = with(binding!!) {
         list.layoutManager = LinearLayoutManager(activity)
         adapter = JobsAdapter()
         list.adapter = adapter
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         swipeRefresh.setOnRefreshListener {
             viewModel.getJobs()
         }

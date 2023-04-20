@@ -20,7 +20,7 @@ import ru.kozlovss.workingcontacts.presentation.video.viewmodel.VideoViewModel
 
 class VideoFragment : Fragment() {
 
-    private lateinit var binding: FragmentVideoBinding
+    private var binding: FragmentVideoBinding? = null
     private val viewModel: VideoViewModel by viewModels()
 
     override fun onCreateView(
@@ -33,10 +33,15 @@ class VideoFragment : Fragment() {
         setVideo()
         subscribe()
 
-        return binding.root
+        return binding!!.root
     }
 
-    private fun subscribe() = with(binding) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
@@ -49,7 +54,7 @@ class VideoFragment : Fragment() {
         }
     }
 
-    private fun setVideo() = with(binding.video) {
+    private fun setVideo() = with(binding!!.video) {
         val uri = Uri.parse(arguments?.url!!)
         val mediaController = MediaController(context)
         setOnErrorListener { _, _, _ ->

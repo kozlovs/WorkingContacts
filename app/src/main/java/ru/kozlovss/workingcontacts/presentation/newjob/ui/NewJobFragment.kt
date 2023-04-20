@@ -26,10 +26,9 @@ import java.time.ZoneId
 
 @AndroidEntryPoint
 class NewJobFragment : Fragment() {
-    private lateinit var binding: FragmentNewJobBinding
+    private var binding: FragmentNewJobBinding? = null
     private val viewModel: NewJobViewModel by activityViewModels()
-    private lateinit var datePicker: MaterialDatePicker<Long>
-
+    private var datePicker: MaterialDatePicker<Long>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +39,13 @@ class NewJobFragment : Fragment() {
         subscribe()
         setListeners()
 
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        datePicker = null
     }
 
     private fun initDatePiker() {
@@ -51,7 +56,7 @@ class NewJobFragment : Fragment() {
             .build()
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
@@ -70,7 +75,7 @@ class NewJobFragment : Fragment() {
                     when (it) {
                         CreateNewItem -> findNavController().navigateUp()
                         is ShowSnackBar -> Snackbar.make(
-                            binding.root,
+                            root,
                             it.text,
                             Snackbar.LENGTH_LONG
                         )
@@ -82,13 +87,13 @@ class NewJobFragment : Fragment() {
         }
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         startField.setOnClickListener {
-            datePicker.show(parentFragmentManager, START_TAG)
+            datePicker!!.show(parentFragmentManager, START_TAG)
         }
 
         finishField.setOnClickListener {
-            datePicker.show(parentFragmentManager, FINISH_TAG)
+            datePicker!!.show(parentFragmentManager, FINISH_TAG)
         }
 
         save.setOnClickListener {
@@ -105,13 +110,13 @@ class NewJobFragment : Fragment() {
             }
         }
 
-        datePicker.addOnPositiveButtonClickListener {
+        datePicker!!.addOnPositiveButtonClickListener {
             val date = Instant
                 .ofEpochMilli(it)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
                 .toString()
-            when (datePicker.tag) {
+            when (datePicker!!.tag) {
                 START_TAG -> startField.setText(date)
                 FINISH_TAG -> finishField.setText(date)
             }
@@ -122,7 +127,7 @@ class NewJobFragment : Fragment() {
         }
     }
 
-    private fun checkFields(): Boolean = with(binding) {
+    private fun checkFields(): Boolean = with(binding!!) {
         return !(nameField.text.isNullOrBlank() ||
                 positionField.text.isNullOrBlank() ||
                 startField.text.isNullOrBlank())

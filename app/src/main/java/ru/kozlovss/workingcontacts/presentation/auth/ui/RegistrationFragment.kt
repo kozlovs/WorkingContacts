@@ -25,7 +25,7 @@ import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 
 class RegistrationFragment : Fragment() {
 
-    private lateinit var binding: FragmentRegistrationBinding
+    private var binding: FragmentRegistrationBinding? = null
     private val viewModel: UserViewModel by activityViewModels()
 
     private val imageLauncher =
@@ -50,13 +50,17 @@ class RegistrationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
-
         setListeners()
         subscribe()
-        return binding.root
+        return binding!!.root
     }
 
-    private fun setListeners() = with(binding) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
+    private fun setListeners() = with(binding!!) {
         signInButton.setOnClickListener {
             if (isPasswordsDifferent()) {
                 DialogManager.differentPasswordsDialog(this@RegistrationFragment)
@@ -105,11 +109,11 @@ class RegistrationFragment : Fragment() {
         }
     }
 
-    private fun isPasswordsDifferent() = with(binding) {
+    private fun isPasswordsDifferent() = with(binding!!) {
         password.text.toString() != rePassword.text.toString()
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.token.collect {

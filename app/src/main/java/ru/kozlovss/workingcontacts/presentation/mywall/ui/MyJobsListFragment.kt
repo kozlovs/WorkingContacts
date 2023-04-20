@@ -26,11 +26,11 @@ import ru.kozlovss.workingcontacts.presentation.newjob.viewmodel.NewJobViewModel
 @AndroidEntryPoint
 class MyJobsListFragment : Fragment() {
 
-    private lateinit var binding: FragmentMyJobsListBinding
+    private var binding: FragmentMyJobsListBinding? = null
     private val viewModel: MyWallViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private val newJobViewModel: NewJobViewModel by activityViewModels()
-    private lateinit var adapter: JobsAdapter
+    private var adapter: JobsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +38,7 @@ class MyJobsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMyJobsListBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,11 +48,17 @@ class MyJobsListFragment : Fragment() {
         setListeners()
     }
 
-    private fun subscribe() = with(binding) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
+    }
+
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.jobsData.collectLatest {
-                    adapter.submitList(it)
+                    adapter!!.submitList(it)
                     empty.isVisible = it.isEmpty()
                 }
             }
@@ -90,7 +96,7 @@ class MyJobsListFragment : Fragment() {
         }
     }
 
-    private fun init() = with(binding) {
+    private fun init() = with(binding!!) {
         list.layoutManager = LinearLayoutManager(activity)
         adapter = JobsAdapter(
             object : OnInteractionListener {
@@ -101,10 +107,10 @@ class MyJobsListFragment : Fragment() {
             requireContext()
         )
 
-        binding.list.adapter = adapter
+        list.adapter = adapter
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         swipeRefresh.setOnRefreshListener {
             viewModel.getJobs()
         }

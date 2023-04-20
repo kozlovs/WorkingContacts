@@ -76,7 +76,7 @@
     <string name="check_fields">check fields</string>
     <string name="select_date">Select date</string>
     <string name="time_field_format">%02d:%02d</string>
-    <string name="latitude_and_longitude">latitude: %s \n longitude: %s</string>
+    <string name="latitude_and_longitude">latitude: %s\nlongitude: %s</string>
     <string name="unknown_item_type">unknown item type</string>
     <string name="coordinates">Coordinates</string>
     <string name="added_speaker">Added speaker %s</string>

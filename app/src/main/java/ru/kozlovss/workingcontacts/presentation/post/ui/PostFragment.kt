@@ -44,9 +44,9 @@ class PostFragment : Fragment() {
     private val feedViewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private val postViewModel: PostViewModel by viewModels()
-    private lateinit var binding: FragmentPostBinding
+    private var binding: FragmentPostBinding? = null
     private var id: Long? = null
-    private lateinit var adapter: UsersPreviewAdapter
+    private var adapter: UsersPreviewAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,22 +60,28 @@ class PostFragment : Fragment() {
         )
 
         id = arguments?.id
-
-        adapter = UsersPreviewAdapter()
-        binding.mentionsList.adapter = adapter
+        initAdapter()
         subscribe()
         setListeners()
         postViewModel.updateData(id)
 
-        return binding.root
+        return binding!!.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         postViewModel.clearData()
+        id = null
+        binding = null
+        adapter = null
     }
 
-    private fun subscribe() = with(binding) {
+    private fun initAdapter() {
+        adapter = UsersPreviewAdapter()
+        binding!!.mentionsList.adapter = adapter
+    }
+
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 postViewModel.data.collect { post ->
@@ -104,7 +110,7 @@ class PostFragment : Fragment() {
         }
     }
 
-    private fun updateUi(post: Post) = with(binding) {
+    private fun updateUi(post: Post) = with(binding!!) {
         author.text = post.author
         authorJob.text = post.authorJob
         published.text = Formatter.localDateTimeToPostDateFormat(post.published)
@@ -121,7 +127,7 @@ class PostFragment : Fragment() {
         mentionsCount.text = post.mentionIds.size.toString()
         mentionsSelector.isVisible = post.mentionIds.isNotEmpty()
         place.isVisible = post.coords != null
-        adapter.submitList(post.mentionIds.map {
+        adapter!!.submitList(post.mentionIds.map {
             val preview = post.users[it]!!
             User(
                 it,
@@ -183,7 +189,7 @@ class PostFragment : Fragment() {
         }
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
 
         like.setOnClickListener {
             if (userViewModel.isLogin()) {

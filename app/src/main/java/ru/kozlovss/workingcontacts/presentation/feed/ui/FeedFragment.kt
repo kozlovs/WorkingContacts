@@ -35,8 +35,8 @@ class FeedFragment : Fragment() {
 
     private val viewModel: FeedViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var adapter: PostsAdapter
-    private lateinit var binding: FragmentFeedBinding
+    private var adapter: PostsAdapter? = null
+    private var binding: FragmentFeedBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +53,13 @@ class FeedFragment : Fragment() {
         subscribe()
         setListeners()
 
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter = null
+        binding = null
     }
 
     private fun resetNvaViewState() {
@@ -61,7 +67,7 @@ class FeedFragment : Fragment() {
         activity.resetNvaViewState()
     }
 
-    private fun initAdapter() {
+    private fun initAdapter() = with(binding!!) {
         adapter = PostsAdapter(
             object : OnInteractionListener {
                 override fun onLike(post: Post) {
@@ -120,22 +126,22 @@ class FeedFragment : Fragment() {
             },
             requireContext()
         )
-        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = PostLoadingStateAdapter { adapter.retry() },
-            footer = PostLoadingStateAdapter { adapter.retry() }
+        list.adapter = adapter!!.withLoadStateHeaderAndFooter(
+            header = PostLoadingStateAdapter { adapter!!.retry() },
+            footer = PostLoadingStateAdapter { adapter!!.retry() }
         )
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.data.collectLatest(adapter::submitData)
+                viewModel.data.collectLatest(adapter!!::submitData)
             }
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                adapter.loadStateFlow.collectLatest {
+                adapter!!.loadStateFlow.collectLatest {
                     swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
                 }
             }
@@ -144,19 +150,19 @@ class FeedFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.authState.collect {
-                    adapter.refresh()
+                    adapter!!.refresh()
                 }
             }
         }
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         add.setOnClickListener {
             if (userViewModel.isLogin()) {
                 findNavController().navigate(R.id.action_global_newPostFragment)
             } else DialogManager.errorAuthDialog(this@FeedFragment)
         }
 
-        swipeRefresh.setOnRefreshListener(adapter::refresh)
+        swipeRefresh.setOnRefreshListener(adapter!!::refresh)
     }
 }

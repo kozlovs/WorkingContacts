@@ -27,12 +27,9 @@ import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallView
 @AndroidEntryPoint
 class UserWallFragment : Fragment() {
     private val viewModel: UserWallViewModel by activityViewModels()
-    private lateinit var binding: FragmentUserWallBinding
-    private val fragmentsList = listOf(
-        PostsListFragment.newInstance(),
-        JobsListFragment.newInstance()
-    )
-    private val tabList = listOf(getString(R.string.posts), getString(R.string.jobs))
+    private var binding: FragmentUserWallBinding? = null
+    private var fragmentsList: List<Fragment>? = null
+    private var tabList: List<String>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,15 +40,18 @@ class UserWallFragment : Fragment() {
         init()
         subscribe()
 
-        return binding.root
+        return binding!!.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.clearData()
+        binding = null
+        fragmentsList = null
+        tabList = null
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -85,12 +85,17 @@ class UserWallFragment : Fragment() {
         }
     }
 
-    private fun init() = with(binding) {
+    private fun init() = with(binding!!) {
+        fragmentsList = listOf(
+            PostsListFragment.newInstance(),
+            JobsListFragment.newInstance()
+        )
+        tabList = listOf(getString(R.string.posts), getString(R.string.jobs))
         viewModel.getData(arguments?.userId!!)
-        val adapter = VpAdapter(activity as FragmentActivity, fragmentsList)
+        val adapter = VpAdapter(activity as FragmentActivity, fragmentsList!!)
         vp.adapter = adapter
         TabLayoutMediator(tabLayout, vp) { tab, pos ->
-            tab.text = tabList[pos]
+            tab.text = tabList!![pos]
         }.attach()
     }
 

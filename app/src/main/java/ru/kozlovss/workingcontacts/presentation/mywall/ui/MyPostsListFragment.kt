@@ -34,10 +34,10 @@ import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion
 @AndroidEntryPoint
 class MyPostsListFragment : Fragment() {
 
-    private lateinit var binding: FragmentMyPostsListBinding
+    private var binding: FragmentMyPostsListBinding? = null
     private val viewModel: MyWallViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var adapter: PostsAdapter
+    private var adapter: PostsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +45,7 @@ class MyPostsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMyPostsListBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,21 +55,27 @@ class MyPostsListFragment : Fragment() {
         setListeners()
     }
 
-    private fun subscribe() = with(binding) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
+    }
+
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.postData.collectLatest {
-                    adapter.submitData(it)
+                    adapter!!.submitData(it)
                 }
             }
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                adapter.loadStateFlow.collectLatest {
+                adapter!!.loadStateFlow.collectLatest {
                     swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
                     empty.isVisible =
-                        adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
+                        adapter!!.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
                 }
             }
         }
@@ -79,7 +85,7 @@ class MyPostsListFragment : Fragment() {
                 viewModel.state.collectLatest { state ->
                     errorLayout.isVisible = state is MyWallModel.State.Error
                     empty.isVisible =
-                        adapter.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
+                        adapter!!.itemCount < 1 && viewModel.state.value is MyWallModel.State.Idle
                 }
             }
         }
@@ -88,14 +94,14 @@ class MyPostsListFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.token.collect { token ->
                     token?.let {
-                        adapter.refresh()
+                        adapter!!.refresh()
                     } ?: viewModel.clearMyData()
                 }
             }
         }
     }
 
-    private fun init() = with(binding) {
+    private fun init() = with(binding!!) {
         list.layoutManager = LinearLayoutManager(activity)
         adapter = PostsAdapter(
             object : OnInteractionListener {
@@ -147,15 +153,15 @@ class MyPostsListFragment : Fragment() {
             requireContext()
         )
 
-        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = PostLoadingStateAdapter { adapter.retry() },
-            footer = PostLoadingStateAdapter { adapter.retry() }
+        list.adapter = adapter!!.withLoadStateHeaderAndFooter(
+            header = PostLoadingStateAdapter { adapter!!.retry() },
+            footer = PostLoadingStateAdapter { adapter!!.retry() }
         )
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
+            adapter!!.refresh()
         }
     }
 

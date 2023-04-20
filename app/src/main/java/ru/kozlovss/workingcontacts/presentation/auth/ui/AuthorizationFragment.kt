@@ -19,7 +19,7 @@ import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 @AndroidEntryPoint
 class AuthorizationFragment : Fragment() {
 
-    private lateinit var binding: FragmentAuthorizationBinding
+    private var binding: FragmentAuthorizationBinding? = null
     private val viewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -30,10 +30,15 @@ class AuthorizationFragment : Fragment() {
 
         setListeners()
         subscribe()
-        return binding.root
+        return binding!!.root
     }
 
-    private fun setListeners() = with(binding) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
+    private fun setListeners() = with(binding!!) {
         logInButton.setOnClickListener {
             val login = login.text.toString()
             val password = password.text.toString()

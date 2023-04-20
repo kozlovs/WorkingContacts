@@ -30,9 +30,9 @@ import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.i
 @AndroidEntryPoint
 class PostsListFragment : Fragment() {
 
-    private lateinit var binding: FragmentPostsListBinding
+    private var binding: FragmentPostsListBinding? = null
     private val viewModel: UserWallViewModel by activityViewModels()
-    private lateinit var adapter: PostsAdapter
+    private var adapter: PostsAdapter? = null
 
 
     override fun onCreateView(
@@ -41,7 +41,13 @@ class PostsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostsListBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,11 +57,11 @@ class PostsListFragment : Fragment() {
         setListeners()
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.postsData.collect {
-                    adapter.submitList(it)
+                    adapter!!.submitList(it)
                     empty.isVisible = it.isEmpty()
                 }
             }
@@ -70,7 +76,7 @@ class PostsListFragment : Fragment() {
         }
     }
 
-    private fun init() = with(binding) {
+    private fun init() = with(binding!!) {
         list.layoutManager = LinearLayoutManager(activity)
         adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -110,7 +116,7 @@ class PostsListFragment : Fragment() {
         list.adapter = adapter
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         swipeRefresh.setOnRefreshListener {
             viewModel.userData.value?.let {
                 viewModel.getPosts()

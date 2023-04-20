@@ -42,11 +42,11 @@ class MapFragment : Fragment() {
     private val newPostViewModel: NewPostViewModel by activityViewModels()
     private val newEventViewModel: NewEventViewModel by activityViewModels()
     private var mapView: MapView? = null
-    private lateinit var userLocation: UserLocationLayer
-    private lateinit var binding: FragmentMapBinding
+    private var userLocation: UserLocationLayer? = null
+    private var binding: FragmentMapBinding? = null
     private var listener: InputListener? = null
-    private lateinit var locationObjectListener: UserLocationObjectListener
-    private lateinit var permissionLauncher: ActivityResultLauncher<String>
+    private var locationObjectListener: UserLocationObjectListener? = null
+    private var permissionLauncher: ActivityResultLauncher<String>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +70,10 @@ class MapFragment : Fragment() {
             toTargetPlace(it.lat, it.lon)
         }
 
-        return binding.root
+        return binding!!.root
     }
 
-    private fun toTargetPlace(latitude: String?, longitude: String?) = with(binding.mapview) {
+    private fun toTargetPlace(latitude: String?, longitude: String?) = with(binding!!.mapview) {
         if (checkCoordinates(latitude, longitude)) {
             val cameraPosition = map.cameraPosition
             map.move(
@@ -143,11 +143,11 @@ class MapFragment : Fragment() {
 
             override fun onObjectUpdated(view: UserLocationView, event: ObjectEvent) {
                 arguments?.sourcePageTag?.let {
-                    userLocation.cameraPosition()?.target?.let {
+                    userLocation!!.cameraPosition()?.target?.let {
                         mapView?.map?.move(CameraPosition(it, 10F, 0F, 0F))
                     }
                 }
-                userLocation.setObjectListener(null)
+                userLocation!!.setObjectListener(null)
             }
         }
     }
@@ -157,9 +157,9 @@ class MapFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
                 when {
                     granted -> {
-                        userLocation.isVisible = true
-                        userLocation.isHeadingEnabled = false
-                        userLocation.cameraPosition()?.target?.also {
+                        userLocation!!.isVisible = true
+                        userLocation!!.isHeadingEnabled = false
+                        userLocation!!.cameraPosition()?.target?.also {
                             val map = mapView?.map ?: return@registerForActivityResult
                             val cameraPosition = map.cameraPosition
                             map.move(
@@ -184,24 +184,24 @@ class MapFragment : Fragment() {
     }
 
     private fun initMapView() {
-        mapView = binding.mapview.apply {
+        mapView = binding!!.mapview.apply {
             userLocation = MapKitFactory.getInstance().createUserLocationLayer(mapWindow)
             if (requireActivity()
                     .checkSelfPermission(
                         Manifest.permission.ACCESS_FINE_LOCATION
                     ) == PackageManager.PERMISSION_GRANTED
             ) {
-                userLocation.isVisible = true
-                userLocation.isHeadingEnabled = false
+                userLocation!!.isVisible = true
+                userLocation!!.isHeadingEnabled = false
             }
 
             listener?.let { map.addInputListener(it) }
 
-            userLocation.setObjectListener(locationObjectListener)
+            userLocation!!.setObjectListener(locationObjectListener)
         }
     }
 
-    fun setListeners() = with(binding) {
+    fun setListeners() = with(binding!!) {
         plus.setOnClickListener {
             mapview.map.move(
                 CameraPosition(
@@ -225,7 +225,7 @@ class MapFragment : Fragment() {
         }
 
         location.setOnClickListener {
-            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            permissionLauncher!!.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
@@ -258,6 +258,11 @@ class MapFragment : Fragment() {
         super.onDestroyView()
         viewModel.clearPlace()
         mapView = null
+        binding = null
+        listener = null
+        userLocation = null
+        locationObjectListener = null
+        permissionLauncher = null
     }
 
     override fun onStart() {

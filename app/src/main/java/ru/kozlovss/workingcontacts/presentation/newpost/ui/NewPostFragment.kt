@@ -1,10 +1,12 @@
 package ru.kozlovss.workingcontacts.presentation.newpost.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
@@ -40,27 +42,10 @@ import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFrag
 class NewPostFragment : Fragment() {
     private val viewModel: NewPostViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var binding: FragmentNewPostBinding
-    private lateinit var bottomSheet: UserBottomSheetFragment
-    private lateinit var adapter: UsersPreviewAdapter
-
-    private val imageLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            when (it.resultCode) {
-                ImagePicker.RESULT_ERROR -> {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.photo_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                Activity.RESULT_OK -> {
-                    val uri = it.data?.data
-                    viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
-                }
-            }
-        }
+    private var binding: FragmentNewPostBinding? = null
+    private var bottomSheet: UserBottomSheetFragment? = null
+    private var adapter: UsersPreviewAdapter? = null
+    private var imageLauncher: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,12 +55,41 @@ class NewPostFragment : Fragment() {
         arguments?.postId?.let { viewModel.getData(it) }
         binding = FragmentNewPostBinding.inflate(inflater, container, false)
         bottomSheet = UserBottomSheetFragment.newInstance()
+        initImageLauncher()
         initAdapter()
         subscribe()
         addBackPressedAction()
         setListeners()
 
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        bottomSheet = null
+        adapter = null
+        imageLauncher = null
+    }
+
+    private fun initImageLauncher() {
+        imageLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                when (it.resultCode) {
+                    ImagePicker.RESULT_ERROR -> {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.photo_error),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    Activity.RESULT_OK -> {
+                        val uri = it.data?.data
+                        viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
+                    }
+                }
+            }
     }
 
     private fun initAdapter() {
@@ -84,10 +98,10 @@ class NewPostFragment : Fragment() {
                 viewModel.removeMention(user)
             }
         })
-        binding.mentions.adapter = adapter
+        binding!!.mentions.adapter = adapter
     }
 
-    private fun addBackPressedAction() = with(binding) {
+    private fun addBackPressedAction() = with(binding!!) {
         val callbackExit = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (viewModel.postId.value != null) {
@@ -113,7 +127,7 @@ class NewPostFragment : Fragment() {
         backPressedDispatcher.addCallback(viewLifecycleOwner, callbackExit)
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.content.collect {
@@ -223,7 +237,7 @@ class NewPostFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.mentions.collect {
                     mentions.isVisible = it.isNotEmpty()
-                    adapter.submitList(it)
+                    adapter!!.submitList(it)
                 }
             }
         }
@@ -255,7 +269,7 @@ class NewPostFragment : Fragment() {
         }
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
@@ -320,7 +334,7 @@ class NewPostFragment : Fragment() {
                 .cameraOnly()
                 .crop()
                 .maxResultSize(2048, 2048)
-                .createIntent(imageLauncher::launch)
+                .createIntent(imageLauncher!!::launch)
         } else {
             PermissionManager.requestImagePermission(requireActivity())
         }
@@ -332,20 +346,20 @@ class NewPostFragment : Fragment() {
                 .galleryOnly()
                 .crop()
                 .maxResultSize(2048, 2048)
-                .createIntent(imageLauncher::launch)
+                .createIntent(imageLauncher!!::launch)
         } else {
             PermissionManager.requestImagePermission(requireActivity())
         }
     }
 
     private fun addMentions() {
-        bottomSheet.show(
+        bottomSheet!!.show(
             requireActivity().supportFragmentManager,
             UserBottomSheetFragment.NEW_POST_TAG
         )
     }
 
-    private fun checkFields(): Boolean = with(binding) {
+    private fun checkFields(): Boolean = with(binding!!) {
         return (!contentField.text.isNullOrBlank())
     }
 

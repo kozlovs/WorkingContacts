@@ -24,8 +24,8 @@ import ru.kozlovss.workingcontacts.presentation.userslist.viewmodel.UsersViewMod
 @AndroidEntryPoint
 class UserBottomSheetFragment : BottomSheetDialogFragment() {
 
-    private lateinit var binding: FragmentUserBottomSheetBinding
-    private lateinit var adapter: UsersAdapter
+    private var binding: FragmentUserBottomSheetBinding? = null
+    private var adapter: UsersAdapter? = null
     private val viewModel: UsersViewModel by viewModels()
     private val newPostViewModel: NewPostViewModel by activityViewModels()
     private val newEventViewModel: NewEventViewModel by activityViewModels()
@@ -35,6 +35,23 @@ class UserBottomSheetFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentUserBottomSheetBinding.inflate(inflater, container, false)
+        initAdapter()
+        subscribe()
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getData()
+    }
+
+    private fun initAdapter() = with(binding!!) {
         adapter = UsersAdapter(object : OnInteractionListener {
             override fun onSelect(user: User) {
                 when(tag) {
@@ -43,26 +60,15 @@ class UserBottomSheetFragment : BottomSheetDialogFragment() {
                 }
             }
         })
-        binding.list.layoutManager = GridLayoutManager(context, COLUMN_COUNT)
-        binding.list.adapter = adapter
-
-
-        subscribe()
-
-
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getData()
+        list.layoutManager = GridLayoutManager(context, COLUMN_COUNT)
+        list.adapter = adapter
     }
 
     private fun subscribe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userData.collect {
-                    adapter.submitList(it)
+                    adapter!!.submitList(it)
                 }
             }
         }

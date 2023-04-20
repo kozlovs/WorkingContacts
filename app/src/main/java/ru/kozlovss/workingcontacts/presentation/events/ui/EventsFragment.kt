@@ -33,19 +33,34 @@ import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion
 class EventsFragment : Fragment() {
     private val viewModel: EventsViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
+    private var binding: FragmentEventsBinding? = null
+    private var adapter: EventsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentEventsBinding.inflate(
+        binding = FragmentEventsBinding.inflate(
             inflater,
             container,
             false
         )
+        initAdapter()
+        subscribe()
+        setListeners()
 
-        val adapter = EventsAdapter(
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        adapter = null
+    }
+
+    private fun initAdapter() = with(binding!!) {
+        adapter = EventsAdapter(
             object : OnInteractionListener {
                 override fun onLike(event: Event) {
                     if (userViewModel.isLogin()) {
@@ -109,28 +124,23 @@ class EventsFragment : Fragment() {
             },
             requireContext()
         )
-        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = EventLoadingStateAdapter { adapter.retry() },
-            footer = EventLoadingStateAdapter { adapter.retry() }
+        list.adapter = adapter!!.withLoadStateHeaderAndFooter(
+            header = EventLoadingStateAdapter { adapter!!.retry() },
+            footer = EventLoadingStateAdapter { adapter!!.retry() }
         )
-
-        subscribe(binding, adapter)
-        setListeners(binding, adapter)
-
-        return binding.root
     }
 
-    private fun subscribe(binding: FragmentEventsBinding, adapter: EventsAdapter) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.data.collectLatest(adapter::submitData)
+                viewModel.data.collectLatest(adapter!!::submitData)
             }
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                adapter.loadStateFlow.collectLatest {
-                    binding.swipeRefresh.isRefreshing =
+                adapter!!.loadStateFlow.collectLatest {
+                    swipeRefresh.isRefreshing =
                         it.refresh is LoadState.Loading
                 }
             }
@@ -139,21 +149,21 @@ class EventsFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.token.collect {
-                    adapter.refresh()
+                    adapter!!.refresh()
                 }
             }
         }
     }
 
-    private fun setListeners(binding: FragmentEventsBinding, adapter: EventsAdapter) {
-        binding.add.setOnClickListener {
+    private fun setListeners() = with(binding!!) {
+        add.setOnClickListener {
             if (userViewModel.isLogin()) {
                 findNavController().navigate(R.id.action_global_newEventFragment)
-            } else DialogManager.errorAuthDialog(this)
+            } else DialogManager.errorAuthDialog(this@EventsFragment)
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            adapter.refresh()
+        swipeRefresh.setOnRefreshListener {
+            adapter!!.refresh()
         }
     }
 }

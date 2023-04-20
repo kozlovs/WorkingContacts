@@ -1,6 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.newevent.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.net.toFile
@@ -49,29 +51,12 @@ import java.time.*
 class NewEventFragment : Fragment() {
     private val viewModel: NewEventViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var binding: FragmentNewEventBinding
-    private lateinit var datePicker: MaterialDatePicker<Long>
-    private lateinit var timePicker: MaterialTimePicker
-    private lateinit var bottomSheet: UserBottomSheetFragment
-    private lateinit var adapter: UsersPreviewAdapter
-
-    private val imageLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            when (it.resultCode) {
-                ImagePicker.RESULT_ERROR -> {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.photo_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                Activity.RESULT_OK -> {
-                    val uri = it.data?.data
-                    viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
-                }
-            }
-        }
+    private var binding: FragmentNewEventBinding? = null
+    private var datePicker: MaterialDatePicker<Long>? = null
+    private var timePicker: MaterialTimePicker? = null
+    private var bottomSheet: UserBottomSheetFragment? = null
+    private var adapter: UsersPreviewAdapter? = null
+    private var imageLauncher: ActivityResultLauncher<Intent>? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
@@ -82,13 +67,44 @@ class NewEventFragment : Fragment() {
         arguments?.eventId?.let { viewModel.getData(it) }
         binding = FragmentNewEventBinding.inflate(inflater, container, false)
         bottomSheet = UserBottomSheetFragment.newInstance()
+        initImageLauncher()
         initAdapter()
         initDatePiker()
         subscribe()
         addBackPressedAction()
         setListeners()
 
-        return binding.root
+        return binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        datePicker = null
+        timePicker = null
+        bottomSheet = null
+        adapter = null
+        imageLauncher = null
+    }
+
+    private fun initImageLauncher() {
+        imageLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                when (it.resultCode) {
+                    ImagePicker.RESULT_ERROR -> {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.photo_error),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    Activity.RESULT_OK -> {
+                        val uri = it.data?.data
+                        viewModel.saveAttachment(uri, uri?.toFile(), Attachment.Type.IMAGE)
+                    }
+                }
+            }
     }
 
     private fun initAdapter() {
@@ -97,7 +113,7 @@ class NewEventFragment : Fragment() {
                 viewModel.removeSpeaker(user)
             }
         })
-        binding.speakers.adapter = adapter
+        binding!!.speakers.adapter = adapter
     }
 
     private fun initDatePiker() {
@@ -113,7 +129,7 @@ class NewEventFragment : Fragment() {
             .build()
     }
 
-    private fun addBackPressedAction() = with(binding) {
+    private fun addBackPressedAction() = with(binding!!) {
         val callbackExit = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (viewModel.eventId.value != null) {
@@ -142,7 +158,7 @@ class NewEventFragment : Fragment() {
     }
 
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.content.collect {
@@ -280,7 +296,7 @@ class NewEventFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.speakers.collect {
                     speakers.isVisible = it.isNotEmpty()
-                    adapter.submitList(it)
+                    adapter!!.submitList(it)
                 }
             }
         }
@@ -313,7 +329,7 @@ class NewEventFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         bottomAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.take_photo -> {
@@ -372,14 +388,14 @@ class NewEventFragment : Fragment() {
         }
 
         dateField.setOnClickListener {
-            datePicker.show(parentFragmentManager, null)
+            datePicker!!.show(parentFragmentManager, null)
         }
 
         timeField.setOnClickListener {
-            timePicker.show(parentFragmentManager, null)
+            timePicker!!.show(parentFragmentManager, null)
         }
 
-        datePicker.addOnPositiveButtonClickListener {
+        datePicker!!.addOnPositiveButtonClickListener {
             val date = Instant
                 .ofEpochMilli(it)
                 .atZone(ZoneId.systemDefault())
@@ -388,9 +404,9 @@ class NewEventFragment : Fragment() {
             dateField.setText(date)
         }
 
-        timePicker.addOnPositiveButtonClickListener {
-            val hour = timePicker.hour
-            val minute = timePicker.minute
+        timePicker!!.addOnPositiveButtonClickListener {
+            val hour = timePicker!!.hour
+            val minute = timePicker!!.minute
             timeField.setText(getString(R.string.time_field_format, hour, minute))
         }
 
@@ -408,7 +424,7 @@ class NewEventFragment : Fragment() {
                 .cameraOnly()
                 .crop()
                 .maxResultSize(2048, 2048)
-                .createIntent(imageLauncher::launch)
+                .createIntent(imageLauncher!!::launch)
         } else {
             PermissionManager.requestImagePermission(requireActivity())
         }
@@ -420,20 +436,20 @@ class NewEventFragment : Fragment() {
                 .galleryOnly()
                 .crop()
                 .maxResultSize(2048, 2048)
-                .createIntent(imageLauncher::launch)
+                .createIntent(imageLauncher!!::launch)
         } else {
             PermissionManager.requestImagePermission(requireActivity())
         }
     }
 
     private fun addSpeaker() {
-        bottomSheet.show(
+        bottomSheet!!.show(
             requireActivity().supportFragmentManager,
             UserBottomSheetFragment.NEW_EVENT_TAG
         )
     }
 
-    private fun getDataTimeData(): String? = with(binding) {
+    private fun getDataTimeData(): String? = with(binding!!) {
         return if (dateField.text.isNullOrBlank() || timeField.text.isNullOrBlank()) null
         else {
             val time = LocalTime.parse(timeField.text.toString())
@@ -442,7 +458,7 @@ class NewEventFragment : Fragment() {
         }
     }
 
-    private fun checkFields(): Boolean = with(binding) {
+    private fun checkFields(): Boolean = with(binding!!) {
         return (!contentField.text.isNullOrBlank() &&
                 !dateField.text.isNullOrBlank() &&
                 !timeField.text.isNullOrBlank())

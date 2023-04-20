@@ -44,7 +44,7 @@ class EventFragment : Fragment() {
     private val eventsViewModel: EventsViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
     private val eventViewModel: EventViewModel by viewModels()
-    private lateinit var binding: FragmentEventBinding
+    private var binding: FragmentEventBinding? = null
     private var id: Long? = null
     private lateinit var adapter: UsersPreviewAdapter
 
@@ -63,20 +63,21 @@ class EventFragment : Fragment() {
 
 
         adapter = UsersPreviewAdapter()
-        binding.speakersList.adapter = adapter
+        binding!!.speakersList.adapter = adapter
         subscribe()
         setListeners()
         eventViewModel.updateData(id)
 
-        return binding.root
+        return binding!!.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         eventViewModel.clearData()
+        binding = null
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 eventViewModel.data.collect { event ->
@@ -107,7 +108,7 @@ class EventFragment : Fragment() {
         }
     }
 
-    private fun updateUi(event: Event) = with(binding) {
+    private fun updateUi(event: Event) = with(binding!!) {
         author.text = event.author
         authorJob.text = event.authorJob
         published.text = Formatter.localDateTimeToPostDateFormat(event.published)
@@ -191,7 +192,7 @@ class EventFragment : Fragment() {
         }
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         like.setOnClickListener {
             if (userViewModel.isLogin()) {
                 eventViewModel.likeById(id)

@@ -30,12 +30,9 @@ class MyWallFragment : Fragment() {
 
     private val myWallViewModel: MyWallViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var binding: FragmentMyWallBinding
-    private val fragmentsList = listOf(
-        MyPostsListFragment.newInstance(),
-        MyJobsListFragment.newInstance()
-    )
-    private val tabList = listOf(getString(R.string.posts), getString(R.string.jobs))
+    private var binding: FragmentMyWallBinding? = null
+    private var fragmentsList: List<Fragment>? = null
+    private var tabList: List<String>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,18 +44,30 @@ class MyWallFragment : Fragment() {
         subscribe()
         setListeners()
 
-        return binding.root
+        return binding!!.root
     }
 
-    private fun init() = with(binding) {
-        val adapter = VpAdapter(activity as FragmentActivity, fragmentsList)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+        tabList = null
+        fragmentsList = null
+    }
+
+    private fun init() = with(binding!!) {
+        fragmentsList = listOf(
+            MyPostsListFragment.newInstance(),
+            MyJobsListFragment.newInstance()
+        )
+        tabList = listOf(getString(R.string.posts), getString(R.string.jobs))
+        val adapter = VpAdapter(activity as FragmentActivity, fragmentsList!!)
         vp.adapter = adapter
         TabLayoutMediator(tabLayout, vp) { tab, pos ->
-            tab.text = tabList[pos]
+            tab.text = tabList!![pos]
         }.attach()
     }
 
-    private fun subscribe() = with(binding) {
+    private fun subscribe() = with(binding!!) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 myWallViewModel.myData.collect {
@@ -100,7 +109,7 @@ class MyWallFragment : Fragment() {
         }
     }
 
-    private fun setListeners() = with(binding) {
+    private fun setListeners() = with(binding!!) {
         add.setOnClickListener {
             if (myWallViewModel.isLogin()) {
                 if (tabLayout.selectedTabPosition == 0) findNavController().navigate(R.id.action_global_newPostFragment)
