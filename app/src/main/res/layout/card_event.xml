@@ -134,43 +134,34 @@
             app:layout_constraintTop_toBottomOf="@id/date_time_icon"
             app:shapeAppearanceOverlay="@style/roundedPostImageView" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/audio"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/audio_button"
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/date_time_icon">
+            android:checkable="true"
+            app:icon="@drawable/ic_play_pause"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/date_time_icon"
+            tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/switch_button"
-                style="?attr/materialIconButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                app:icon="@drawable/ic_play_pause"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SpeakableTextPresentCheck,DuplicateSpeakableTextCheck" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/track_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/switch_button"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="My Name Is" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/audio_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/audio_button"
+            app:layout_constraintStart_toEndOf="@id/audio_button"
+            app:layout_constraintTop_toTopOf="@id/audio_button"
+            tools:text="My Name Is" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="image, video, date_time_icon, date_time, audio" />
+            app:constraint_referenced_ids="image, video, date_time_icon, date_time, audio_button, audio_name" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/link"

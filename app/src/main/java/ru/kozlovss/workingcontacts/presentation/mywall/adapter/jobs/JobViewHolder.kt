@@ -4,39 +4,33 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
-import ru.kozlovss.workingcontacts.databinding.CardMyJobBinding
+import ru.kozlovss.workingcontacts.databinding.CardJobBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
 class JobViewHolder(
-    private val binding: CardMyJobBinding,
+    private val binding: CardJobBinding,
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(job: Job) = with(binding) {
         name.text = job.name
         position.text = job.position
-        start.text = Formatter.localDateTimeToJobDateFormat(job.start)
-        finishCaption.isVisible = job.finish != null
-        if (job.finish != null) {
-            finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
+        period.text = if (job.finish.isNullOrBlank()) {
+            root.context.getString(
+                R.string.period_start_till_now,
+                Formatter.localDateTimeToJobDateFormat(job.start)
+            )
         } else {
-            finish.text = root.context.getString(R.string.till_now)
+            root.context.getString(
+                R.string.period_start_and_finish,
+                Formatter.localDateTimeToJobDateFormat(job.start),
+                Formatter.localDateTimeToJobDateFormat(job.finish)
+            )
         }
-        if (job.link != null) {
-            link.text = job.link
-            link.isVisible = true
-        } else {
-            link.isVisible = false
-        }
-        setListeners(job)
-    }
+        link.isVisible = job.link != null
+        job.link?.let { link.text = job.link }
 
-    fun bind(payload: Payload) = with(binding) {
-        payload.name?.let { name.text = it }
-        payload.position?.let { position.text = it }
-        payload.start?.let { start.text = Formatter.localDateTimeToJobDateFormat(it) }
-        payload.finish?.let { finish.text = Formatter.localDateTimeToJobDateFormat(it) }
-        payload.link?.let { link.text = it }
+        setListeners(job)
     }
 
     private fun setListeners(job: Job) = with(binding) {

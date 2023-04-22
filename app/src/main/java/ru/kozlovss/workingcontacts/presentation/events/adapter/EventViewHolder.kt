@@ -65,13 +65,14 @@ class EventViewHolder(
                             .into(image)
                         video.visibility = View.GONE
                         videoIcon.visibility = View.GONE
-                        audio.visibility = View.GONE
+                        audioButton.visibility = View.GONE
+                        audioName.visibility = View.GONE
                     }
                     Attachment.Type.AUDIO -> {
-                        audio.visibility = View.VISIBLE
+                        audioButton.visibility = View.VISIBLE
+                        audioName.visibility = View.VISIBLE
                         image.visibility = View.GONE
                         videoIcon.visibility = View.GONE
-                        audio.visibility = View.GONE
                     }
                     Attachment.Type.VIDEO -> {
                         video.visibility = View.VISIBLE
@@ -83,14 +84,16 @@ class EventViewHolder(
                             .timeout(10_000)
                             .into(video)
                         image.visibility = View.GONE
-                        audio.visibility = View.GONE
+                        audioButton.visibility = View.GONE
+                        audioName.visibility = View.GONE
                     }
                 }
             } else {
                 image.visibility = View.GONE
                 video.visibility = View.GONE
                 videoIcon.visibility = View.GONE
-                audio.visibility = View.GONE
+                audioButton.visibility = View.GONE
+                audioName.visibility = View.GONE
             }
         }
 
@@ -140,7 +143,7 @@ class EventViewHolder(
             content.text = it
         }
         payload.isPlay?.let {
-            switchButton.isChecked = it
+            audioButton.isChecked = it
         }
     }
 
@@ -161,7 +164,7 @@ class EventViewHolder(
             onInteractionListener.onToVideo(event)
         }
 
-        switchButton.setOnClickListener {
+        audioButton.setOnClickListener {
             onInteractionListener.onSwitchAudio(event)
         }
 

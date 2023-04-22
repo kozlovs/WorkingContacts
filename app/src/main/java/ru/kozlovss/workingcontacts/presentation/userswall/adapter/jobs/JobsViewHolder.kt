@@ -1,5 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.userswall.adapter.jobs
 
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.kozlovss.workingcontacts.R
@@ -12,20 +13,22 @@ class JobsViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(job: Job) = with(binding) {
+        remove.visibility = View.GONE
         name.text = job.name
         position.text = job.position
-        start.text = Formatter.localDateTimeToJobDateFormat(job.start)
-        finishCaption.isVisible = job.finish != null
-        if (job.finish != null) {
-            finish.text = Formatter.localDateTimeToJobDateFormat(job.finish)
+        period.text = if (job.finish.isNullOrBlank()) {
+            root.context.getString(
+                R.string.period_start_till_now,
+                Formatter.localDateTimeToJobDateFormat(job.start)
+            )
         } else {
-            finish.text = root.context.getString(R.string.till_now)
+            root.context.getString(
+                R.string.period_start_and_finish,
+                Formatter.localDateTimeToJobDateFormat(job.start),
+                Formatter.localDateTimeToJobDateFormat(job.finish)
+            )
         }
-        if (job.link != null) {
-            link.text = job.link
-            link.isVisible = true
-        } else {
-            link.isVisible = false
-        }
+        link.isVisible = job.link != null
+        job.link?.let { link.text = job.link }
     }
 }
