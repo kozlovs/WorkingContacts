@@ -63,29 +63,33 @@ class EventViewHolder(
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)
                             .into(image)
-                        videoLayout.visibility = View.GONE
+                        video.visibility = View.GONE
+                        videoIcon.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                     Attachment.Type.AUDIO -> {
                         audio.visibility = View.VISIBLE
                         image.visibility = View.GONE
-                        videoLayout.visibility = View.GONE
+                        videoIcon.visibility = View.GONE
+                        audio.visibility = View.GONE
                     }
                     Attachment.Type.VIDEO -> {
-                        videoLayout.visibility = View.VISIBLE
-                        Glide.with(videoPreview)
+                        video.visibility = View.VISIBLE
+                        videoIcon.visibility = View.VISIBLE
+                        Glide.with(video)
                             .load(attachment.url)
                             .placeholder(R.drawable.baseline_update_24)
                             .error(R.drawable.baseline_error_outline_24)
                             .timeout(10_000)
-                            .into(videoPreview)
+                            .into(video)
                         image.visibility = View.GONE
                         audio.visibility = View.GONE
                     }
                 }
             } else {
                 image.visibility = View.GONE
-                videoLayout.visibility = View.GONE
+                video.visibility = View.GONE
+                videoIcon.visibility = View.GONE
                 audio.visibility = View.GONE
             }
         }
@@ -153,7 +157,7 @@ class EventViewHolder(
             onInteractionListener.onShare(event)
         }
 
-        videoPreview.setOnClickListener {
+        video.setOnClickListener {
             onInteractionListener.onToVideo(event)
         }
 
