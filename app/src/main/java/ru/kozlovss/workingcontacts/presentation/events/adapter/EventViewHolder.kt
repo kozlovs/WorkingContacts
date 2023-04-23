@@ -23,12 +23,8 @@ class EventViewHolder(
             author.text = event.author
             authorJob.text = event.authorJob
             published.text = Formatter.localDateTimeToPostDateFormat(event.published)
-            if (event.link != null) {
-                link.visibility = View.VISIBLE
-                link.text = event.link
-            } else {
-                link.visibility = View.GONE
-            }
+            link.isVisible = event.link != null
+            event.link?.let { link.text = event.link }
             content.text = event.content
             like.isChecked = event.likedByMe
             like.text = Formatter.numberToShortFormat(event.likeOwnerIds.size)
@@ -73,6 +69,7 @@ class EventViewHolder(
                         audioName.visibility = View.VISIBLE
                         image.visibility = View.GONE
                         videoIcon.visibility = View.GONE
+                        video.visibility = View.GONE
                     }
                     Attachment.Type.VIDEO -> {
                         video.visibility = View.VISIBLE

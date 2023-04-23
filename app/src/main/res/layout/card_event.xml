@@ -74,14 +74,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:barrierDirection="bottom"
-            app:barrierMargin="16dp"
-            app:constraint_referenced_ids="avatar, author, author_job, published" />
+            app:constraint_referenced_ids="avatar, author, author_job, published, menu" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/card_margin_side"
+            android:layout_marginTop="@dimen/card_margin_between"
             app:layout_constraintTop_toBottomOf="@+id/barrier_info" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -176,13 +175,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:barrierDirection="bottom"
-            app:barrierMargin="16dp"
             app:constraint_referenced_ids="link" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/speakers_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/card_margin_between"
             android:src="@drawable/baseline_hail_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrier_link" />
@@ -191,8 +190,9 @@
             android:id="@+id/speakers_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/card_margin_between"
+            android:paddingHorizontal="@dimen/card_margin_between"
             app:layout_constraintBottom_toBottomOf="@id/speakers_icon"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/speakers_icon"
             app:layout_constraintTop_toTopOf="@id/speakers_icon" />
 
@@ -200,27 +200,26 @@
             android:id="@+id/place_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/card_margin_between"
+            android:layout_marginTop="@dimen/card_margin_between"
+            android:paddingEnd="@dimen/card_margin_between"
             android:src="@drawable/baseline_place_24"
-            app:layout_constraintBottom_toBottomOf="@id/speakers_count"
             app:layout_constraintStart_toEndOf="@id/speakers_count"
-            app:layout_constraintTop_toTopOf="@id/speakers_count" />
+            app:layout_constraintTop_toBottomOf="@id/barrier_link"
+            tools:ignore="RtlSymmetry" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/type_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/card_margin_between"
-            app:layout_constraintBottom_toBottomOf="@id/place_icon"
+            android:layout_marginTop="@dimen/card_margin_between"
             app:layout_constraintStart_toEndOf="@id/place_icon"
-            app:layout_constraintTop_toTopOf="@id/place_icon" />
+            app:layout_constraintTop_toBottomOf="@id/barrier_link" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier_indicators"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:barrierDirection="bottom"
-            app:barrierMargin="@dimen/card_margin_between"
             app:constraint_referenced_ids="speakers_icon, speakers_count, place_icon, type_icon" />
 
         <com.google.android.material.button.MaterialButton
@@ -231,8 +230,9 @@
             android:backgroundTint="@color/red_like"
             android:checkable="true"
             app:icon="@drawable/like_24"
+            app:layout_constraintBottom_toBottomOf="@+id/participate"
             app:layout_constraintEnd_toStartOf="@id/participate"
-            app:layout_constraintTop_toBottomOf="@id/barrier_indicators" />
+            app:layout_constraintTop_toTopOf="@id/participate" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/participate"
@@ -241,14 +241,16 @@
             android:layout_marginEnd="8dp"
             android:checkable="true"
             app:icon="@drawable/participate"
+            app:layout_constraintBottom_toBottomOf="@+id/share"
             app:layout_constraintEnd_toStartOf="@id/share"
-            app:layout_constraintTop_toBottomOf="@id/barrier_indicators" />
+            app:layout_constraintTop_toTopOf="@id/share" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/share"
             style="@style/Widget.Material3.Button.IconButton.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/card_margin_between"
             app:icon="@drawable/baseline_share_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrier_indicators"

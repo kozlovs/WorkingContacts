@@ -22,12 +22,8 @@ class PostViewHolder(
         author.text = post.author
         authorJob.text = post.authorJob
         published.text = Formatter.localDateTimeToPostDateFormat(post.published)
-        if (post.link != null) {
-            link.visibility = View.VISIBLE
-            link.text = post.link
-        } else {
-            link.visibility = View.GONE
-        }
+        link.isVisible = post.link != null
+        post.link?.let { link.text = post.link }
         content.text = post.content
         like.isChecked = post.likedByMe
         like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)

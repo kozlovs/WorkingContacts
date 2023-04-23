@@ -112,12 +112,8 @@ class EventFragment : Fragment() {
         author.text = event.author
         authorJob.text = event.authorJob
         published.text = Formatter.localDateTimeToPostDateFormat(event.published)
-        if (event.link != null) {
-            link.visibility = View.VISIBLE
-            link.text = event.link
-        } else {
-            link.visibility = View.GONE
-        }
+        link.isVisible = event.link != null
+        event.link?.let { link.text = event.link }
         content.text = event.content
         type.text = event.type.toString()
         if (event.type == Event.Type.ONLINE) typeIcon.setImageResource(R.drawable.baseline_online_24)
@@ -164,16 +160,21 @@ class EventFragment : Fragment() {
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
                         .into(image)
-                    videoLayout.visibility = View.GONE
-                    audio.visibility = View.GONE
+                    video.visibility = View.GONE
+                    videoIcon.visibility = View.GONE
+                    audioButton.visibility = View.GONE
+                    audioName.visibility = View.GONE
                 }
                 Attachment.Type.AUDIO -> {
-                    audio.visibility = View.VISIBLE
+                    audioButton.visibility = View.VISIBLE
+                    audioName.visibility = View.VISIBLE
                     image.visibility = View.GONE
-                    videoLayout.visibility = View.GONE
+                    videoIcon.visibility = View.GONE
+                    video.visibility = View.GONE
                 }
                 Attachment.Type.VIDEO -> {
-                    videoLayout.visibility = View.VISIBLE
+                    video.visibility = View.VISIBLE
+                    videoIcon.visibility = View.VISIBLE
                     Glide.with(video)
                         .load(attachment.url)
                         .transform(RoundedCorners(30))
@@ -182,13 +183,16 @@ class EventFragment : Fragment() {
                         .timeout(10_000)
                         .into(video)
                     image.visibility = View.GONE
-                    audio.visibility = View.GONE
+                    audioButton.visibility = View.GONE
+                    audioName.visibility = View.GONE
                 }
             }
         } else {
             image.visibility = View.GONE
-            videoLayout.visibility = View.GONE
-            audio.visibility = View.GONE
+            video.visibility = View.GONE
+            videoIcon.visibility = View.GONE
+            audioButton.visibility = View.GONE
+            audioName.visibility = View.GONE
         }
     }
 
@@ -262,7 +266,7 @@ class EventFragment : Fragment() {
             }
         }
 
-        switchButton.setOnClickListener {
+        audioButton.setOnClickListener {
             eventViewModel.data.value?.let { event ->
                 eventsViewModel.switchAudio(event)
             }
