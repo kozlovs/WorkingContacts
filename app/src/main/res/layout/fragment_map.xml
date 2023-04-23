@@ -30,12 +30,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:contentDescription="@string/zoom_out"
         app:layout_constraintBottom_toTopOf="@id/location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/plus"
         app:srcCompat="@drawable/baseline_remove_24"
-        tools:ignore="RedundantDescriptionCheck"
-        android:contentDescription="@string/zoom_out" />
+        tools:ignore="RedundantDescriptionCheck,ImageContrastCheck" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/location"

@@ -167,19 +167,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/date">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/type_of_event"
                     android:textSize="16sp" />
 
-                <RadioButton
+                <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/online_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/online" />
 
-                <RadioButton
+                <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/offline_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

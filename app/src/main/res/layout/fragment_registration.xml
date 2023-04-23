@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.auth.ui.RegistrationFragment">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/app_name"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/sign_in_card_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
