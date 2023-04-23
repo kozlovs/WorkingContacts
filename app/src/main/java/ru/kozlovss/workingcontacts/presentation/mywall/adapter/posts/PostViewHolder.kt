@@ -11,26 +11,27 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
+import ru.kozlovss.workingcontacts.databinding.CardPostBinding
 import ru.kozlovss.workingcontacts.domain.util.Formatter
 
 class PostViewHolder(
-    private val binding: CardWallPostBinding,
+    private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) = with(binding) {
+        author.visibility = View.GONE
+        authorJob.visibility = View.GONE
+        avatar.visibility = View.GONE
+        barrierInfo.visibility = View.GONE
+        menu.visibility = View.GONE
         published.text = Formatter.localDateTimeToPostDateFormat(post.published)
         content.text = post.content
-        if (post.link != null) {
-            link.visibility = View.VISIBLE
-            link.text = post.link
-        } else {
-            link.visibility = View.GONE
-        }
+        link.isVisible = post.link != null
+        post.link?.let { link.text = post.link }
         like.isChecked = post.likedByMe
         like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
-        switchButton.isChecked = post.isPaying == true
+        audioButton.isChecked = post.isPaying == true
         mentionsCount.text = post.mentionIds.size.toString()
         mentionsCount.isVisible = post.mentionIds.isNotEmpty()
         mentionsIcon.isVisible = post.mentionIds.isNotEmpty()
@@ -48,32 +49,43 @@ class PostViewHolder(
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
                         .into(image)
-                    videoLayout.visibility = View.GONE
-                    audio.visibility = View.GONE
+                    video.visibility = View.GONE
+                    videoIcon.visibility = View.GONE
+                    audioButton.visibility = View.GONE
+                    audioName.visibility = View.GONE
                 }
+
                 Attachment.Type.AUDIO -> {
-                    audio.visibility = View.VISIBLE
+                    audioButton.visibility = View.VISIBLE
+                    audioName.visibility = View.VISIBLE
                     image.visibility = View.GONE
-                    videoLayout.visibility = View.GONE
+                    videoIcon.visibility = View.GONE
+                    video.visibility = View.GONE
                 }
+
                 Attachment.Type.VIDEO -> {
-                    videoLayout.visibility = View.VISIBLE
-                    Glide.with(videoPreview)
+                    video.visibility = View.VISIBLE
+                    videoIcon.visibility = View.VISIBLE
+                    Glide.with(video)
                         .load(attachment.url)
                         .placeholder(R.drawable.baseline_update_24)
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
-                        .into(videoPreview)
+                        .into(video)
                     image.visibility = View.GONE
-                    audio.visibility = View.GONE
+                    audioButton.visibility = View.GONE
+                    audioName.visibility = View.GONE
                 }
             }
         } else {
             image.visibility = View.GONE
-            videoLayout.visibility = View.GONE
-            audio.visibility = View.GONE
+            video.visibility = View.GONE
+            videoIcon.visibility = View.GONE
+            audioButton.visibility = View.GONE
+            audioName.visibility = View.GONE
         }
-        setListeners(binding, post)
+
+        setListeners(post)
     }
 
     fun bind(payload: Payload) = with(binding) {
@@ -92,11 +104,11 @@ class PostViewHolder(
             content.text = it
         }
         payload.isPlay?.let {
-            switchButton.isChecked = it
+            audioButton.isChecked = it
         }
     }
 
-    private fun setListeners(binding: CardWallPostBinding, post: Post) = with(binding) {
+    private fun setListeners(post: Post) = with(binding) {
         like.setOnClickListener {
             onInteractionListener.onLike(post)
         }
@@ -105,11 +117,11 @@ class PostViewHolder(
             onInteractionListener.onShare(post)
         }
 
-        videoPreview.setOnClickListener {
+        video.setOnClickListener {
             onInteractionListener.onToVideo(post)
         }
 
-        switchButton.setOnClickListener {
+        audioButton.setOnClickListener {
             onInteractionListener.onSwitchAudio(post)
         }
 
@@ -117,24 +129,30 @@ class PostViewHolder(
             onInteractionListener.onToPost(post)
         }
 
-        cardPost.setOnLongClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.options_post_menu)
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.remove -> {
-                            onInteractionListener.onRemove(post)
-                            true
-                        }
-                        R.id.edit -> {
-                            onInteractionListener.onEdit(post)
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
+        cardPost.setOnLongClickListener { view ->
+            showMenu(view, post)
             true
         }
+    }
+
+    private fun showMenu(v: View, post: Post) {
+        PopupMenu(v.context, v).apply {
+            inflate(R.menu.options_post_menu)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.remove -> {
+                        onInteractionListener.onRemove(post)
+                        true
+                    }
+
+                    R.id.edit -> {
+                        onInteractionListener.onEdit(post)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }.show()
     }
 }

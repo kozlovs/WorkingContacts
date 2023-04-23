@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.databinding.CardWallPostBinding
+import ru.kozlovss.workingcontacts.databinding.CardPostBinding
 
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener,
@@ -15,15 +15,15 @@ class PostsAdapter(
     PagingDataAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
-            is Post -> R.layout.card_wall_post
+            is Post -> R.layout.card_post
             else -> error(context.getString(R.string.unknown_item_type))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewTipe: Int): PostViewHolder =
         when (viewTipe) {
-            R.layout.card_wall_post -> {
+            R.layout.card_post -> {
                 val binding =
-                    CardWallPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 PostViewHolder(binding, onInteractionListener)
             }
 

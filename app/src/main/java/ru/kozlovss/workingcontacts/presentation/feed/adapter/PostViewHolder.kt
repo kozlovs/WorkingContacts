@@ -31,7 +31,7 @@ class PostViewHolder(
         content.text = post.content
         like.isChecked = post.likedByMe
         like.text = Formatter.numberToShortFormat(post.likeOwnerIds.size)
-        switchButton.isChecked = post.isPaying == true
+        audioButton.isChecked = post.isPaying == true
         menu.isVisible = post.ownedByMe
         mentionsCount.text = post.mentionIds.size.toString()
         mentionsCount.isVisible = post.mentionIds.isNotEmpty()
@@ -60,33 +60,43 @@ class PostViewHolder(
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
                         .into(image)
-                    videoLayout.visibility = View.GONE
-                    audio.visibility = View.GONE
+                    video.visibility = View.GONE
+                    videoIcon.visibility = View.GONE
+                    audioButton.visibility = View.GONE
+                    audioName.visibility = View.GONE
                 }
+
                 Attachment.Type.AUDIO -> {
-                    audio.visibility = View.VISIBLE
+                    audioButton.visibility = View.VISIBLE
+                    audioName.visibility = View.VISIBLE
                     image.visibility = View.GONE
-                    videoLayout.visibility = View.GONE
+                    videoIcon.visibility = View.GONE
+                    video.visibility = View.GONE
                 }
+
                 Attachment.Type.VIDEO -> {
-                    videoLayout.visibility = View.VISIBLE
-                    Glide.with(videoPreview)
+                    video.visibility = View.VISIBLE
+                    videoIcon.visibility = View.VISIBLE
+                    Glide.with(video)
                         .load(attachment.url)
                         .placeholder(R.drawable.baseline_update_24)
                         .error(R.drawable.baseline_error_outline_24)
                         .timeout(10_000)
-                        .into(videoPreview)
+                        .into(video)
                     image.visibility = View.GONE
-                    audio.visibility = View.GONE
+                    audioButton.visibility = View.GONE
+                    audioName.visibility = View.GONE
                 }
             }
         } else {
             image.visibility = View.GONE
-            videoLayout.visibility = View.GONE
-            audio.visibility = View.GONE
+            video.visibility = View.GONE
+            videoIcon.visibility = View.GONE
+            audioButton.visibility = View.GONE
+            audioName.visibility = View.GONE
         }
 
-        setListeners(binding, post)
+        setListeners(post)
     }
 
     fun bind(payload: Payload) = with(binding) {
@@ -105,11 +115,11 @@ class PostViewHolder(
             content.text = it
         }
         payload.isPlay?.let {
-            switchButton.isChecked = it
+            audioButton.isChecked = it
         }
     }
 
-    private fun setListeners(binding: CardPostBinding, post: Post) = with(binding) {
+    private fun setListeners(post: Post) = with(binding) {
         like.setOnClickListener {
             onInteractionListener.onLike(post)
         }
@@ -118,11 +128,11 @@ class PostViewHolder(
             onInteractionListener.onShare(post)
         }
 
-        videoLayout.setOnClickListener {
+        video.setOnClickListener {
             onInteractionListener.onToVideo(post)
         }
 
-        switchButton.setOnClickListener {
+        audioButton.setOnClickListener {
             onInteractionListener.onSwitchAudio(post)
         }
 
@@ -156,10 +166,12 @@ class PostViewHolder(
                         onInteractionListener.onRemove(post)
                         true
                     }
+
                     R.id.edit -> {
                         onInteractionListener.onEdit(post)
                         true
                     }
+
                     else -> false
                 }
             }
