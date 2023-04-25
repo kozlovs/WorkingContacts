@@ -55,58 +55,19 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeById(id: Long) {
-        val post = getById(id)
-        dao.likeById(id)
-        if (post.likedByMe) {
-            makeRequestDislikeById(id)
-        } else {
-            makeRequestLikeById(id)
-        }
+    override suspend fun likeById(id: Long): Post {
+        val response = apiService.likePostById(id)
+        return ResponseChecker.check(response)
     }
 
-    private suspend fun makeRequestLikeById(id: Long) {
-        try {
-            val response = apiService.likePostById(id)
-            val body = ResponseChecker.check(response)
-            val post = PostEntity.fromDto(body)
-            dao.insert(post)
-            if (post.ownedByMe) myWallDao.insert(post)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
-    }
-
-    private suspend fun makeRequestDislikeById(id: Long) {
-        try {
-            val response = apiService.dislikePostById(id)
-            val body = ResponseChecker.check(response)
-            val post = PostEntity.fromDto(body)
-            dao.insert(post)
-            if (post.ownedByMe) myWallDao.insert(post)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+    override suspend fun dislikeById(id: Long): Post {
+        val response = apiService.dislikePostById(id)
+        return ResponseChecker.check(response)
     }
 
     override suspend fun removeById(id: Long) {
-        try {
-            dao.removeById(id)
-            myWallDao.removeById(id)
-            val response = apiService.deletePostById(id)
-            ResponseChecker.check(response)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+        val response = apiService.deletePostById(id)
+        ResponseChecker.check(response)
     }
 
     override suspend fun save(post: PostRequest, model: MediaModel?) {
@@ -120,7 +81,8 @@ class PostRepositoryImpl @Inject constructor(
                             model.type
                         )
                     )
-                ) } ?: apiService.savePost(post)
+                )
+            } ?: apiService.savePost(post)
             val body = ResponseChecker.check(response)
             dao.insert(PostEntity.fromDto(body))
             myWallDao.save(PostEntity.fromDto(body))

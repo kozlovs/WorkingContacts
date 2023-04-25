@@ -25,13 +25,6 @@ interface PostDao {
     suspend fun save(post: PostEntity) =
         if (post.id == 0L) insert(post) else updateContentById(post.id, post.content)
 
-    @Query("""
-        UPDATE PostEntity SET
-        likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
-        WHERE id = :id
-    """)
-    suspend fun likeById(id: Long) // TODO: необходимо добавлять ид пользвателя в список ид оставивших лайк
-
     @Query("DELETE FROM PostEntity WHERE id == :id")
     suspend fun removeById(id: Long)
 

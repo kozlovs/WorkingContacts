@@ -14,6 +14,8 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.RemovePostByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.feed.model.FeedModel
 import javax.inject.Inject
 
@@ -21,7 +23,9 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val likePostByIdUseCase: LikePostByIdUseCase,
+    private val removePostByIdUseCase: RemovePostByIdUseCase
 ) : ViewModel() {
 
     val authState = appAuth.authStateFlow
@@ -43,7 +47,7 @@ class FeedViewModel @Inject constructor(
 
     fun likeById(id: Long) = viewModelScope.launch {
         try {
-            repository.likeById(id)
+            likePostByIdUseCase.execute(id)
         } catch (e: Exception) {
             e.printStackTrace()
             _state.value = FeedModel.State.Error
@@ -52,7 +56,7 @@ class FeedViewModel @Inject constructor(
 
     fun removeById(id: Long) = viewModelScope.launch {
         try {
-            repository.removeById(id)
+            removePostByIdUseCase.execute(id)
         } catch (e: Exception) {
             _state.value = FeedModel.State.Error
         }

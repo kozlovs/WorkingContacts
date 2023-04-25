@@ -15,6 +15,7 @@ import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import javax.inject.Inject
 
@@ -24,7 +25,8 @@ class UserWallViewModel @Inject constructor(
     private val wallRepository: UserWallRepository,
     private val jobRepository: JobRepository,
     private val appAuth: AppAuth,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val likePostByIdUseCase: LikePostByIdUseCase
 ) : ViewModel() {
 
     private val _postsData = MutableStateFlow<List<Post>>(emptyList())
@@ -112,7 +114,7 @@ class UserWallViewModel @Inject constructor(
     fun likeById(id: Long) = viewModelScope.launch {
         try {
             userData.value?.let {
-                wallRepository.likeById(id)
+                likePostByIdUseCase.execute(id)
                 _postsData.value = wallRepository.getAll(it.id)
             }
         } catch (e: Exception) {

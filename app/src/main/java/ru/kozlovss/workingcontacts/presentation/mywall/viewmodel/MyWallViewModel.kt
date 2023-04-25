@@ -17,6 +17,8 @@ import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.RemovePostByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import javax.inject.Inject
 
@@ -24,10 +26,12 @@ import javax.inject.Inject
 @HiltViewModel
 class MyWallViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val wallRepository: MyWallRepository,
+    wallRepository: MyWallRepository,
     private val jobRepository: JobRepository,
     private val appAuth: AppAuth,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val likePostByIdUseCase: LikePostByIdUseCase,
+    private val removePostByIdUseCase: RemovePostByIdUseCase
 ) : ViewModel() {
 
     val postData: Flow<PagingData<Post>> = wallRepository.posts
@@ -83,7 +87,7 @@ class MyWallViewModel @Inject constructor(
 
     fun likeById(id: Long) = viewModelScope.launch {
         try {
-            wallRepository.likeById(id)
+            likePostByIdUseCase.execute(id)
         } catch (e: Exception) {
             e.printStackTrace()
             _state.value = MyWallModel.State.Error
@@ -92,7 +96,7 @@ class MyWallViewModel @Inject constructor(
 
     fun removeById(id: Long) = viewModelScope.launch {
         try {
-            wallRepository.removeById(id)
+            removePostByIdUseCase.execute(id)
         } catch (e: Exception) {
             _state.value = MyWallModel.State.Error
         }

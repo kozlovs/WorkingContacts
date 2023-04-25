@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
+import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.post.model.PostModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
-    private val postsRepository: PostRepository
+    private val postsRepository: PostRepository,
+    private val likePostByIdUseCase: LikePostByIdUseCase
 ): ViewModel() {
 
     private val _data = MutableStateFlow<Post?>(null)
@@ -52,7 +54,7 @@ class PostViewModel @Inject constructor(
     fun likeById(id: Long?) = viewModelScope.launch {
         try {
             id?.let {
-                postsRepository.likeById(it)
+                likePostByIdUseCase.execute(it)
                 _data.value = postsRepository.getById(it)
             }
         } catch (e: Exception) {

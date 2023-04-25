@@ -8,8 +8,9 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 
 interface PostRepository {
     val posts: Flow<PagingData<Post>>
-    suspend fun getById(id: Long): Post?
-    suspend fun likeById(id: Long)
+    suspend fun getById(id: Long): Post
+    suspend fun likeById(id: Long): Post
+    suspend fun dislikeById(id: Long): Post
     suspend fun removeById(id: Long)
     suspend fun save(post: PostRequest, model: MediaModel?)
     suspend fun switchAudioPlayer(post: Post, audioPlayerState: Boolean)
