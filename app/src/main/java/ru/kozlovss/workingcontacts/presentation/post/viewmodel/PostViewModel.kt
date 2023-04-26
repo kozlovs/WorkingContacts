@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
+import ru.kozlovss.workingcontacts.domain.usecases.GetPostByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.post.model.PostModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
-    private val postsRepository: PostRepository,
-    private val likePostByIdUseCase: LikePostByIdUseCase
+    private val likePostByIdUseCase: LikePostByIdUseCase,
+    private val getPostByIdUseCase: GetPostByIdUseCase
 ): ViewModel() {
 
     private val _data = MutableStateFlow<Post?>(null)
@@ -33,7 +33,7 @@ class PostViewModel @Inject constructor(
             if (id == null) {
                 _state.value = PostModel.State.Error
             } else {
-                _data.value = postsRepository.getById(id)
+                _data.value = getPost(id)
                 _state.value = PostModel.State.Idle
             }
         } catch (e: Exception) {
@@ -55,7 +55,7 @@ class PostViewModel @Inject constructor(
         try {
             id?.let {
                 likePostByIdUseCase.execute(it)
-                _data.value = postsRepository.getById(it)
+                _data.value = getPost(it)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -66,4 +66,6 @@ class PostViewModel @Inject constructor(
     fun switchMentionsVisibility() {
         _mentionsVisibility.value = !mentionsVisibility.value
     }
+
+    private suspend fun getPost(id: Long) = getPostByIdUseCase.execute(id)
 }

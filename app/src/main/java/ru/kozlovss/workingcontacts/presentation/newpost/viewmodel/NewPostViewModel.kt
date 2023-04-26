@@ -14,16 +14,18 @@ import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
+import ru.kozlovss.workingcontacts.domain.usecases.GetPostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.SavePostUseCase
 import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class NewPostViewModel @Inject constructor(
-    private val repository: PostRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val getPostByIdUseCase: GetPostByIdUseCase,
+    private val savePostUseCase: SavePostUseCase
 ) : ViewModel() {
 
     private val _state =
@@ -73,7 +75,7 @@ class NewPostViewModel @Inject constructor(
                 attachment = attachmentRemote.value,
                 mentionIds = mentionIds
             )
-            repository.save(postRequest, attachment.value)
+            savePostUseCase.execute(postRequest, attachment.value)
             clearData()
             _events.emit(Event.CreateNewItem)
             _state.value = NewPostModel.State.Idle
@@ -96,8 +98,7 @@ class NewPostViewModel @Inject constructor(
     fun getData(id: Long) = viewModelScope.launch {
         _state.value = NewPostModel.State.Loading
         try {
-            val post = repository.getById(id)
-            post?.let {
+            getPost(id).let {
                 _postId.value = it.id
                 _content.value = it.content
                 it.link?.let { link ->
@@ -142,6 +143,7 @@ class NewPostViewModel @Inject constructor(
     fun setCoordinates(coordinates: Coordinates) = viewModelScope.launch {
         _coordinates.value = coordinates
     }
+
     fun addMention(user: User) = viewModelScope.launch {
         if (!_mentions.value.contains(user)) {
             _mentions.value = mentions.value.plus(user)
@@ -153,6 +155,7 @@ class NewPostViewModel @Inject constructor(
         _mentions.value = mentions.value.minus(user)
     }
 
+    private suspend fun getPost(id: Long) = getPostByIdUseCase.execute(id)
 
     sealed class Event {
         object CreateNewItem : Event()

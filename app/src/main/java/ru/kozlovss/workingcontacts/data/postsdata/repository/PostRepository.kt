@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.data.postsdata.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 
@@ -12,6 +11,6 @@ interface PostRepository {
     suspend fun likeById(id: Long): Post
     suspend fun dislikeById(id: Long): Post
     suspend fun removeById(id: Long)
-    suspend fun save(post: PostRequest, model: MediaModel?)
+    suspend fun save(post: PostRequest) : Post
     suspend fun switchAudioPlayer(post: Post, audioPlayerState: Boolean)
 }

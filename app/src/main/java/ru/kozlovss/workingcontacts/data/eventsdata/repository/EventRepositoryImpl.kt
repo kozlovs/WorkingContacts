@@ -171,7 +171,7 @@ class EventRepositoryImpl @Inject constructor(
                 mediaModel.file?.name,
                 requireNotNull(mediaModel.file?.asRequestBody())
             )
-            val response = mediaApiService.createMedia(media)
+            val response = mediaApiService.uploadMedia(media)
             return ResponseChecker.check(response)
         } catch (e: IOException) {
             throw NetworkError()

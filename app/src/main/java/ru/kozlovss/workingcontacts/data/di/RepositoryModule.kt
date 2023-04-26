@@ -8,6 +8,8 @@ import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepositoryImpl
 import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
 import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepositoryImpl
+import ru.kozlovss.workingcontacts.data.mediadata.repository.MediaRepository
+import ru.kozlovss.workingcontacts.data.mediadata.repository.MediaRepositoryImpl
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepositoryImpl
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
@@ -45,4 +47,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsJobRepository(impl: JobRepositoryImpl): JobRepository
+
+    @Singleton
+    @Binds
+    fun bindsMediaRepository(impl: MediaRepositoryImpl): MediaRepository
 }

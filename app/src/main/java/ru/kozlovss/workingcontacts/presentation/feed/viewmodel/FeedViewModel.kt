@@ -25,7 +25,7 @@ class FeedViewModel @Inject constructor(
     appAuth: AppAuth,
     private val audioPlayer: AudioPlayer,
     private val likePostByIdUseCase: LikePostByIdUseCase,
-    private val removePostByIdUseCase: RemovePostByIdUseCase
+    private val removePostByIdUseCase: RemovePostByIdUseCase,
 ) : ViewModel() {
 
     val authState = appAuth.authStateFlow
@@ -61,8 +61,6 @@ class FeedViewModel @Inject constructor(
             _state.value = FeedModel.State.Error
         }
     }
-
-    suspend fun getById(id: Long) = repository.getById(id)
 
     fun switchAudio(post: Post) {
         if (post.attachment?.type == Attachment.Type.AUDIO) {
