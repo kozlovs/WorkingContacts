@@ -146,14 +146,6 @@ class FeedFragment : Fragment() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.authState.collect {
-                    adapter!!.refresh()
-                }
-            }
-        }
     }
 
     private fun setListeners() = with(binding!!) {

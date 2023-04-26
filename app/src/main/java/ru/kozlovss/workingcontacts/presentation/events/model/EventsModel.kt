@@ -6,9 +6,9 @@ class EventsModel(
     val posts: List<Event> = emptyList(),
     val empty: Boolean = false,
 ) {
-    sealed interface EventsModelState {
-        object Idle : EventsModelState
-        object Error : EventsModelState
-        object Loading : EventsModelState
+    sealed interface State {
+        object Idle : State
+        object Error : State
+        object Loading : State
     }
 }

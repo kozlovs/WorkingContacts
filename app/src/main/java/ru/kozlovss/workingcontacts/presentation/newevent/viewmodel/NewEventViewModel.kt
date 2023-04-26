@@ -17,6 +17,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
+import ru.kozlovss.workingcontacts.domain.usecases.GetEventByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
 import java.io.File
 import javax.inject.Inject
@@ -24,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class NewEventViewModel @Inject constructor(
     private val repository: EventRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val getEventByIdUseCase: GetEventByIdUseCase
 ) : ViewModel() {
 
     private val _state =
@@ -108,13 +110,12 @@ class NewEventViewModel @Inject constructor(
     fun getData(id: Long) = viewModelScope.launch {
         _state.value = NewEventModel.State.Loading
         try {
-            val event = repository.getById(id)
-            event?.let {
+            getEventByIdUseCase.execute(id).let {
                 _eventId.value = it.id
                 _content.value = it.content
                 _dateTime.value = it.datetime
                 _type.value = it.type
-                it.link?.let {  link ->
+                it.link?.let { link ->
                     _link.value = link
                 }
                 it.attachment?.let { attachment ->
@@ -163,7 +164,7 @@ class NewEventViewModel @Inject constructor(
         _type.value = type
     }
 
-    fun addSpeaker(user: User) = viewModelScope.launch  {
+    fun addSpeaker(user: User) = viewModelScope.launch {
         if (!_speakers.value.contains(user)) {
             _speakers.value = speakers.value.plus(user)
             _events.emit(LocalEvent.AddedSpeaker(user.name))
@@ -175,7 +176,7 @@ class NewEventViewModel @Inject constructor(
     }
 
     sealed class LocalEvent {
-        object CreateNewItem: LocalEvent()
-        data class AddedSpeaker(val userName: String): LocalEvent()
+        object CreateNewItem : LocalEvent()
+        data class AddedSpeaker(val userName: String) : LocalEvent()
     }
 }

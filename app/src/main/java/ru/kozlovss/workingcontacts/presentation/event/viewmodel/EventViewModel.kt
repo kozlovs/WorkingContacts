@@ -7,13 +7,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
+import ru.kozlovss.workingcontacts.domain.usecases.GetEventByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.LikeEventByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.ParticipateEventByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import javax.inject.Inject
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
-    private val eventRepository: EventRepository
+    private val getEventByIdUseCase: GetEventByIdUseCase,
+    private val likeEventByIdUseCase: LikeEventByIdUseCase,
+    private val participateEventByIdUseCase: ParticipateEventByIdUseCase
 ) : ViewModel() {
     private val _data = MutableStateFlow<Event?>(null)
     val data = _data.asStateFlow()
@@ -30,7 +34,7 @@ class EventViewModel @Inject constructor(
             if (id == null) {
                 _state.value = EventModel.State.Error
             } else {
-                _data.value = eventRepository.getById(id)
+                _data.value = getEventByIdUseCase.execute(id)
                 _state.value = EventModel.State.Idle
             }
         } catch (e: Exception) {
@@ -51,8 +55,8 @@ class EventViewModel @Inject constructor(
     fun likeById(id: Long?) = viewModelScope.launch {
         try {
             id?.let {
-                eventRepository.likeById(it)
-                _data.value = eventRepository.getById(it)
+                likeEventByIdUseCase.execute(id)
+                _data.value = getEvent(id)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -63,8 +67,8 @@ class EventViewModel @Inject constructor(
     fun participateById(id: Long?) = viewModelScope.launch {
         try {
             id?.let {
-                eventRepository.participateById(it)
-                _data.value = eventRepository.getById(it)
+                participateEventByIdUseCase.execute(it)
+                _data.value = getEvent(id)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -75,4 +79,6 @@ class EventViewModel @Inject constructor(
     fun switchSpeakersVisibility() {
         _speakersVisibility.value = !speakersVisibility.value
     }
+
+    private suspend fun getEvent(id: Long) = getEventByIdUseCase.execute(id)
 }

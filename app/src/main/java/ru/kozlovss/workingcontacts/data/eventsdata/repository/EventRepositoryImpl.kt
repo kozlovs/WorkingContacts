@@ -42,85 +42,29 @@ class EventRepositoryImpl @Inject constructor(
     ).flow.map { it.map(EventEntity::toDto) }
 
     override suspend fun getById(id: Long): Event {
-        try {
-            val response = apiService.getEventById(id)
-            return ResponseChecker.check(response)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+        val response = apiService.getEventById(id)
+        return ResponseChecker.check(response)
     }
 
-    override suspend fun likeById(id: Long) {
-        val event = getById(id)
-        if (event.likedByMe) {
-            makeRequestDislikeById(id)
-        } else {
-            makeRequestLikeById(id)
-        }
+    override suspend fun likeById(id: Long): Event {
+        val response = apiService.likeEventById(id)
+        return ResponseChecker.check(response)
     }
 
-    private suspend fun makeRequestLikeById(id: Long) {
-        try {
-            val response = apiService.likeEventById(id)
-            val body = ResponseChecker.check(response)
-            dao.insert(EventEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+    override suspend fun dislikeById(id: Long): Event {
+        val response = apiService.dislikeEventById(id)
+        return ResponseChecker.check(response)
     }
 
-    private suspend fun makeRequestDislikeById(id: Long) {
-        try {
-            val response = apiService.dislikeEventById(id)
-            val body = ResponseChecker.check(response)
-            dao.insert(EventEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+    override suspend fun participateById(id: Long): Event {
+        val response = apiService.participateEventById(id)
+        return ResponseChecker.check(response)
+
     }
 
-    override suspend fun participateById(id: Long) {
-        val event = getById(id)
-        if (event.participatedByMe) {
-            makeRequestNotParticipateById(id)
-        } else {
-            makeRequestParticipateById(id)
-        }
-    }
-
-    private suspend fun makeRequestParticipateById(id: Long) {
-        try {
-            val response = apiService.participateEventById(id)
-            val body = ResponseChecker.check(response)
-            dao.insert(EventEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
-    }
-
-    private suspend fun makeRequestNotParticipateById(id: Long) {
-        try {
-            val response = apiService.notParticipateEventById(id)
-            val body = ResponseChecker.check(response)
-            dao.insert(EventEntity.fromDto(body))
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+    override suspend fun notParticipateById(id: Long): Event {
+        val response = apiService.notParticipateEventById(id)
+        return ResponseChecker.check(response)
     }
 
     override suspend fun removeById(id: Long) {
@@ -147,7 +91,8 @@ class EventRepositoryImpl @Inject constructor(
                             model.type
                         )
                     )
-                ) } ?: apiService.saveEvent(event)
+                )
+            } ?: apiService.saveEvent(event)
             val body = ResponseChecker.check(response)
             dao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
