@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class JobRepositoryImpl @Inject constructor(
     private val jobApiService: JobApiService
-): JobRepository {
+) : JobRepository {
     override suspend fun getMyJobs(): List<Job> {
         try {
             val response = jobApiService.getMyJobs()
@@ -34,15 +34,9 @@ class JobRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun save(job: Job) {
-        try {
-            jobApiService.saveMyJob(job)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
+    override suspend fun save(job: Job): Job {
+        val response = jobApiService.saveMyJob(job)
+        return ResponseChecker.check(response)
     }
 
     override suspend fun removeJobById(id: Long) {

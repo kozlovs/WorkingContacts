@@ -14,8 +14,8 @@ import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
-import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.usecases.GetPostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.GetUserByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.SavePostUseCase
 import ru.kozlovss.workingcontacts.presentation.newpost.model.NewPostModel
 import java.io.File
@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewPostViewModel @Inject constructor(
-    private val userRepository: UserRepository,
     private val getPostByIdUseCase: GetPostByIdUseCase,
-    private val savePostUseCase: SavePostUseCase
+    private val savePostUseCase: SavePostUseCase,
+    private val getUserByIdUseCase: GetUserByIdUseCase
 ) : ViewModel() {
 
     private val _state =
@@ -109,7 +109,7 @@ class NewPostViewModel @Inject constructor(
                 }
                 if (it.mentionIds.isNotEmpty()) {
                     _mentions.value = it.mentionIds.map { id ->
-                        userRepository.getUserInfoById(id)
+                        getUserByIdUseCase.execute(id)
                     }
                 }
             }

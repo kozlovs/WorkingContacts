@@ -77,7 +77,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getMyData(id: Long) = ResponseChecker.check(apiService.getUserById(id))
 
-    override suspend fun getUserInfoById(id: Long) = ResponseChecker.check(apiService.getUserById(id))
+    override suspend fun getUserById(id: Long) = ResponseChecker.check(apiService.getUserById(id))
 
     override suspend fun getUsers() = ResponseChecker.check(apiService.getAllUsers())
 }

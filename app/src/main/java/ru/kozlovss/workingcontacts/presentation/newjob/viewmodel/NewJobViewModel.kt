@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
-import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
+import ru.kozlovss.workingcontacts.domain.usecases.SaveJobUseCase
 import ru.kozlovss.workingcontacts.presentation.newjob.model.NewJobModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -14,14 +14,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewJobViewModel @Inject constructor(
-    private val repository: JobRepository
+    private val saveJobUseCase: SaveJobUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<NewJobModel.State>(NewJobModel.State.Idle)
     val state = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<Event>()
-        val events = _events.asSharedFlow()
+    val events = _events.asSharedFlow()
 
     fun save(
         name: String,
@@ -42,7 +42,7 @@ class NewJobViewModel @Inject constructor(
                 },
                 link
             )
-            repository.save(job)
+            saveJobUseCase.execute(job)
             _events.emit(Event.CreateNewItem)
             _state.value = NewJobModel.State.Idle
         } catch (e: Exception) {
@@ -52,8 +52,8 @@ class NewJobViewModel @Inject constructor(
     }
 
     sealed class Event {
-        object CreateNewItem: Event()
-        data class ShowSnackBar(val text: String): Event()
-        data class ShowToast(val text: String): Event()
+        object CreateNewItem : Event()
+        data class ShowSnackBar(val text: String) : Event()
+        data class ShowToast(val text: String) : Event()
     }
 }

@@ -4,26 +4,24 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
+import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
+import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
+import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
+import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
 import ru.kozlovss.workingcontacts.data.mediadata.repository.MediaRepository
-import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
-import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
-import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
-import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
 import java.io.IOException
 import javax.inject.Inject
 
-class SavePostUseCase @Inject constructor(
-    private val postRepository: PostRepository,
+class SaveEventUseCase @Inject constructor(
+    private val eventRepository: EventRepository,
     private val mediaRepository: MediaRepository,
-    private val postDao: PostDao,
-    private val myWallDao: MyWallDao
+    private val eventDao: EventDao
 ) {
-    suspend fun execute(post: PostRequest, model: MediaModel?) {
+    suspend fun execute(event: EventRequest, model: MediaModel?) {
         try {
-            save(post, model)
+            save(event, model)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -32,20 +30,18 @@ class SavePostUseCase @Inject constructor(
         }
     }
 
-    private suspend fun save(post: PostRequest, model: MediaModel?) {
+    private suspend fun save(event: EventRequest, model: MediaModel?) {
         val media = model?.let { uploadMedia(it) }
-        val postRequest = media?.let {
-            post.copy(
+        val eventRequest = media?.let {
+            event.copy(
                 attachment = Attachment(
                     media.url,
                     model.type
                 )
             )
-        } ?: post
-        val postResponse = postRepository.save(postRequest)
-        val postEntity = PostEntity.fromDto(postResponse)
-        postDao.insert(postEntity)
-        myWallDao.save(postEntity)
+        } ?: event
+        val eventResponse = eventRepository.save(eventRequest)
+        eventDao.insert(EventEntity.fromDto(eventResponse))
     }
 
     private suspend fun uploadMedia(mediaModel: MediaModel): Media {

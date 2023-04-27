@@ -11,22 +11,22 @@ import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.data.walldata.repository.UserWallRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.usecases.GetUserByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import javax.inject.Inject
 
 @HiltViewModel
 class UserWallViewModel @Inject constructor(
-    private val userRepository: UserRepository,
     private val wallRepository: UserWallRepository,
     private val jobRepository: JobRepository,
     private val appAuth: AppAuth,
     private val audioPlayer: AudioPlayer,
-    private val likePostByIdUseCase: LikePostByIdUseCase
+    private val likePostByIdUseCase: LikePostByIdUseCase,
+    private val getUserByIdUseCase: GetUserByIdUseCase
 ) : ViewModel() {
 
     private val _postsData = MutableStateFlow<List<Post>>(emptyList())
@@ -90,7 +90,7 @@ class UserWallViewModel @Inject constructor(
 
     private fun getUserData(userId: Long) = viewModelScope.launch {
         try {
-            _userData.value = userRepository.getUserInfoById(userId)
+            _userData.value = getUserByIdUseCase.execute(userId)
         } catch (e: Exception) {
             e.printStackTrace()
         }

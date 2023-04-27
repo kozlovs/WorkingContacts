@@ -2,7 +2,6 @@ package ru.kozlovss.workingcontacts.presentation.feed.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,7 +21,7 @@ class FeedViewModel @Inject constructor(
     private val removePostByIdUseCase: RemovePostByIdUseCase,
 ) : ViewModel() {
 
-    val data: Flow<PagingData<Post>> = getFeedPostsPagingDataUseCase.execute()
+    val data = getFeedPostsPagingDataUseCase.execute()
     private val _state = MutableStateFlow<FeedModel.State>(FeedModel.State.Idle)
     val state = _state.asStateFlow()
 
@@ -39,11 +38,17 @@ class FeedViewModel @Inject constructor(
         try {
             removePostByIdUseCase.execute(id)
         } catch (e: Exception) {
+            e.printStackTrace()
             _state.value = FeedModel.State.Error
         }
     }
 
     fun switchAudio(post: Post) = viewModelScope.launch {
-        switchAudioUseCase.execute(post)
+        try {
+            switchAudioUseCase.execute(post)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _state.value = FeedModel.State.Error
+        }
     }
 }

@@ -15,18 +15,18 @@ import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
-import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.usecases.GetEventByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.GetUserByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.SaveEventUseCase
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class NewEventViewModel @Inject constructor(
-    private val repository: EventRepository,
-    private val userRepository: UserRepository,
-    private val getEventByIdUseCase: GetEventByIdUseCase
+    private val getEventByIdUseCase: GetEventByIdUseCase,
+    private val saveEventUseCase: SaveEventUseCase,
+    private val getUserByIdUseCase: GetUserByIdUseCase
 ) : ViewModel() {
 
     private val _state =
@@ -85,7 +85,7 @@ class NewEventViewModel @Inject constructor(
                 link = link,
                 speakerIds = speakerIds
             )
-            repository.save(eventRequest, attachment.value)
+            saveEventUseCase.execute(eventRequest, attachment.value)
             clearData()
             _events.emit(LocalEvent.CreateNewItem)
             _state.value = NewEventModel.State.Idle
@@ -123,7 +123,7 @@ class NewEventViewModel @Inject constructor(
                 }
                 if (it.speakerIds.isNotEmpty()) {
                     _speakers.value = it.speakerIds.map { id ->
-                        userRepository.getUserInfoById(id)
+                        getUserByIdUseCase.execute(id)
                     }
                 }
             }
