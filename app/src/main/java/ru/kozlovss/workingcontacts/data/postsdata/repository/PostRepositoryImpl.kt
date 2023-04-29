@@ -10,7 +10,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
-import ru.kozlovss.workingcontacts.domain.util.ResponseChecker
+import ru.kozlovss.workingcontacts.domain.extensions.checkAndGetBody
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
@@ -35,31 +35,11 @@ class PostRepositoryImpl @Inject constructor(
         )
     ).flow.map { it.map(PostEntity::toDto) }
 
-    override suspend fun getById(id: Long): Post {
-        val response = apiService.getPostById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun likeById(id: Long): Post {
-        val response = apiService.likePostById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun dislikeById(id: Long): Post {
-        val response = apiService.dislikePostById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun removeById(id: Long) {
-        val response = apiService.deletePostById(id)
-        ResponseChecker.check(response)
-    }
-
-    override suspend fun save(post: PostRequest): Post {
-        val response = apiService.savePost(post)
-        return ResponseChecker.check(response)
-    }
-
+    override suspend fun getById(id: Long) = apiService.getPostById(id).checkAndGetBody()
+    override suspend fun likeById(id: Long) = apiService.likePostById(id).checkAndGetBody()
+    override suspend fun dislikeById(id: Long) = apiService.dislikePostById(id).checkAndGetBody()
+    override suspend fun removeById(id: Long) = apiService.deletePostById(id).checkAndGetBody()
+    override suspend fun save(post: PostRequest) = apiService.savePost(post).checkAndGetBody()
     override suspend fun switchAudioPlayer(post: Post, audioPlayerState: Boolean) {
         val newPost = post.copy(
             isPaying = audioPlayerState

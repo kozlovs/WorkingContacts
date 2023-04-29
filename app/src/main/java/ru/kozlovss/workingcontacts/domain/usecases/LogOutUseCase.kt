@@ -1,16 +1,16 @@
 package ru.kozlovss.workingcontacts.domain.usecases
 
-import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.error.NetworkError
 import java.io.IOException
 import javax.inject.Inject
 
 class LogOutUseCase @Inject constructor(
-    private val appAuth: AppAuth
+    private val userRepository: UserRepository
 ) {
-    fun execute() {
+    suspend fun execute() {
         try {
-            appAuth.removeAuth()
+            userRepository.clearTokenOfUser()
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {

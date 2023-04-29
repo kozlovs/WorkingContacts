@@ -10,7 +10,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
-import ru.kozlovss.workingcontacts.domain.util.ResponseChecker
+import ru.kozlovss.workingcontacts.domain.extensions.checkAndGetBody
 import javax.inject.Inject
 
 class EventRepositoryImpl @Inject constructor(
@@ -32,42 +32,13 @@ class EventRepositoryImpl @Inject constructor(
         )
     ).flow.map { it.map(EventEntity::toDto) }
 
-    override suspend fun getById(id: Long): Event {
-        val response = apiService.getEventById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun likeById(id: Long): Event {
-        val response = apiService.likeEventById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun dislikeById(id: Long): Event {
-        val response = apiService.dislikeEventById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun participateById(id: Long): Event {
-        val response = apiService.participateEventById(id)
-        return ResponseChecker.check(response)
-
-    }
-
-    override suspend fun notParticipateById(id: Long): Event {
-        val response = apiService.notParticipateEventById(id)
-        return ResponseChecker.check(response)
-    }
-
-    override suspend fun removeById(id: Long) {
-        val response = apiService.deleteEventById(id)
-        ResponseChecker.check(response)
-    }
-
-    override suspend fun save(event: EventRequest): Event {
-        val response = apiService.saveEvent(event)
-        return ResponseChecker.check(response)
-    }
-
+    override suspend fun getById(id: Long) = apiService.getEventById(id).checkAndGetBody()
+    override suspend fun likeById(id: Long) = apiService.likeEventById(id).checkAndGetBody()
+    override suspend fun dislikeById(id: Long) = apiService.dislikeEventById(id).checkAndGetBody()
+    override suspend fun participateById(id: Long) = apiService.participateEventById(id).checkAndGetBody()
+    override suspend fun notParticipateById(id: Long) = apiService.notParticipateEventById(id).checkAndGetBody()
+    override suspend fun removeById(id: Long) = apiService.deleteEventById(id).checkAndGetBody()
+    override suspend fun save(event: EventRequest) = apiService.saveEvent(event).checkAndGetBody()
     override suspend fun switchAudioPlayer(event: Event, audioPlayerState: Boolean) {
         val newEvent = event.copy(
             isPaying = audioPlayerState

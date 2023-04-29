@@ -1,15 +1,16 @@
 package ru.kozlovss.workingcontacts.data.userdata.repository
 
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 
 interface UserRepository {
     suspend fun register(
-        login: String,
-        password: String,
-        name: String,
-        mediaModel: MediaModel?
+        login: RequestBody,
+        password: RequestBody,
+        name: RequestBody,
+        avatar: MultipartBody.Part?
     ): Token
 
     suspend fun login(login: String, password: String): Token

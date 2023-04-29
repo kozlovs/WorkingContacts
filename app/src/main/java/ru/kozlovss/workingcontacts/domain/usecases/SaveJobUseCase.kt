@@ -11,7 +11,7 @@ class SaveJobUseCase @Inject constructor(
 ) {
     suspend fun execute(job: Job) {
         try {
-            save(job)
+            jobRepository.save(job)
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -19,6 +19,4 @@ class SaveJobUseCase @Inject constructor(
             throw UnknownError()
         }
     }
-
-    private suspend fun save(job: Job) = jobRepository.save(job)
 }
