@@ -1,25 +1,21 @@
 package ru.kozlovss.workingcontacts.domain.auth
 
 import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
-import javax.inject.Inject
 
-class AppAuth @Inject constructor(
-    @ApplicationContext
-    private val context: Context
+class AppAuth(
+    context: Context
 ) {
-    private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences(PREF_AUTH, Context.MODE_PRIVATE)
     private val _authStateFlow: MutableStateFlow<Token?>
-    private val tokenKey = "TOKEN_KEY"
-    private val idKey = "ID_KEY"
+
 
     init {
-        val token = prefs.getString(tokenKey, null)
-        val id = prefs.getLong(idKey, 0L)
+        val token = prefs.getString(TOKEN_KEY, null)
+        val id = prefs.getLong(ID_KEY, 0L)
 
         if (token == null || id == 0L) {
             _authStateFlow = MutableStateFlow(null)
@@ -35,14 +31,14 @@ class AppAuth @Inject constructor(
     val authStateFlow: StateFlow<Token?> = _authStateFlow.asStateFlow()
 
     val token: String?
-        get() = prefs.getString(tokenKey, null)
+        get() = prefs.getString(TOKEN_KEY, null)
 
     @Synchronized
     fun setAuth(token: Token) {
         _authStateFlow.value = token
         with(prefs.edit()) {
-            putString(tokenKey, token.token)
-            putLong(idKey, token.id)
+            putString(TOKEN_KEY, token.token)
+            putLong(ID_KEY, token.id)
             apply()
         }
     }
@@ -57,4 +53,10 @@ class AppAuth @Inject constructor(
     }
 
     fun isAuthenticated() = authStateFlow.value != null
+
+    companion object {
+        private const val TOKEN_KEY = "TOKEN_KEY"
+        private const val ID_KEY = "ID_KEY"
+        private const val PREF_AUTH = "auth"
+    }
 }

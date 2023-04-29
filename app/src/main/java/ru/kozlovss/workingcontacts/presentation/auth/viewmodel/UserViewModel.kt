@@ -4,27 +4,29 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
-import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
-import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.usecases.AuthorizationUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.CheckAuthUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.GetTokenUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.LogOutUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.RegistrationUseCase
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val repository: UserRepository,
-    private val appAuth: AppAuth,
-    private val checkAuthUseCase: CheckAuthUseCase
+    getTokenUseCase: GetTokenUseCase,
+    private val checkAuthUseCase: CheckAuthUseCase,
+    private val registrationUseCase: RegistrationUseCase,
+    private val authorizationUseCase: AuthorizationUseCase,
+    private val logOutUseCase: LogOutUseCase
 ) : ViewModel() {
 
-    val token = appAuth.authStateFlow
+    val token = getTokenUseCase.execute()
 
     private val _avatar = MutableStateFlow<MediaModel?>(null)
     val avatar = _avatar.asStateFlow()
@@ -32,20 +34,16 @@ class UserViewModel @Inject constructor(
     fun isLogin() = checkAuthUseCase.execute()
 
     fun logIn(login: String, password: String) = viewModelScope.launch {
-        val body = repository.login(login, password)
-        appAuth.setAuth(body)
+        authorizationUseCase.execute(login, password)
     }
 
     fun register(login: String, password: String, name: String) = viewModelScope.launch {
-        val body = withContext(Dispatchers.Default) {
-            repository.register(login, password, name, avatar.value)
-        }
-        appAuth.setAuth(body)
+        registrationUseCase.execute(login, password, name, avatar.value)
         clearAvatar()
     }
 
     fun logout() = viewModelScope.launch {
-        appAuth.removeAuth()
+        logOutUseCase.execute()
     }
 
     fun saveAvatar(uri: Uri?, toFile: File?) = viewModelScope.launch {
