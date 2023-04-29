@@ -13,13 +13,8 @@ interface UserRepository {
     ): Token
 
     suspend fun login(login: String, password: String): Token
-
     suspend fun saveTokenOfUser(token: Token)
-
-    suspend fun getMyData(id: Long): User
-
     suspend fun clearTokenOfUser()
-
     suspend fun getUserById(id: Long): User
     suspend fun getUsers(): List<User>
 }

@@ -2,40 +2,38 @@ package ru.kozlovss.workingcontacts.presentation.mywall.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
-import ru.kozlovss.workingcontacts.data.jobsdata.repository.JobRepository
-import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
-import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
-import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
-import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.usecases.CheckAuthUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.GetMyJobsUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.GetMyWallPostsPagingDataUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.GetUserByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.RemoveJobByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.RemovePostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.SwitchAudioUseCase
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MyWallViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    wallRepository: MyWallRepository,
-    private val jobRepository: JobRepository,
-    private val appAuth: AppAuth,
-    private val audioPlayer: AudioPlayer,
+    private val getUserByIdUseCase: GetUserByIdUseCase,
+    private val getMyJobsUseCase: GetMyJobsUseCase,
+    private val removeJobByIdUseCase: RemoveJobByIdUseCase,
+    private val checkAuthUseCase: CheckAuthUseCase,
+    private val switchAudioUseCase: SwitchAudioUseCase,
     private val likePostByIdUseCase: LikePostByIdUseCase,
-    private val removePostByIdUseCase: RemovePostByIdUseCase
+    private val removePostByIdUseCase: RemovePostByIdUseCase,
+    getMyWallPostsPagingDataUseCase: GetMyWallPostsPagingDataUseCase
 ) : ViewModel() {
 
-    val postData: Flow<PagingData<Post>> = wallRepository.posts
-        .flowOn(Dispatchers.Default)
+    val postData = getMyWallPostsPagingDataUseCase.execute()
 
     private val _jobsData = MutableStateFlow<List<Job>>(emptyList())
     val jobsData = _jobsData.asStateFlow()
@@ -43,14 +41,13 @@ class MyWallViewModel @Inject constructor(
     private val _myData = MutableStateFlow<User?>(null)
     val myData = _myData.asStateFlow()
 
-    private val _state =
-        MutableStateFlow<MyWallModel.State>(MyWallModel.State.Idle)
+    private val _state = MutableStateFlow<MyWallModel.State>(MyWallModel.State.Idle)
     val state = _state.asStateFlow()
 
     fun getJobs() = viewModelScope.launch {
         try {
             _state.value = MyWallModel.State.RefreshingJobs
-            _jobsData.value = jobRepository.getMyJobs()
+            _jobsData.value = getMyJobsUseCase.execute()
             _state.value = MyWallModel.State.Idle
         } catch (e: Exception) {
             e.printStackTrace()
@@ -64,7 +61,7 @@ class MyWallViewModel @Inject constructor(
             if (token == null) {
                 _state.value = MyWallModel.State.NoLogin
             } else {
-                _myData.value = userRepository.getMyData(token.id)
+                _myData.value = getUserByIdUseCase.execute(token.id)
                 _state.value = MyWallModel.State.Idle
             }
         } catch (e: Exception) {
@@ -102,16 +99,14 @@ class MyWallViewModel @Inject constructor(
         }
     }
 
-    fun isLogin() = appAuth.isAuthenticated()
+    fun isLogin() = checkAuthUseCase.execute()
 
-    fun switchAudio(post: Post) {
-        if (post.attachment?.type == Attachment.Type.AUDIO) {
-            audioPlayer.switch(post.attachment)
-        }
+    fun switchAudio(post: Post) = viewModelScope.launch {
+        switchAudioUseCase.execute(post)
     }
 
     fun removeJobById(id: Long) = viewModelScope.launch {
-        jobRepository.removeJobById(id)
-        _jobsData.value = jobRepository.getMyJobs()
+        removeJobByIdUseCase.execute(id)
+        _jobsData.value = getMyJobsUseCase.execute()
     }
 }

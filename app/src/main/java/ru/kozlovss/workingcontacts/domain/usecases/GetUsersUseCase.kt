@@ -6,12 +6,12 @@ import ru.kozlovss.workingcontacts.domain.error.NetworkError
 import java.io.IOException
 import javax.inject.Inject
 
-class GetUserByIdUseCase @Inject constructor(
+class GetUsersUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend fun execute(id: Long): User {
+    suspend fun execute(): List<User> {
         try {
-            return get(id)
+            return userRepository.getUsers()
         } catch (e: IOException) {
             throw NetworkError()
         } catch (e: Exception) {
@@ -19,6 +19,4 @@ class GetUserByIdUseCase @Inject constructor(
             throw UnknownError()
         }
     }
-
-    private suspend fun get(id: Long) = userRepository.getUserById(id)
 }
