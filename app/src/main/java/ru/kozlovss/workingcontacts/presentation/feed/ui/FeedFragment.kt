@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -143,6 +144,20 @@ class FeedFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter!!.loadStateFlow.collectLatest {
                     swipeRefresh.isRefreshing = it.refresh is LoadState.Loading
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect {
+                    when (it) {
+                        is FeedViewModel.Event.ErrorMassage -> {
+                            Snackbar
+                                .make(root, "Error: ${it.message}", Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                    }
                 }
             }
         }

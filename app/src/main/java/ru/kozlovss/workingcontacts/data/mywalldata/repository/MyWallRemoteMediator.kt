@@ -11,8 +11,8 @@ import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.mywalldata.db.MyWallDb
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostRemoteKeyEntity
-import ru.kozlovss.workingcontacts.data.postsdata.entity.toEntity
 import ru.kozlovss.workingcontacts.domain.error.ApiError
+import ru.kozlovss.workingcontacts.domain.extensions.toEntity
 
 
 @OptIn(ExperimentalPagingApi::class)

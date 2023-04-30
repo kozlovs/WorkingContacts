@@ -11,8 +11,8 @@ import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostRemoteKeyEntity
-import ru.kozlovss.workingcontacts.data.postsdata.entity.toEntity
 import ru.kozlovss.workingcontacts.domain.error.ApiError
+import ru.kozlovss.workingcontacts.domain.extensions.toEntity
 
 @OptIn(ExperimentalPagingApi::class)
 class PostRemoteMediator(

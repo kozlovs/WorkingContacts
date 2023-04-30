@@ -11,8 +11,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
-import ru.kozlovss.workingcontacts.domain.error.NetworkError
-import java.io.IOException
+import ru.kozlovss.workingcontacts.domain.error.catchExceptions
 import javax.inject.Inject
 
 class SavePostUseCase @Inject constructor(
@@ -21,18 +20,7 @@ class SavePostUseCase @Inject constructor(
     private val postDao: PostDao,
     private val myWallDao: MyWallDao
 ) {
-    suspend fun execute(post: PostRequest, model: MediaModel?) {
-        try {
-            save(post, model)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
-    }
-
-    private suspend fun save(post: PostRequest, model: MediaModel?) {
+    suspend fun execute(post: PostRequest, model: MediaModel?) = catchExceptions {
         val media = model?.let { uploadMedia(it) }
         val postRequest = media?.let {
             post.copy(

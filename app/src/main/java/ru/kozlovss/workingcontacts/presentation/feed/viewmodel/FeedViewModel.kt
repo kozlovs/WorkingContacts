@@ -25,12 +25,15 @@ class FeedViewModel @Inject constructor(
     private val _state = MutableStateFlow<FeedModel.State>(FeedModel.State.Idle)
     val state = _state.asStateFlow()
 
+    private val _events = MutableSharedFlow<Event>()
+    val events = _events.asSharedFlow()
+
     fun likeById(id: Long) = viewModelScope.launch {
         try {
             likePostByIdUseCase.execute(id)
         } catch (e: Exception) {
             e.printStackTrace()
-            _state.value = FeedModel.State.Error
+            _events.emit(Event.ErrorMassage(e.message))
         }
     }
 
@@ -50,5 +53,9 @@ class FeedViewModel @Inject constructor(
             e.printStackTrace()
             _state.value = FeedModel.State.Error
         }
+    }
+
+    sealed class Event {
+        data class ErrorMassage (val message: String?) : Event()
     }
 }

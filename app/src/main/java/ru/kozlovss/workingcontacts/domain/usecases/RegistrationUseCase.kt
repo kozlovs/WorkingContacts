@@ -6,25 +6,13 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.userdata.repository.UserRepository
-import ru.kozlovss.workingcontacts.domain.error.NetworkError
-import java.io.IOException
+import ru.kozlovss.workingcontacts.domain.error.catchExceptions
 import javax.inject.Inject
 
 class RegistrationUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend fun execute(login: String, password: String, name: String, avatar: MediaModel?) {
-        try {
-            registration(login, password, name, avatar)
-        } catch (e: IOException) {
-            throw NetworkError()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UnknownError()
-        }
-    }
-
-    private suspend fun registration(login: String, password: String, name: String, avatar: MediaModel?) {
+    suspend fun execute(login: String, password: String, name: String, avatar: MediaModel?) = catchExceptions {
         val mediaType = "text/plain".toMediaType()
         val loginRequestBody = login.toRequestBody(mediaType)
         val passwordRequestBody = password.toRequestBody(mediaType)
