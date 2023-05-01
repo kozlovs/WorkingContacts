@@ -2,13 +2,13 @@ package ru.kozlovss.workingcontacts.domain.usecases
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
+import ru.kozlovss.workingcontacts.entity.Attachment
+import ru.kozlovss.workingcontacts.entity.MediaModel
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
+import ru.kozlovss.workingcontacts.entity.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 import ru.kozlovss.workingcontacts.domain.repository.EventRepository
-import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
+import ru.kozlovss.workingcontacts.entity.Media
 import ru.kozlovss.workingcontacts.domain.repository.MediaRepository
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject

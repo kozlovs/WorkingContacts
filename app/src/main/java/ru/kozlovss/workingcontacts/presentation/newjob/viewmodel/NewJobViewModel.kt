@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 import ru.kozlovss.workingcontacts.domain.usecases.SaveJobUseCase
 import ru.kozlovss.workingcontacts.presentation.newjob.model.NewJobModel
 import java.time.LocalDate

@@ -6,8 +6,8 @@ import ru.kozlovss.workingcontacts.data.eventsdata.api.EventApiService
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
+import ru.kozlovss.workingcontacts.entity.Event
+import ru.kozlovss.workingcontacts.entity.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import ru.kozlovss.workingcontacts.domain.repository.EventRepository

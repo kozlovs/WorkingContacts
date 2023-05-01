@@ -6,9 +6,9 @@ import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
-import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
+import ru.kozlovss.workingcontacts.entity.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.domain.repository.PostRepository
 import javax.inject.Inject

@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
+import ru.kozlovss.workingcontacts.entity.User
 import ru.kozlovss.workingcontacts.databinding.FragmentUserBottomSheetBinding
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel

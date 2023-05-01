@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.domain.usecases.GetEventByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikeEventByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.ParticipateEventByIdUseCase

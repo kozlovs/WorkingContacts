@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.event.model
 
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Event
 
 data class EventModel(
     val event: Event

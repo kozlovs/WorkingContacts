@@ -4,7 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ru.kozlovss.workingcontacts.data.userdata.dto.Token
+import ru.kozlovss.workingcontacts.entity.Token
 
 class AppAuth(
     context: Context

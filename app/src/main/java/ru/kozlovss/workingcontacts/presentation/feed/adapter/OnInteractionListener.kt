@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.feed.adapter
 
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 
 interface OnInteractionListener {
     fun onLike(post: Post)

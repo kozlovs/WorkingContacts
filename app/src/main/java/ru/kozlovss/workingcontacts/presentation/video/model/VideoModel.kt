@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.video.model
 
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 
 class VideoModel(
     val post: Post

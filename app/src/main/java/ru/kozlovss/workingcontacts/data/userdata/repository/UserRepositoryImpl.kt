@@ -4,8 +4,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
-import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
-import ru.kozlovss.workingcontacts.data.userdata.dto.Token
+import ru.kozlovss.workingcontacts.entity.AuthenticationRequest
+import ru.kozlovss.workingcontacts.entity.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
 import ru.kozlovss.workingcontacts.domain.repository.UserRepository
 import javax.inject.Inject

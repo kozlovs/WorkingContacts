@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Attachment
+import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.databinding.CardEventBinding
 import ru.kozlovss.workingcontacts.presentation.util.Formatter
 

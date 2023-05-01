@@ -3,10 +3,10 @@ package ru.kozlovss.workingcontacts.data.eventsdata.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
+import ru.kozlovss.workingcontacts.entity.Attachment
+import ru.kozlovss.workingcontacts.entity.Coordinates
+import ru.kozlovss.workingcontacts.entity.Event
+import ru.kozlovss.workingcontacts.entity.UserPreview
 
 @Entity
 data class EventEntity(

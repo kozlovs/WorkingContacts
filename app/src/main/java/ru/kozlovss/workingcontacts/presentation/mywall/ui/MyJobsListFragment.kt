@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 import ru.kozlovss.workingcontacts.databinding.FragmentMyJobsListBinding
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.JobsAdapter

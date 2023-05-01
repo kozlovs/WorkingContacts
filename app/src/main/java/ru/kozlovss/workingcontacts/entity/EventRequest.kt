@@ -1,7 +1,5 @@
-package ru.kozlovss.workingcontacts.data.eventsdata.dto
+package ru.kozlovss.workingcontacts.entity
 
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.Coordinates
 
 data class EventRequest(
     val id: Long,

@@ -4,7 +4,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
+import ru.kozlovss.workingcontacts.entity.MediaModel
 import ru.kozlovss.workingcontacts.domain.repository.UserRepository
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject

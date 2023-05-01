@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.newjob.model
 
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 
 class NewJobModel(
     val job: Job

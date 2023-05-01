@@ -1,7 +1,4 @@
-package ru.kozlovss.workingcontacts.data.postsdata.dto
-
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.Coordinates
+package ru.kozlovss.workingcontacts.entity
 
 data class PostRequest(
     val id: Long,

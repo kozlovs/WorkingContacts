@@ -2,8 +2,8 @@ package ru.kozlovss.workingcontacts.domain.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
-import ru.kozlovss.workingcontacts.data.userdata.dto.Token
+import ru.kozlovss.workingcontacts.entity.User
+import ru.kozlovss.workingcontacts.entity.Token
 
 interface UserRepository {
     suspend fun register(

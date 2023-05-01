@@ -2,8 +2,8 @@ package ru.kozlovss.workingcontacts.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
+import ru.kozlovss.workingcontacts.entity.Post
+import ru.kozlovss.workingcontacts.entity.PostRequest
 
 interface PostRepository {
     val posts: Flow<PagingData<Post>>

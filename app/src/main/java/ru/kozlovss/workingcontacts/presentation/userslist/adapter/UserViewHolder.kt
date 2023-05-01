@@ -3,7 +3,7 @@ package ru.kozlovss.workingcontacts.presentation.userslist.adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
+import ru.kozlovss.workingcontacts.entity.User
 import ru.kozlovss.workingcontacts.databinding.CardUserItemSquareBinding
 
 class UserViewHolder(

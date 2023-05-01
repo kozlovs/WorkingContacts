@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.feed.model
 
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 
 data class FeedModel(
     val posts: List<Post> = emptyList(),

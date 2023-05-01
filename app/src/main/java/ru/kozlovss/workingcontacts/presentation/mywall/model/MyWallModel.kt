@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.model
 
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
+import ru.kozlovss.workingcontacts.entity.Post
+import ru.kozlovss.workingcontacts.entity.User
 
 data class MyWallModel(
     val posts: List<Post> = emptyList(),

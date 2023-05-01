@@ -1,26 +1,29 @@
-package ru.kozlovss.workingcontacts.data.postsdata.dto
+package ru.kozlovss.workingcontacts.entity
 
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.userdata.dto.UserPreview
-
-data class Post(
+data class Event(
     val id: Long,
     val authorId: Long,
     val author: String,
     val authorAvatar: String?,
     val authorJob: String?,
     val content: String,
+    val datetime: String,
     val published: String,
     val coords: Coordinates?,
-    val link: String?,
+    val type: Type,
     val likeOwnerIds: List<Long> = emptyList(),
-    val mentionIds: List<Long> = emptyList(),
-    val mentionedMe: Boolean,
     val likedByMe: Boolean,
+    val speakerIds: List<Long> = emptyList(),
+    val participantsIds: List<Long> = emptyList(),
+    val participatedByMe: Boolean,
     val attachment: Attachment?,
+    val link: String?,
     val ownedByMe: Boolean,
     val users: Map<Long, UserPreview>,
     val isPaying: Boolean = false
-)
+) {
 
+    enum class Type {
+        OFFLINE, ONLINE
+    }
+}

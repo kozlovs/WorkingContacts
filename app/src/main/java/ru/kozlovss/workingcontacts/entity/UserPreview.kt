@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.userdata.dto
+package ru.kozlovss.workingcontacts.entity
 
 data class UserPreview(
     val name: String,

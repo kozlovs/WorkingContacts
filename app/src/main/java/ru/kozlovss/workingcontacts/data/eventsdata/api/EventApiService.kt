@@ -2,8 +2,8 @@ package ru.kozlovss.workingcontacts.data.eventsdata.api
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
+import ru.kozlovss.workingcontacts.entity.Event
+import ru.kozlovss.workingcontacts.entity.EventRequest
 
 interface EventApiService {
 

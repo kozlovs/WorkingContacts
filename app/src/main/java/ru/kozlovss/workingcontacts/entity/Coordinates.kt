@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.dto
+package ru.kozlovss.workingcontacts.entity
 
 import com.google.gson.annotations.SerializedName
 

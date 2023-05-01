@@ -1,9 +1,9 @@
 package ru.kozlovss.workingcontacts.domain.usecases
 
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Attachment
+import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.domain.repository.EventRepository
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 import ru.kozlovss.workingcontacts.domain.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.audioplayer.AudioPlayer
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions

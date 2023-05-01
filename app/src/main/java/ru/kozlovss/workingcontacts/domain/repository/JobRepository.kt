@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.domain.repository
 
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 
 interface JobRepository {
     suspend fun getMyJobs(): List<Job>

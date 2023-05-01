@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.events.adapter
 
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Event
 
 interface OnInteractionListener {
     fun onLike(event: Event)

@@ -4,7 +4,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ru.kozlovss.workingcontacts.data.dto.Attachment
+import ru.kozlovss.workingcontacts.entity.Attachment
 
 class AudioPlayer {
     private val _isPlaying = MutableStateFlow(false)

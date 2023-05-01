@@ -3,7 +3,7 @@ package ru.kozlovss.workingcontacts.presentation.userslist.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
+import ru.kozlovss.workingcontacts.entity.User
 import ru.kozlovss.workingcontacts.databinding.CardUserItemSquareBinding
 
 

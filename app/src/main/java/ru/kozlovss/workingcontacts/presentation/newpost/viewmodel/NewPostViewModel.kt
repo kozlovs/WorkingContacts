@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.Coordinates
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
-import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
+import ru.kozlovss.workingcontacts.entity.Attachment
+import ru.kozlovss.workingcontacts.entity.Coordinates
+import ru.kozlovss.workingcontacts.entity.MediaModel
+import ru.kozlovss.workingcontacts.entity.User
+import ru.kozlovss.workingcontacts.entity.PostRequest
 import ru.kozlovss.workingcontacts.domain.usecases.GetPostByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetUserByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.SavePostUseCase

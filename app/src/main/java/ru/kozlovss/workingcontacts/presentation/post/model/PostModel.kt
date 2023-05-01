@@ -1,6 +1,6 @@
 package ru.kozlovss.workingcontacts.presentation.post.model
 
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 
 data class PostModel(
     val post: Post

@@ -2,8 +2,8 @@ package ru.kozlovss.workingcontacts.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
+import ru.kozlovss.workingcontacts.entity.Event
+import ru.kozlovss.workingcontacts.entity.EventRequest
 
 interface EventRepository {
     val events: Flow<PagingData<Event>>

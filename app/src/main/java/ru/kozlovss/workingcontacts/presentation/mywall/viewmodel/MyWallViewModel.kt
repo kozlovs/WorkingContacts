@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.data.userdata.dto.Token
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
+import ru.kozlovss.workingcontacts.entity.Job
+import ru.kozlovss.workingcontacts.entity.Post
+import ru.kozlovss.workingcontacts.entity.Token
+import ru.kozlovss.workingcontacts.entity.User
 import ru.kozlovss.workingcontacts.domain.usecases.CheckAuthUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetMyJobsUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetMyWallPostsPagingDataUseCase

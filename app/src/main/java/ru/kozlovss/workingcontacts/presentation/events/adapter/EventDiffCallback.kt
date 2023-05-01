@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.events.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Event
 
 class EventDiffCallback : DiffUtil.ItemCallback<Event>() {
     override fun areItemsTheSame(oldItem: Event, newItem: Event) = oldItem.id == newItem.id

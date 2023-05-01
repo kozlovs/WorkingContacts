@@ -30,7 +30,7 @@ import com.yandex.mapkit.user_location.UserLocationObjectListener
 import com.yandex.mapkit.user_location.UserLocationView
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.data.dto.Coordinates
+import ru.kozlovss.workingcontacts.entity.Coordinates
 import ru.kozlovss.workingcontacts.databinding.FragmentMapBinding
 import ru.kozlovss.workingcontacts.presentation.util.StringArg
 import ru.kozlovss.workingcontacts.presentation.map.viewmodel.MapViewModel

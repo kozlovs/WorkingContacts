@@ -7,8 +7,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.dto.MediaModel
+import ru.kozlovss.workingcontacts.entity.Attachment
+import ru.kozlovss.workingcontacts.entity.MediaModel
 import ru.kozlovss.workingcontacts.domain.usecases.AuthorizationUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.CheckAuthUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetTokenUseCase

@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.dto
+package ru.kozlovss.workingcontacts.entity
 
 data class Attachment(
     val url: String,

@@ -3,7 +3,7 @@ package ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 import ru.kozlovss.workingcontacts.databinding.CardJobBinding
 import ru.kozlovss.workingcontacts.presentation.util.Formatter
 

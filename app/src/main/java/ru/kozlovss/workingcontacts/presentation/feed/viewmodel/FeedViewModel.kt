@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.entity.Post
 import ru.kozlovss.workingcontacts.domain.error.catchExceptions
 import ru.kozlovss.workingcontacts.domain.usecases.GetFeedPostsPagingDataUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase

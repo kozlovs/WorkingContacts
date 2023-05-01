@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs
 
 import androidx.recyclerview.widget.DiffUtil
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 
 class JobDiffCallback : DiffUtil.ItemCallback<Job>() {
     override fun areItemsTheSame(oldItem: Job, newItem: Job) = oldItem.id == newItem.id

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
+import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.domain.usecases.GetEventsPagingDataUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikeEventByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.ParticipateEventByIdUseCase

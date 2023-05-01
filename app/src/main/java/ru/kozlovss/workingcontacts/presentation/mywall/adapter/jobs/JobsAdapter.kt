@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import ru.kozlovss.workingcontacts.R
-import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.entity.Job
 import ru.kozlovss.workingcontacts.databinding.CardJobBinding
 
 class JobsAdapter(
