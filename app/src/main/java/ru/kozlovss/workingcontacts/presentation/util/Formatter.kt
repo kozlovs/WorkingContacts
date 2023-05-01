@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.domain.util
+package ru.kozlovss.workingcontacts.presentation.util
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

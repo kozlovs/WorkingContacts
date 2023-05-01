@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.domain.util
+package ru.kozlovss.workingcontacts.presentation.util
 
 import android.app.AlertDialog
 import androidx.fragment.app.Fragment

@@ -5,14 +5,14 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import ru.kozlovss.workingcontacts.data.mywalldata.api.MyWallApiService
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.mywalldata.db.MyWallDb
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostRemoteKeyEntity
-import ru.kozlovss.workingcontacts.domain.error.ApiError
-import ru.kozlovss.workingcontacts.domain.extensions.toEntity
+import ru.kozlovss.workingcontacts.data.postsdata.entity.toEntity
 
 
 @OptIn(ExperimentalPagingApi::class)
@@ -41,15 +41,7 @@ class MyWallRemoteMediator(
                     val id = remoteKeyDao.min() ?: return MediatorResult.Success(false)
                     apiService.getMyWallPostsBefore(id, state.config.pageSize)
                 }
-            }
-
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            val body = response.body() ?: throw ApiError(
-                response.code(),
-                response.message(),
-            )
+            }.checkAndGetBody()
 
             db.withTransaction {
                 when (loadType) {
@@ -60,11 +52,11 @@ class MyWallRemoteMediator(
                                 listOf(
                                     PostRemoteKeyEntity(
                                         type = PostRemoteKeyEntity.KeyType.AFTER,
-                                        id = body.first().id,
+                                        id = response.first().id,
                                     ),
                                     PostRemoteKeyEntity(
                                         type = PostRemoteKeyEntity.KeyType.BEFORE,
-                                        id = body.last().id,
+                                        id = response.last().id,
                                     ),
                                 )
                             )
@@ -73,7 +65,7 @@ class MyWallRemoteMediator(
                             remoteKeyDao.insert(
                                 PostRemoteKeyEntity(
                                     type = PostRemoteKeyEntity.KeyType.AFTER,
-                                    id = body.first().id,
+                                    id = response.first().id,
                                 )
                             )
                         }
@@ -82,15 +74,15 @@ class MyWallRemoteMediator(
                         remoteKeyDao.insert(
                             PostRemoteKeyEntity(
                                 type = PostRemoteKeyEntity.KeyType.BEFORE,
-                                id = body.last().id,
+                                id = response.last().id,
                             )
                         )
                     }
                     else -> Unit
                 }
-                dao.insert(body.toEntity())
+                dao.insert(response.toEntity())
             }
-            return MediatorResult.Success(endOfPaginationReached = body.isEmpty())
+            return MediatorResult.Success(endOfPaginationReached = response.isEmpty())
         } catch (e: Exception) {
             return MediatorResult.Error(e)
         }

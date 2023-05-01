@@ -19,8 +19,8 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentRegistrationBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
-import ru.kozlovss.workingcontacts.domain.util.PermissionManager
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.util.PermissionManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 
 class RegistrationFragment : Fragment() {

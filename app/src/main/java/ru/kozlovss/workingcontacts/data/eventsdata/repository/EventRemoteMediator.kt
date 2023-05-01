@@ -12,7 +12,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventRemoteKeyEntity
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.toEntity
-import ru.kozlovss.workingcontacts.domain.error.ApiError
+import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 
 @OptIn(ExperimentalPagingApi::class)
 class EventRemoteMediator(
@@ -40,15 +40,7 @@ class EventRemoteMediator(
                     val id = remoteKeyDao.min() ?: return MediatorResult.Success(false)
                     apiService.getEventsBefore(id, state.config.pageSize)
                 }
-            }
-
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            val body = response.body() ?: throw ApiError(
-                response.code(),
-                response.message(),
-            )
+            }.checkAndGetBody()
 
             db.withTransaction {
                 when (loadType) {
@@ -59,11 +51,11 @@ class EventRemoteMediator(
                                 listOf(
                                     EventRemoteKeyEntity(
                                         type = EventRemoteKeyEntity.KeyType.AFTER,
-                                        id = body.first().id,
+                                        id = response.first().id,
                                     ),
                                     EventRemoteKeyEntity(
                                         type = EventRemoteKeyEntity.KeyType.BEFORE,
-                                        id = body.last().id,
+                                        id = response.last().id,
                                     ),
                                 )
                             )
@@ -72,7 +64,7 @@ class EventRemoteMediator(
                             remoteKeyDao.insert(
                                 EventRemoteKeyEntity(
                                     type = EventRemoteKeyEntity.KeyType.AFTER,
-                                    id = body.first().id,
+                                    id = response.first().id,
                                 )
                             )
                         }
@@ -81,15 +73,15 @@ class EventRemoteMediator(
                         remoteKeyDao.insert(
                             EventRemoteKeyEntity(
                                 type = EventRemoteKeyEntity.KeyType.BEFORE,
-                                id = body.last().id,
+                                id = response.last().id,
                             )
                         )
                     }
                     else -> Unit
                 }
-                dao.insert(body.toEntity())
+                dao.insert(response.toEntity())
             }
-            return MediatorResult.Success(endOfPaginationReached = body.isEmpty())
+            return MediatorResult.Success(endOfPaginationReached = response.isEmpty())
         } catch (e: Exception) {
             return MediatorResult.Error(e)
         }

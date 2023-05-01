@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentUserWallBinding
-import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.vp.VpAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel
 import ru.kozlovss.workingcontacts.presentation.userswall.viewmodel.UserWallViewModel

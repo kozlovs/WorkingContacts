@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.domain.util
+package ru.kozlovss.workingcontacts.presentation.util
 
 import android.Manifest
 import android.app.Activity

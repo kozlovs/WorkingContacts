@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.databinding.FragmentVideoBinding
-import ru.kozlovss.workingcontacts.domain.util.StringArg
+import ru.kozlovss.workingcontacts.presentation.util.StringArg
 import ru.kozlovss.workingcontacts.presentation.video.model.VideoModel
 import ru.kozlovss.workingcontacts.presentation.video.viewmodel.VideoViewModel
 

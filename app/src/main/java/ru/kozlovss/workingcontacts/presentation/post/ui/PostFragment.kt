@@ -23,12 +23,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
-import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.databinding.FragmentPostBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
-import ru.kozlovss.workingcontacts.domain.util.Formatter
-import ru.kozlovss.workingcontacts.domain.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.util.Formatter
+import ru.kozlovss.workingcontacts.presentation.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.post.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
