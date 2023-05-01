@@ -11,7 +11,7 @@ import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
-import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 
 class SavePostUseCase @Inject constructor(
@@ -20,7 +20,7 @@ class SavePostUseCase @Inject constructor(
     private val postDao: PostDao,
     private val myWallDao: MyWallDao
 ) {
-    suspend fun execute(post: PostRequest, model: MediaModel?) = catchExceptions {
+    suspend fun execute(post: PostRequest, model: MediaModel?) = mapExceptions {
         val media = model?.let { uploadMedia(it) }
         val postRequest = media?.let {
             post.copy(

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -19,7 +19,7 @@ class GetEventsPagingDataUseCase @Inject constructor(
     private val eventRepository: EventRepository,
     private val appAuth: AppAuth,
 ) {
-    fun execute(): Flow<PagingData<Event>> = catchExceptions {
+    fun execute(): Flow<PagingData<Event>> = mapExceptions {
         return appAuth.authStateFlow
             .flatMapLatest { token ->
                 eventRepository.events

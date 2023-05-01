@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
-import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 
 class GetMyWallPostsPagingDataUseCase @Inject constructor(
     private val myWallRepository: MyWallRepository
 ) {
-    fun execute(): Flow<PagingData<Post>> = catchExceptions {
+    fun execute(): Flow<PagingData<Post>> = mapExceptions {
         return myWallRepository.posts.flowOn(Dispatchers.Default)
     }
 }

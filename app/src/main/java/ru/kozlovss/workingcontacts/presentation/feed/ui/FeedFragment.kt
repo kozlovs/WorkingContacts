@@ -26,6 +26,7 @@ import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListen
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
+import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel.Event
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
@@ -152,9 +153,24 @@ class FeedFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect {
                     when (it) {
-                        is FeedViewModel.Event.ErrorMassage -> {
+                        is Event.ApiErrorMassage -> {
                             Snackbar
                                 .make(root, "Error: ${it.message}", Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                        Event.AuthErrorMassage -> {
+                            Snackbar
+                                .make(root, "Error authentication", Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                        Event.NetworkErrorMassage -> {
+                            Snackbar
+                                .make(root, "Error network", Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                        Event.UnknownErrorMassage -> {
+                            Snackbar
+                                .make(root, "Unknown error", Snackbar.LENGTH_LONG)
                                 .show()
                         }
                     }

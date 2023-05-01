@@ -6,6 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
+import ru.kozlovss.workingcontacts.domain.error.ApiError
+import ru.kozlovss.workingcontacts.domain.error.AuthError
+import ru.kozlovss.workingcontacts.domain.error.NetworkError
+import ru.kozlovss.workingcontacts.domain.error.UnknownError
 import ru.kozlovss.workingcontacts.domain.usecases.GetFeedPostsPagingDataUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.RemovePostByIdUseCase
@@ -29,11 +33,8 @@ class FeedViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     fun likeById(id: Long) = viewModelScope.launch {
-        try {
+        catchExceptions {
             likePostByIdUseCase.execute(id)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _events.emit(Event.ErrorMassage(e.message))
         }
     }
 
@@ -55,7 +56,28 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    private suspend inline fun <T, R> T.catchExceptions(block: (T) -> R) {
+        try {
+            block(this)
+        } catch (e: ApiError) {
+            e.printStackTrace()
+            _events.emit(Event.ApiErrorMassage(e.reason))
+        } catch (e: AuthError) {
+            e.printStackTrace()
+            _events.emit(Event.AuthErrorMassage)
+        } catch (e: NetworkError) {
+            e.printStackTrace()
+            _events.emit(Event.NetworkErrorMassage)
+        } catch (e: UnknownError) {
+            e.printStackTrace()
+            _events.emit(Event.UnknownErrorMassage)
+        }
+    }
+
     sealed class Event {
-        data class ErrorMassage (val message: String?) : Event()
+        class ApiErrorMassage(val message: String?) : Event()
+        object AuthErrorMassage : Event()
+        object NetworkErrorMassage : Event()
+        object UnknownErrorMassage : Event()
     }
 }

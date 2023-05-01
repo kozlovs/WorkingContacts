@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
-import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -19,7 +19,7 @@ class GetFeedPostsPagingDataUseCase @Inject constructor(
     private val postRepository: PostRepository,
     private val appAuth: AppAuth,
 ) {
-    fun execute(): Flow<PagingData<Post>> = catchExceptions {
+    fun execute(): Flow<PagingData<Post>> = mapExceptions {
         return appAuth.authStateFlow
             .flatMapLatest { token ->
                 postRepository.posts

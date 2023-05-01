@@ -4,7 +4,7 @@ import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
 import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
-import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 
 class LikePostByIdUseCase @Inject constructor(
@@ -12,7 +12,7 @@ class LikePostByIdUseCase @Inject constructor(
     private val postDao: PostDao,
     private val myWallDao: MyWallDao
 ) {
-    suspend fun execute(id: Long) = catchExceptions {
+    suspend fun execute(id: Long) = mapExceptions {
         val post = postRepository.getById(id)
         val postResponse =
             if (post.likedByMe) {

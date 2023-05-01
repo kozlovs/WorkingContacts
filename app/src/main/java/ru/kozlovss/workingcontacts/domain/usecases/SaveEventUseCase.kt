@@ -10,7 +10,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
 import ru.kozlovss.workingcontacts.data.mediadata.repository.MediaRepository
-import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 
 class SaveEventUseCase @Inject constructor(
@@ -18,7 +18,7 @@ class SaveEventUseCase @Inject constructor(
     private val mediaRepository: MediaRepository,
     private val eventDao: EventDao
 ) {
-    suspend fun execute(event: EventRequest, model: MediaModel?) = catchExceptions {
+    suspend fun execute(event: EventRequest, model: MediaModel?) = mapExceptions {
         val media = model?.let { uploadMedia(it) }
         val eventRequest = media?.let {
             event.copy(
