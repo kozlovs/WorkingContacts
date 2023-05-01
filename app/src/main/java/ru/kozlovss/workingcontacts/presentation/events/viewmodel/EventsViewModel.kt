@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ru.kozlovss.workingcontacts.domain.error.catchExceptions
 import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.domain.usecases.GetEventsPagingDataUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikeEventByIdUseCase
@@ -12,6 +13,7 @@ import ru.kozlovss.workingcontacts.domain.usecases.ParticipateEventByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.RemoveEventByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.SwitchAudioUseCase
 import ru.kozlovss.workingcontacts.presentation.events.model.EventsModel
+import ru.kozlovss.workingcontacts.presentation.util.EventMassage
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,39 +30,30 @@ class EventsViewModel @Inject constructor(
     private val _state = MutableStateFlow<EventsModel.State>(EventsModel.State.Idle)
     val state = _state.asStateFlow()
 
+    private val _events = MutableSharedFlow<EventMassage>()
+    val events = _events.asSharedFlow()
+
     fun likeById(id: Long) = viewModelScope.launch {
-        try {
+        catchExceptions(_events) {
             likeEventByIdUseCase.execute(id)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _state.value = EventsModel.State.Error
         }
     }
 
     fun participateById(id: Long) = viewModelScope.launch {
-        try {
+        catchExceptions(_events) {
             participateEventByIdUseCase.execute(id)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _state.value = EventsModel.State.Error
         }
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
-        try {
+        catchExceptions(_events) {
             removeEventByIdUseCase.execute(id)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _state.value = EventsModel.State.Error
         }
     }
 
     fun switchAudio(event: Event) = viewModelScope.launch {
-        try {
+        catchExceptions(_events) {
             switchAudioUseCase.execute(event)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _state.value = EventsModel.State.Error
         }
     }
 }

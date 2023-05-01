@@ -4,14 +4,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import ru.kozlovss.workingcontacts.presentation.util.EventMassage
 import java.io.IOException
 
-sealed class AppError: RuntimeException() {
-    class ApiError(val reason: String): AppError()
+sealed class AppError : RuntimeException() {
+    class ApiError(val reason: String) : AppError()
     class NetworkError : AppError()
-    class AuthError: AppError()
-    class UnknownError: AppError()
+    class AuthError : AppError()
+    class UnknownError : AppError()
 }
 
-sealed class ErrorEvent: EventMassage() {
+sealed class ErrorEvent : EventMassage() {
     class ApiErrorMassage(val message: String?) : ErrorEvent()
     object AuthErrorMassage : ErrorEvent()
     object NetworkErrorMassage : ErrorEvent()
@@ -33,7 +33,10 @@ inline fun <T, R> T.mapExceptions(block: (T) -> R): R {
     }
 }
 
-suspend inline fun <T, R> T.catchExceptions(eventsFlow: MutableSharedFlow<EventMassage>, block: (T) -> R) {
+suspend inline fun <T, R> T.catchExceptions(
+    eventsFlow: MutableSharedFlow<EventMassage>,
+    block: (T) -> R
+) {
     try {
         block(this)
     } catch (e: AppError.ApiError) {
@@ -46,6 +49,9 @@ suspend inline fun <T, R> T.catchExceptions(eventsFlow: MutableSharedFlow<EventM
         e.printStackTrace()
         eventsFlow.emit(ErrorEvent.NetworkErrorMassage)
     } catch (e: UnknownError) {
+        e.printStackTrace()
+        eventsFlow.emit(ErrorEvent.UnknownErrorMassage)
+    } catch (e: Exception) {
         e.printStackTrace()
         eventsFlow.emit(ErrorEvent.UnknownErrorMassage)
     }

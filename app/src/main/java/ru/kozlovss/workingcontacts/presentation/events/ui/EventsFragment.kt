@@ -12,12 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentEventsBinding
+import ru.kozlovss.workingcontacts.domain.error.ErrorEvent
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventLoadingStateAdapter
@@ -153,6 +155,25 @@ class EventsFragment : Fragment() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect {
+                    when (it) {
+                        is ErrorEvent.ApiErrorMassage -> showSnackBar(root, "Error: ${it.message}")
+                        ErrorEvent.AuthErrorMassage -> showSnackBar(root, "Error authentication")
+                        ErrorEvent.NetworkErrorMassage -> showSnackBar(root, "Error network")
+                        ErrorEvent.UnknownErrorMassage -> showSnackBar(root, "Unknown error")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showSnackBar(view: View, massage: String) {
+        Snackbar
+            .make(view, massage, Snackbar.LENGTH_LONG)
+            .show()
     }
 
     private fun setListeners() = with(binding!!) {
