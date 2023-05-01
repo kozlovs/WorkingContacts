@@ -21,7 +21,7 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.entity.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentMyPostsListBinding
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.PostsAdapter
@@ -36,7 +36,7 @@ class MyPostsListFragment : Fragment() {
 
     private var binding: FragmentMyPostsListBinding? = null
     private val viewModel: MyWallViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private var adapter: PostsAdapter? = null
 
     override fun onCreateView(
@@ -92,7 +92,7 @@ class MyPostsListFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                userViewModel.token.collect { token ->
+                authViewModel.token.collect { token ->
                     token?.let {
                         adapter!!.refresh()
                     } ?: viewModel.clearMyData()
@@ -126,7 +126,7 @@ class MyPostsListFragment : Fragment() {
                 }
 
                 override fun onEdit(post: Post) {
-                    if (userViewModel.isLogin()) {
+                    if (authViewModel.isLogin()) {
                         findNavController().navigate(R.id.action_global_newPostFragment,
                             Bundle().apply { postId = post.id })
                     } else DialogManager.errorAuthDialog(this@MyPostsListFragment)

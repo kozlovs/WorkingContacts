@@ -29,7 +29,7 @@ import ru.kozlovss.workingcontacts.databinding.FragmentPostBinding
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.util.Formatter
 import ru.kozlovss.workingcontacts.presentation.util.LongArg
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.post.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.lat
@@ -42,7 +42,7 @@ import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion
 @AndroidEntryPoint
 class PostFragment : Fragment() {
     private val feedViewModel: FeedViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private val postViewModel: PostViewModel by viewModels()
     private var binding: FragmentPostBinding? = null
     private var id: Long? = null
@@ -188,7 +188,7 @@ class PostFragment : Fragment() {
     private fun setListeners() = with(binding!!) {
 
         like.setOnClickListener {
-            if (userViewModel.isLogin()) {
+            if (authViewModel.isLogin()) {
                 postViewModel.likeById(id)
                 ObjectAnimator.ofPropertyValuesHolder(
                     like,
@@ -215,7 +215,7 @@ class PostFragment : Fragment() {
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.remove -> {
-                            if (userViewModel.isLogin()) {
+                            if (authViewModel.isLogin()) {
                                 id?.let { id ->
                                     feedViewModel.removeById(id)
                                 }
@@ -223,7 +223,7 @@ class PostFragment : Fragment() {
                             true
                         }
                         R.id.edit -> {
-                            if (userViewModel.isLogin()) {
+                            if (authViewModel.isLogin()) {
                                 postViewModel.data.value?.let { post ->
                                     findNavController().navigate(R.id.action_global_newPostFragment,
                                     Bundle().apply { postId = post.id })

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentMyWallBinding
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.viewmodel.MyWallViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.vp.VpAdapter
@@ -29,7 +29,7 @@ import ru.kozlovss.workingcontacts.presentation.mywall.adapter.vp.VpAdapter
 class MyWallFragment : Fragment() {
 
     private val myWallViewModel: MyWallViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private var binding: FragmentMyWallBinding? = null
     private var fragmentsList: List<Fragment>? = null
     private var tabList: List<String>? = null
@@ -102,7 +102,7 @@ class MyWallFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                userViewModel.token.collect { token ->
+                authViewModel.token.collect { token ->
                     myWallViewModel.updateMyData(token)
                 }
             }
@@ -119,7 +119,7 @@ class MyWallFragment : Fragment() {
         }
 
         buttonLogout.setOnClickListener {
-            userViewModel.logout()
+            myWallViewModel.logout()
         }
 
         onLogInButton.setOnClickListener {

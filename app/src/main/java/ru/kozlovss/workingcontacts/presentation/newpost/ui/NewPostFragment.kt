@@ -28,7 +28,7 @@ import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.util.LongArg
 import ru.kozlovss.workingcontacts.presentation.util.PermissionManager
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag
 import ru.kozlovss.workingcontacts.presentation.newpost.adapter.OnInteractionListener
@@ -41,7 +41,7 @@ import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFrag
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
     private val viewModel: NewPostViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private var binding: FragmentNewPostBinding? = null
     private var bottomSheet: UserBottomSheetFragment? = null
     private var adapter: UsersPreviewAdapter? = null
@@ -314,7 +314,7 @@ class NewPostFragment : Fragment() {
                 lonField.text.toString()
             )
             if (checkFields() && Coordinates.check(coordinates)) {
-                if (userViewModel.isLogin()) {
+                if (authViewModel.isLogin()) {
                     viewModel.save(
                         contentField.text.toString(),
                         coordinates,
@@ -352,12 +352,10 @@ class NewPostFragment : Fragment() {
         }
     }
 
-    private fun addMentions() {
-        bottomSheet!!.show(
-            requireActivity().supportFragmentManager,
-            UserBottomSheetFragment.NEW_POST_TAG
-        )
-    }
+    private fun addMentions() = bottomSheet!!.show(
+        requireActivity().supportFragmentManager,
+        UserBottomSheetFragment.NEW_POST_TAG
+    )
 
     private fun checkFields(): Boolean = with(binding!!) {
         return (!contentField.text.isNullOrBlank())

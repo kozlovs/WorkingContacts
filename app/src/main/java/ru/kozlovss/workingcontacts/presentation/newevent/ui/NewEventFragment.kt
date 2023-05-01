@@ -34,7 +34,7 @@ import ru.kozlovss.workingcontacts.entity.User
 import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag
 import ru.kozlovss.workingcontacts.presentation.newevent.model.NewEventModel
@@ -50,7 +50,7 @@ import java.time.*
 @AndroidEntryPoint
 class NewEventFragment : Fragment() {
     private val viewModel: NewEventViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private var binding: FragmentNewEventBinding? = null
     private var datePicker: MaterialDatePicker<Long>? = null
     private var timePicker: MaterialTimePicker? = null
@@ -373,7 +373,7 @@ class NewEventFragment : Fragment() {
                 lonField.text.toString()
             )
             if (checkFields() && Coordinates.check(coordinates)) {
-                if (userViewModel.isLogin()) {
+                if (authViewModel.isLogin()) {
                     viewModel.save(
                         contentField.text.toString(),
                         getDataTimeData(),

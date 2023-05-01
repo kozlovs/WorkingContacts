@@ -21,7 +21,7 @@ import ru.kozlovss.workingcontacts.entity.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentEventsBinding
 import ru.kozlovss.workingcontacts.domain.error.ErrorEvent
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.OnInteractionListener
@@ -34,7 +34,7 @@ import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion
 @AndroidEntryPoint
 class EventsFragment : Fragment() {
     private val viewModel: EventsViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private var binding: FragmentEventsBinding? = null
     private var adapter: EventsAdapter? = null
 
@@ -65,13 +65,13 @@ class EventsFragment : Fragment() {
         adapter = EventsAdapter(
             object : OnInteractionListener {
                 override fun onLike(event: Event) {
-                    if (userViewModel.isLogin()) {
+                    if (authViewModel.isLogin()) {
                         viewModel.likeById(event.id)
                     } else DialogManager.errorAuthDialog(this@EventsFragment)
                 }
 
                 override fun onParticipate(event: Event) {
-                    if (userViewModel.isLogin()) {
+                    if (authViewModel.isLogin()) {
                         viewModel.participateById(event.id)
                     } else DialogManager.errorAuthDialog(this@EventsFragment)
                 }
@@ -88,13 +88,13 @@ class EventsFragment : Fragment() {
                 }
 
                 override fun onRemove(event: Event) {
-                    if (userViewModel.isLogin()) {
+                    if (authViewModel.isLogin()) {
                         viewModel.removeById(event.id)
                     } else DialogManager.errorAuthDialog(this@EventsFragment)
                 }
 
                 override fun onEdit(event: Event) {
-                    if (userViewModel.isLogin()) {
+                    if (authViewModel.isLogin()) {
                         findNavController().navigate(R.id.action_global_newEventFragment,
                             Bundle().apply { eventId = event.id })
                     } else DialogManager.errorAuthDialog(this@EventsFragment)
@@ -150,7 +150,7 @@ class EventsFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                userViewModel.token.collect {
+                authViewModel.token.collect {
                     adapter!!.refresh()
                 }
             }
@@ -178,7 +178,7 @@ class EventsFragment : Fragment() {
 
     private fun setListeners() = with(binding!!) {
         add.setOnClickListener {
-            if (userViewModel.isLogin()) {
+            if (authViewModel.isLogin()) {
                 findNavController().navigate(R.id.action_global_newEventFragment)
             } else DialogManager.errorAuthDialog(this@EventsFragment)
         }

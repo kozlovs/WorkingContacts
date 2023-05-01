@@ -14,6 +14,7 @@ import ru.kozlovss.workingcontacts.domain.usecases.GetMyJobsUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetMyWallPostsPagingDataUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetUserByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
+import ru.kozlovss.workingcontacts.domain.usecases.LogOutUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.RemoveJobByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.RemovePostByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.SwitchAudioUseCase
@@ -30,6 +31,7 @@ class MyWallViewModel @Inject constructor(
     private val switchAudioUseCase: SwitchAudioUseCase,
     private val likePostByIdUseCase: LikePostByIdUseCase,
     private val removePostByIdUseCase: RemovePostByIdUseCase,
+    private val logOutUseCase: LogOutUseCase,
     getMyWallPostsPagingDataUseCase: GetMyWallPostsPagingDataUseCase
 ) : ViewModel() {
 
@@ -108,5 +110,9 @@ class MyWallViewModel @Inject constructor(
     fun removeJobById(id: Long) = viewModelScope.launch {
         removeJobByIdUseCase.execute(id)
         _jobsData.value = getMyJobsUseCase.execute()
+    }
+
+    fun logout() = viewModelScope.launch {
+        logOutUseCase.execute()
     }
 }

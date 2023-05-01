@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.entity.Post
 import ru.kozlovss.workingcontacts.domain.error.catchExceptions
+import ru.kozlovss.workingcontacts.domain.usecases.CheckAuthUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.GetFeedPostsPagingDataUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.LikePostByIdUseCase
 import ru.kozlovss.workingcontacts.domain.usecases.RemovePostByIdUseCase
@@ -21,6 +22,7 @@ class FeedViewModel @Inject constructor(
     private val switchAudioUseCase: SwitchAudioUseCase,
     private val likePostByIdUseCase: LikePostByIdUseCase,
     private val removePostByIdUseCase: RemovePostByIdUseCase,
+    private val checkAuthUseCase: CheckAuthUseCase
 ) : ViewModel() {
 
     val data = getFeedPostsPagingDataUseCase.execute()
@@ -47,4 +49,6 @@ class FeedViewModel @Inject constructor(
             switchAudioUseCase.execute(post)
         }
     }
+
+    fun isLogin() = checkAuthUseCase.execute()
 }

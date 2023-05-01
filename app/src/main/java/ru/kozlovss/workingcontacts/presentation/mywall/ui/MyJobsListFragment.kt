@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.entity.Job
 import ru.kozlovss.workingcontacts.databinding.FragmentMyJobsListBinding
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.JobsAdapter
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.jobs.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.model.MyWallModel
@@ -28,7 +28,7 @@ class MyJobsListFragment : Fragment() {
 
     private var binding: FragmentMyJobsListBinding? = null
     private val viewModel: MyWallViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private val newJobViewModel: NewJobViewModel by activityViewModels()
     private var adapter: JobsAdapter? = null
 
@@ -75,7 +75,7 @@ class MyJobsListFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                userViewModel.token.collect { token ->
+                authViewModel.token.collect { token ->
                     token?.let { viewModel.getJobs() }
                 }
             }

@@ -29,7 +29,7 @@ import ru.kozlovss.workingcontacts.databinding.FragmentEventBinding
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.util.Formatter
 import ru.kozlovss.workingcontacts.presentation.util.LongArg
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 import ru.kozlovss.workingcontacts.presentation.event.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.event.model.EventModel
 import ru.kozlovss.workingcontacts.presentation.event.viewmodel.EventViewModel
@@ -42,7 +42,7 @@ import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion
 @AndroidEntryPoint
 class EventFragment : Fragment() {
     private val eventsViewModel: EventsViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private val eventViewModel: EventViewModel by viewModels()
     private var binding: FragmentEventBinding? = null
     private var id: Long? = null
@@ -198,7 +198,7 @@ class EventFragment : Fragment() {
 
     private fun setListeners() = with(binding!!) {
         like.setOnClickListener {
-            if (userViewModel.isLogin()) {
+            if (authViewModel.isLogin()) {
                 eventViewModel.likeById(id)
                 ObjectAnimator.ofPropertyValuesHolder(
                     like,
@@ -209,7 +209,7 @@ class EventFragment : Fragment() {
         }
 
         participate.setOnClickListener {
-            if (userViewModel.isLogin()) {
+            if (authViewModel.isLogin()) {
                 eventViewModel.participateById(id)
                 ObjectAnimator.ofPropertyValuesHolder(
                     participate,
@@ -236,7 +236,7 @@ class EventFragment : Fragment() {
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.remove -> {
-                            if (userViewModel.isLogin()) {
+                            if (authViewModel.isLogin()) {
                                 id?.let { id ->
                                     eventsViewModel.removeById(id)
                                 }
@@ -244,7 +244,7 @@ class EventFragment : Fragment() {
                             true
                         }
                         R.id.edit -> {
-                            if (userViewModel.isLogin()) {
+                            if (authViewModel.isLogin()) {
                                 eventViewModel.data.value?.let { event ->
                                     findNavController().navigate(R.id.action_global_newEventFragment,
                                         Bundle().apply { eventId = event.id })

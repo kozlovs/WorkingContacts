@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,13 +15,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentAuthorizationBinding
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.model.AuthModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 
 @AndroidEntryPoint
 class AuthorizationFragment : Fragment() {
 
     private var binding: FragmentAuthorizationBinding? = null
-    private val viewModel: UserViewModel by activityViewModels()
+    private val viewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,11 +49,22 @@ class AuthorizationFragment : Fragment() {
     }
 
 
-    private fun subscribe() = lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.token.collect {
-                it?.let {
-                    findNavController().navigate(R.id.action_global_feedFragment)
+    private fun subscribe() = with(binding!!) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.token.collect {
+                    it?.let {
+                        findNavController().navigate(R.id.action_global_feedFragment)
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    authorizationCard.isVisible = state is AuthModel.State.Idle
+                    progress.isVisible = state is AuthModel.State.Loading
                 }
             }
         }

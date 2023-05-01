@@ -19,14 +19,15 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.databinding.FragmentRegistrationBinding
+import ru.kozlovss.workingcontacts.presentation.auth.model.AuthModel
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.util.PermissionManager
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
+import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.AuthViewModel
 
 class RegistrationFragment : Fragment() {
 
     private var binding: FragmentRegistrationBinding? = null
-    private val viewModel: UserViewModel by activityViewModels()
+    private val viewModel: AuthViewModel by activityViewModels()
 
     private val imageLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -133,6 +134,15 @@ class RegistrationFragment : Fragment() {
                         avatar.setImageURI(it.uri)
                     }
                     removeAvatarButton.isVisible = it != null
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    registrationCard.isVisible = state is AuthModel.State.Idle
+                    progress.isVisible = state is AuthModel.State.Loading
                 }
             }
         }

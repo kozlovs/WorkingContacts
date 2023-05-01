@@ -22,7 +22,6 @@ import ru.kozlovss.workingcontacts.databinding.FragmentFeedBinding
 import ru.kozlovss.workingcontacts.domain.error.ErrorEvent
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.activity.MainActivity
-import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
@@ -36,7 +35,6 @@ import ru.kozlovss.workingcontacts.presentation.newpost.ui.NewPostFragment.Compa
 class FeedFragment : Fragment() {
 
     private val viewModel: FeedViewModel by activityViewModels()
-    private val userViewModel: UserViewModel by activityViewModels()
     private var adapter: PostsAdapter? = null
     private var binding: FragmentFeedBinding? = null
 
@@ -73,7 +71,7 @@ class FeedFragment : Fragment() {
         adapter = PostsAdapter(
             object : OnInteractionListener {
                 override fun onLike(post: Post) {
-                    if (userViewModel.isLogin()) {
+                    if (viewModel.isLogin()) {
                         viewModel.likeById(post.id)
                     } else DialogManager.errorAuthDialog(this@FeedFragment)
                 }
@@ -90,13 +88,13 @@ class FeedFragment : Fragment() {
                 }
 
                 override fun onRemove(post: Post) {
-                    if (userViewModel.isLogin()) {
+                    if (viewModel.isLogin()) {
                         viewModel.removeById(post.id)
                     } else DialogManager.errorAuthDialog(this@FeedFragment)
                 }
 
                 override fun onEdit(post: Post) {
-                    if (userViewModel.isLogin()) {
+                    if (viewModel.isLogin()) {
                         findNavController().navigate(R.id.action_global_newPostFragment,
                             Bundle().apply { postId = post.id })
                     } else DialogManager.errorAuthDialog(this@FeedFragment)
@@ -171,7 +169,7 @@ class FeedFragment : Fragment() {
 
     private fun setListeners() = with(binding!!) {
         add.setOnClickListener {
-            if (userViewModel.isLogin()) {
+            if (viewModel.isLogin()) {
                 findNavController().navigate(R.id.action_global_newPostFragment)
             } else DialogManager.errorAuthDialog(this@FeedFragment)
         }
