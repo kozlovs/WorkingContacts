@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentFeedBinding
+import ru.kozlovss.workingcontacts.domain.error.ErrorEvent
 import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.activity.MainActivity
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
@@ -26,7 +27,6 @@ import ru.kozlovss.workingcontacts.presentation.feed.adapter.OnInteractionListen
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.adapter.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel
-import ru.kozlovss.workingcontacts.presentation.feed.viewmodel.FeedViewModel.Event
 import ru.kozlovss.workingcontacts.presentation.post.ui.PostFragment.Companion.id
 import ru.kozlovss.workingcontacts.presentation.userswall.ui.UserWallFragment.Companion.userId
 import ru.kozlovss.workingcontacts.presentation.video.ui.VideoFragment.Companion.url
@@ -153,30 +153,20 @@ class FeedFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect {
                     when (it) {
-                        is Event.ApiErrorMassage -> {
-                            Snackbar
-                                .make(root, "Error: ${it.message}", Snackbar.LENGTH_LONG)
-                                .show()
-                        }
-                        Event.AuthErrorMassage -> {
-                            Snackbar
-                                .make(root, "Error authentication", Snackbar.LENGTH_LONG)
-                                .show()
-                        }
-                        Event.NetworkErrorMassage -> {
-                            Snackbar
-                                .make(root, "Error network", Snackbar.LENGTH_LONG)
-                                .show()
-                        }
-                        Event.UnknownErrorMassage -> {
-                            Snackbar
-                                .make(root, "Unknown error", Snackbar.LENGTH_LONG)
-                                .show()
-                        }
+                        is ErrorEvent.ApiErrorMassage -> showSnackBar(root, "Error: ${it.message}")
+                        ErrorEvent.AuthErrorMassage -> showSnackBar(root, "Error authentication")
+                        ErrorEvent.NetworkErrorMassage -> showSnackBar(root, "Error network")
+                        ErrorEvent.UnknownErrorMassage -> showSnackBar(root, "Unknown error")
                     }
                 }
             }
         }
+    }
+
+    private fun showSnackBar(view: View, massage: String) {
+        Snackbar
+            .make(view, massage, Snackbar.LENGTH_LONG)
+            .show()
     }
 
     private fun setListeners() = with(binding!!) {
