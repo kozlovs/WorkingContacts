@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentMyPostsListBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.mywall.adapter.posts.PostLoadingStateAdapter

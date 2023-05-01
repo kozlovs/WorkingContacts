@@ -33,9 +33,7 @@ import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentNewEventBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
-import ru.kozlovss.workingcontacts.domain.util.LongArg
-import ru.kozlovss.workingcontacts.domain.util.PermissionManager
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag
@@ -45,6 +43,8 @@ import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewM
 import ru.kozlovss.workingcontacts.presentation.newevent.adapter.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.newevent.adapter.UsersPreviewAdapter
 import ru.kozlovss.workingcontacts.presentation.userslist.ui.UserBottomSheetFragment
+import ru.kozlovss.workingcontacts.presentation.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.util.PermissionManager
 import java.time.*
 
 @AndroidEntryPoint

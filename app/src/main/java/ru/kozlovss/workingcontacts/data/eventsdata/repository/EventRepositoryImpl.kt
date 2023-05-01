@@ -10,7 +10,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.db.EventDb
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
-import ru.kozlovss.workingcontacts.domain.extensions.checkAndGetBody
+import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import javax.inject.Inject
 
 class EventRepositoryImpl @Inject constructor(

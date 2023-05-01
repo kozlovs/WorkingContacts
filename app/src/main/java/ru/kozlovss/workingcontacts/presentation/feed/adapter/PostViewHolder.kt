@@ -11,7 +11,7 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.CardPostBinding
-import ru.kozlovss.workingcontacts.domain.util.Formatter
+import ru.kozlovss.workingcontacts.presentation.util.Formatter
 
 class PostViewHolder(
     private val binding: CardPostBinding,

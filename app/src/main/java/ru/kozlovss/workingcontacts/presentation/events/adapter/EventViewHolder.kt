@@ -11,7 +11,7 @@ import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.CardEventBinding
-import ru.kozlovss.workingcontacts.domain.util.Formatter
+import ru.kozlovss.workingcontacts.presentation.util.Formatter
 
 class EventViewHolder(
     private val binding: CardEventBinding,

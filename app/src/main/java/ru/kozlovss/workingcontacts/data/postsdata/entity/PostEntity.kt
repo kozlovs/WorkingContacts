@@ -77,3 +77,5 @@ data class PostEntity(
         }
     }
 }
+
+fun List<Post>.toEntity() = map(PostEntity.Companion::fromDto)

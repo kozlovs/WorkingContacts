@@ -3,6 +3,7 @@ package ru.kozlovss.workingcontacts.data.postsdata.repository
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import ru.kozlovss.workingcontacts.data.postsdata.api.PostApiService
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.db.PostDb
@@ -10,7 +11,6 @@ import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostRemoteKeyDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
-import ru.kozlovss.workingcontacts.domain.extensions.checkAndGetBody
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(

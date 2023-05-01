@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.databinding.FragmentEventsBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventLoadingStateAdapter
 import ru.kozlovss.workingcontacts.presentation.events.adapter.EventsAdapter

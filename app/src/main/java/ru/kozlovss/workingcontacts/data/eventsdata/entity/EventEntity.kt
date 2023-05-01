@@ -87,4 +87,4 @@ data class EventEntity(
     }
 }
 
-fun List<Event>.toEntity(): List<EventEntity> = map(EventEntity.Companion::fromDto)
+fun List<Event>.toEntity() = map(EventEntity.Companion::fromDto)

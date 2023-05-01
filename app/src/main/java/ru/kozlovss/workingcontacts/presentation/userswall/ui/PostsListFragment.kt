@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.databinding.FragmentPostsListBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.OnInteractionListener
 import ru.kozlovss.workingcontacts.presentation.userswall.adapter.posts.PostsAdapter
 import ru.kozlovss.workingcontacts.presentation.userswall.model.UserWallModel

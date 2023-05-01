@@ -25,9 +25,9 @@ import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.data.userdata.dto.User
 import ru.kozlovss.workingcontacts.databinding.FragmentNewPostBinding
-import ru.kozlovss.workingcontacts.domain.util.DialogManager
-import ru.kozlovss.workingcontacts.domain.util.LongArg
-import ru.kozlovss.workingcontacts.domain.util.PermissionManager
+import ru.kozlovss.workingcontacts.presentation.util.DialogManager
+import ru.kozlovss.workingcontacts.presentation.util.LongArg
+import ru.kozlovss.workingcontacts.presentation.util.PermissionManager
 import ru.kozlovss.workingcontacts.presentation.auth.viewmodel.UserViewModel
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment
 import ru.kozlovss.workingcontacts.presentation.map.ui.MapFragment.Companion.sourcePageTag

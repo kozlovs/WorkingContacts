@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.dto.Coordinates
 import ru.kozlovss.workingcontacts.databinding.FragmentMapBinding
-import ru.kozlovss.workingcontacts.domain.util.StringArg
+import ru.kozlovss.workingcontacts.presentation.util.StringArg
 import ru.kozlovss.workingcontacts.presentation.map.viewmodel.MapViewModel
 import ru.kozlovss.workingcontacts.presentation.newevent.viewmodel.NewEventViewModel
 import ru.kozlovss.workingcontacts.presentation.newpost.viewmodel.NewPostViewModel

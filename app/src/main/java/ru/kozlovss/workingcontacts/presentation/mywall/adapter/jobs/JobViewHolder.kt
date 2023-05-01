@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.kozlovss.workingcontacts.R
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 import ru.kozlovss.workingcontacts.databinding.CardJobBinding
-import ru.kozlovss.workingcontacts.domain.util.Formatter
+import ru.kozlovss.workingcontacts.presentation.util.Formatter
 
 class JobViewHolder(
     private val binding: CardJobBinding,
