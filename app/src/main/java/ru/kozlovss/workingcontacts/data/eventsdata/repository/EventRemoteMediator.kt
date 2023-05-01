@@ -33,9 +33,11 @@ class EventRemoteMediator(
                         apiService.getEventsAfter(it, state.config.pageSize)
                     } ?: apiService.getLatestEvents(state.config.initialLoadSize)
                 }
+
                 LoadType.PREPEND -> {
                     return MediatorResult.Success(true)
                 }
+
                 LoadType.APPEND -> {
                     val id = remoteKeyDao.min() ?: return MediatorResult.Success(false)
                     apiService.getEventsBefore(id, state.config.pageSize)
@@ -69,6 +71,7 @@ class EventRemoteMediator(
                             )
                         }
                     }
+
                     LoadType.APPEND -> {
                         remoteKeyDao.insert(
                             EventRemoteKeyEntity(
@@ -77,6 +80,7 @@ class EventRemoteMediator(
                             )
                         )
                     }
+
                     else -> Unit
                 }
                 dao.insert(response.toEntity())
@@ -87,7 +91,7 @@ class EventRemoteMediator(
         }
     }
 
-    override suspend fun initialize(): InitializeAction =
+    override suspend fun initialize() =
         if (dao.isEmpty()) {
             InitializeAction.LAUNCH_INITIAL_REFRESH
         } else {

@@ -7,6 +7,7 @@ import ru.kozlovss.workingcontacts.data.userdata.api.UserApiService
 import ru.kozlovss.workingcontacts.data.userdata.dto.AuthenticationRequest
 import ru.kozlovss.workingcontacts.data.userdata.dto.Token
 import ru.kozlovss.workingcontacts.domain.auth.AppAuth
+import ru.kozlovss.workingcontacts.domain.repository.UserRepository
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -26,10 +27,8 @@ class UserRepositoryImpl @Inject constructor(
         avatar
     ).checkAndGetBody()
 
-    override suspend fun login(login: String, password: String) =
-        apiService
-            .logIn(AuthenticationRequest(login, password))
-            .checkAndGetBody()
+    override suspend fun login(login: String, password: String) = apiService
+        .logIn(AuthenticationRequest(login, password)).checkAndGetBody()
 
     override suspend fun saveTokenOfUser(token: Token) = appAuth.setAuth(token)
     override suspend fun clearTokenOfUser() = appAuth.removeAuth()

@@ -1,7 +1,6 @@
 package ru.kozlovss.workingcontacts.data.eventsdata.repository
 
 import androidx.paging.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.kozlovss.workingcontacts.data.eventsdata.api.EventApiService
 import ru.kozlovss.workingcontacts.data.eventsdata.dao.EventDao
@@ -11,6 +10,7 @@ import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.EventRequest
 import ru.kozlovss.workingcontacts.data.eventsdata.entity.EventEntity
 import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
+import ru.kozlovss.workingcontacts.domain.repository.EventRepository
 import javax.inject.Inject
 
 class EventRepositoryImpl @Inject constructor(
@@ -21,7 +21,7 @@ class EventRepositoryImpl @Inject constructor(
 ) : EventRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override val events: Flow<PagingData<Event>> = Pager(
+    override val events = Pager(
         config = PagingConfig(pageSize = 10, enablePlaceholders = false),
         pagingSourceFactory = dao::pagingSource,
         remoteMediator = EventRemoteMediator(

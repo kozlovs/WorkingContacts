@@ -5,12 +5,12 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import ru.kozlovss.workingcontacts.data.dto.Attachment
 import ru.kozlovss.workingcontacts.data.dto.MediaModel
 import ru.kozlovss.workingcontacts.data.mediadata.dto.Media
-import ru.kozlovss.workingcontacts.data.mediadata.repository.MediaRepository
+import ru.kozlovss.workingcontacts.domain.repository.MediaRepository
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.dto.PostRequest
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
+import ru.kozlovss.workingcontacts.domain.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 

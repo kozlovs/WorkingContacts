@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.userdata.repository
+package ru.kozlovss.workingcontacts.domain.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

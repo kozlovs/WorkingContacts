@@ -3,6 +3,7 @@ package ru.kozlovss.workingcontacts.data.jobsdata.repository
 import ru.kozlovss.workingcontacts.data.extensions.checkAndGetBody
 import ru.kozlovss.workingcontacts.data.jobsdata.api.JobApiService
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
+import ru.kozlovss.workingcontacts.domain.repository.JobRepository
 import javax.inject.Inject
 
 class JobRepositoryImpl @Inject constructor(

@@ -3,7 +3,7 @@ package ru.kozlovss.workingcontacts.domain.usecases
 import ru.kozlovss.workingcontacts.data.mywalldata.dao.MyWallDao
 import ru.kozlovss.workingcontacts.data.postsdata.dao.PostDao
 import ru.kozlovss.workingcontacts.data.postsdata.entity.PostEntity
-import ru.kozlovss.workingcontacts.data.postsdata.repository.PostRepository
+import ru.kozlovss.workingcontacts.domain.repository.PostRepository
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 

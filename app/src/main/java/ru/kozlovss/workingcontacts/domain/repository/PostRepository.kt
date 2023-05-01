@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.postsdata.repository
+package ru.kozlovss.workingcontacts.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow

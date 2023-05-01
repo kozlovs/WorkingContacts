@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import ru.kozlovss.workingcontacts.data.mywalldata.repository.MyWallRepository
+import ru.kozlovss.workingcontacts.domain.repository.MyWallRepository
 import ru.kozlovss.workingcontacts.data.postsdata.dto.Post
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject

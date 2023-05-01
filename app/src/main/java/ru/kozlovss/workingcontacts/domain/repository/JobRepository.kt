@@ -1,4 +1,4 @@
-package ru.kozlovss.workingcontacts.data.jobsdata.repository
+package ru.kozlovss.workingcontacts.domain.repository
 
 import ru.kozlovss.workingcontacts.data.jobsdata.dto.Job
 

@@ -1,7 +1,7 @@
 package ru.kozlovss.workingcontacts.domain.usecases
 
 import ru.kozlovss.workingcontacts.data.eventsdata.dto.Event
-import ru.kozlovss.workingcontacts.data.eventsdata.repository.EventRepository
+import ru.kozlovss.workingcontacts.domain.repository.EventRepository
 import ru.kozlovss.workingcontacts.domain.error.mapExceptions
 import javax.inject.Inject
 

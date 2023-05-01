@@ -87,7 +87,7 @@ class PostRemoteMediator(
         }
     }
 
-    override suspend fun initialize(): InitializeAction =
+    override suspend fun initialize() =
         if (dao.isEmpty()) {
             InitializeAction.LAUNCH_INITIAL_REFRESH
         } else {
